@@ -1157,8 +1157,8 @@ def clean_up_and_finish():
 #    TOP OF MAIN
 #=====================================================================
 #=====================================================================
-#from Slab_Dictionary_Slab2 import slab_dict
-from Slab_Dictionary_Slab1_RUM import slab_dict
+from Slab_Dictionary_Slab2 import slab_dict
+#from Slab_Dictionary_Slab1_RUM import slab_dict
 gmt_dict = {}
 
 #if len(sys.argv) != 2:
@@ -1182,7 +1182,6 @@ os.system(cmd)
 cmd="mkdir PDF"
 os.system(cmd)
 
-
 for s in slab_keys:
     print " "
     print "SLAB: %s" % s
@@ -1193,7 +1192,8 @@ for s in slab_keys:
     sub_keys = sub_dict.keys()
     sub_keys.sort()
 
-    trench_age_dist=sub_dict['off']
+    # Previously called 'off' in Slab 1 dictionary, now called off_age
+    trench_age_dist=sub_dict['off_age']
     Nan_age=sub_dict['Nan_age']
     RUM=sub_dict['RUM']
     T_use=sub_dict['T_use']
@@ -1214,7 +1214,7 @@ for s in slab_keys:
         depth_grids_dir=RUM_grids_dir
         age_grids_dir=RUM_Age_Dir
         model="rum"
-    print 'sn',sn
+    #print 'sn',sn
 
     # All Arrays will need to be remade for each slab
     
