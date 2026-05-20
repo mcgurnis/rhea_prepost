@@ -102,21 +102,21 @@ def usage():
 #=====================================================================
 def summary_cross_section(slab_dict,slab_keys):
 
-    print 'summary_cross_section'
+    print('summary_cross_section')
 
     psfile="summary_cross_section.ps"
 
     cmd="gmtset ANNOT_FONT_PRIMARY Times-Roman LABEL_FONT Times-Roman"
-    print cmd
+    print(cmd)
     os.system(cmd)
  
     cmd='psbasemap -JX6/2 -R0/300/-100/0 -B50f25:"Distance from Trench (km)":/50f10:"Depth (km)":WesN -X1.1 -Y6 -P -K > %s' % (psfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     for s in slab_keys:
-        print " "
-        print "SLAB: %s" % s
+        print(" ")
+        print("SLAB: %s" % s)
         # Get a local copy of the sub dictionary
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
@@ -137,24 +137,24 @@ def summary_cross_section(slab_dict,slab_keys):
                 shifted_profile=shift_profile(shifted_profile_0,"Z",0.0,0.0)
                 #cmd="psxy %s -JX -R -B -W5/black -O -K >> %s" % (shifted_profile,psfile)
                 cmd="psxy %s -JX -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
-                print cmd
+                print(cmd)
                 os.system(cmd)
                 i += 1
 
     #cmd="psxy %s -J -R -B -W5/black -O >> %s" % (shifted_profile,psfile)
     cmd="psxy %s -J -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
-#Overlay some models for comparison
+    #Overlay some models for comparison
     weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/johann_model_1.dat"
     cmd="psxy %s -J -R -B -W4/red -O -K >> %s" % (weak_zone_model,psfile)
-    print cmd
+    print(cmd)
     #os.system(cmd)
 
     weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/vish_model_1.dat"
     cmd="psxy %s -J -R -B -W4/black -O >> %s" % (weak_zone_model,psfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     make_pdf(psfile)
@@ -163,11 +163,11 @@ def summary_cross_section(slab_dict,slab_keys):
 #=====================================================================
 def make_slab_depth_contous(slab_dict,slab_keys):
 
-    print 'make_slab_depth_contous'
+    print('make_slab_depth_contous')
     for s in slab_keys:
-        print " "
-        print "SLAB: %s" % s
-        print " "
+        print(" ")
+        print("SLAB: %s" % s)
+        print(" ")
         # Get a local copy of the sub dictionary
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
@@ -203,11 +203,11 @@ def make_slab_depth_contous(slab_dict,slab_keys):
     
         psfile="contours.ps"
         cmd="grdcontour %s -C25.0 %s -D%s -m > %s" % (grd_depth,proj,gmt_depth,psfile)
-        print cmd
+        print(cmd)
         os.system(cmd)
 
         cmd="psxy %s -Cslab_depth.cpt %s -R%s -m > %s" % (gmt_depth,proj,region,psfile)
-        print cmd
+        print(cmd)
         os.system(cmd)
 
     return
