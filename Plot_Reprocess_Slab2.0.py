@@ -87,16 +87,16 @@ rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contour
 #=====================================================================
 def usage():
 
-    print ''' Plot_Reprocess_Slab2.0.py mode
+        print(''' Plot_Reprocess_Slab2.0.py mode
 
-    where mode = S  : Summary Table of Slabs
-                 C  : Contour files of slab depths
-                 G  : Global plot
-                 R  : A set of regional plots
-                 P  : Process the data to create the regional Slab2
+        where mode = S  : Summary Table of Slabs
+                  C  : Contour files of slab depths
+                  G  : Global plot
+                  R  : A set of regional plots
+                  P  : Process the data to create the regional Slab2
                       RUM files and associated individual plots
-                 X  : Make summary cross section
-'''
+                  X  : Make summary cross section
+    ''')
 
     sys.exit(0)
 #=====================================================================
