@@ -16,7 +16,8 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 #=====================================================================
 # imports
-import os, string, sys, math, time, datetime, pprint, random, commands
+import os, string, sys, math, time, pprint, random, commands
+from datetime import datetime as dt
 
 import Core_Util
 from Core_Util import now
@@ -57,22 +58,22 @@ Return value:
 
     # Use grdmath to generate a grid with only 1 or 0 values
     cmd = 'grdmath -V %(mask)s ISNAN = %(isnan)s' % vars()
-    print now(), 'mask_grid_by_nan_grid: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd
     os.system(cmd)
 
     # Use grdclip to change the 0's to NAN's
     cmd = 'grdclip -V %(isnan)s -Sb1/NAN -G%(clip)s' % vars()
-    print now(), 'mask_grid_by_nan_grid: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # Use grdmath to 'mask' the input grid by the NAN grid
     cmd = 'grdmath -V %(grid)s %(clip)s OR = %(out)s' % vars()
-    print now(), 'mask_grid_by_nan_grid: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # clean up
     cmd = 'rm -rf %(isnan)s %(clip)s' % vars()
-    print now(), 'mask_grid_by_nan_grid: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
 #=====================================================================
@@ -118,17 +119,17 @@ Return value:
     if args.has_key(':') :
       toggle = args[':'] 
       cmd += '-%(toggle)s' % vars()
-    print now(), 'mask_grid_by_xy_file: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_xy_file: cmd =\n', cmd)
     os.system(cmd)
 
     # Apply the xy mask file to src grid using grdmath. 
     cmd = 'grdmath -V %(grid)s %(tmp_grid_from_mask)s MUL = %(out)s' % vars()
-    print now(), 'mask_grid_by_xy_file: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_xy_file: cmd =\n', cmd)
     os.system(cmd)
 
     # clean up
     cmd = 'rm -rf %(tmp_grid_from_mask)s' % vars()
-    print now(), 'mask_grid_by_xy_file: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_xy_file: cmd =\n', cmd)
     os.system(cmd)
 
 #=====================================================================
@@ -281,7 +282,7 @@ Return value:
 
     cmd += '>> %(ps)s' % vars()
 
-    if verbose: print now(), 'psbasemap: cmd=\n', cmd
+    if verbose: print(dt.now(), 'psbasemap: cmd=\n', cmd)
     os.system(cmd)
 
 #=====================================================================
@@ -323,7 +324,7 @@ Return value:
 
     cmd +='%(text)s\n' % vars()
     cmd +='END'
-    if verbose: print now(), 'pstext: cmd =\n', cmd
+    if verbose: print(dt.now(), 'pstext: cmd =\n', cmd)
     os.system(cmd)
 
 #=====================================================================
@@ -351,7 +352,7 @@ Return value:
 
     if verbose: cmd += ' -V'
 
-    if verbose: print now(), 'grdtrack: cmd= ', cmd
+    if verbose: print(dt.now(), 'grdtrack: cmd= ', cmd)
     os.system(cmd)
 
     return track_file
@@ -461,7 +462,7 @@ Return value:
     if grid_min != 'none' or grid_max != 'none':
         cmd += '-Ll%(grid_min)s -Lu%(grid_max)s ' % vars()
     cmd += '-G%(grid_file)s -I%(grid_increment)s -R%(R)s -T%(grid_tension)s -V ' % vars()
-    if verbose: print now(), 'make_grid: cmd =\n', cmd
+    if verbose: print(dt.now(), 'make_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # check for file 
@@ -471,7 +472,7 @@ Return value:
 
     # clean up
     cmd = "rm -rf %(mean_file)s" % vars()
-    if verbose: print now(), 'make_grid: cmd =\n', cmd
+    if verbose: print(dt.now(), 'make_grid: cmd =\n', cmd)
     os.system(cmd)
 
     return grid_file
@@ -651,7 +652,7 @@ Return value:
 
     # cmd output
     cmd += '> %(cpt_file)s' % vars()
-    if verbose: print now(), 'makecpt: cmd =\n', cmd
+    if verbose: print(dt.now(), 'makecpt: cmd =\n', cmd)
     os.system(cmd)
 
     # update args
@@ -705,7 +706,7 @@ Return value:
 
     # cmd output 
     cmd += ' >> %(ps)s' % vars()
-    if verbose: print now(), 'psscale: cmd =\n', cmd
+    if verbose: print(dt.now(), 'psscale: cmd =\n', cmd)
     os.system(cmd)
 #=====================================================================
 #=====================================================================
@@ -755,7 +756,7 @@ Return value:
     if args.get('O'): cmd += '-O%s ' % args.get('O') 
 
     cmd += ' >> %(ps)s' % vars()
-    if verbose: print now(), 'grdimage: cmd =\n', cmd
+    if verbose: print(dt.now(), 'grdimage: cmd =\n', cmd)
     os.system(cmd)
 #=====================================================================
 #=====================================================================
@@ -807,7 +808,7 @@ Return value:
     if args.get('A'): cmd += '-A%s ' % args.get('A')
 
     cmd += ' >> %(ps)s' % vars()
-    if verbose: print now(), 'grdcontour: cmd =\n', cmd
+    if verbose: print(dt.now(), 'grdcontour: cmd =\n', cmd)
     os.system(cmd)
 #=====================================================================
 #=====================================================================
@@ -856,7 +857,7 @@ Return value:
     if args.get(':'): cmd += '-:%s ' % args.get(':') 
 
     cmd += ' >> %(ps)s' % vars()
-    if verbose: print now(), 'psxy: cmd =\n', cmd
+    if verbose: print(dt.now(), 'psxy: cmd =\n', cmd)
     os.system(cmd)
 #=====================================================================
 #=====================================================================
@@ -904,7 +905,7 @@ Return value:
 
     if verbose: 
         cmd += '-V ' % vars()
-        print now(), 'grdrotater: cmd =\n', cmd
+        print(dt.now(), 'grdrotater: cmd =\n', cmd)
     # SAVEME: outline 
     # cmd += '> %(outline)s' % vars()
     os.system(cmd)
@@ -960,7 +961,7 @@ Return value:
         R = '0/11/0/8.5'
 
     cmd += '-R%(R)s -Jx1i -Gwhite -D%(D)s "%(txt)s" >> %(ps)s' % vars()
-    if verbose: print now(), 'pslegend: cmd =\n', cmd
+    if verbose: print(dt.now(), 'pslegend: cmd =\n', cmd)
     os.system(cmd)
 #=====================================================================
 #=====================================================================
@@ -1273,17 +1274,17 @@ Resets the values in the dictionary:
     prop=(1-z_transition)/(1-z_mantle)
     total_nodez=float(dict['nodez']) - 1 
     nodez_loc=int((total_nodez)-(prop*total_nodez) )
-    print "================================="
-    print "  nodez to 670 transition zone   "
-    print    nodez_loc
-    print "================================="
+    print("=================================")
+    print("  nodez to 670 transition zone   ")
+    print(    nodez_loc)
+    print("=================================")
     # Transition zone along Latitudinal slice
     if dict['x'] <> 'none':
         longs=range(  int((float(dict['fi_min'])) *r2d) , int((float(dict['fi_max']))*r2d))
-        print "transition zone at depth in km"
-        print     Transition_depth
-        print "transition zone at non-dimensional depth"
-        print     z_transition 
+        print("transition zone at depth in km")
+        print(     Transition_depth)
+        print("transition zone at non-dimensional depth")
+        print(     z_transition)
         Trans_Long=open('transition_long.xy',"w")
         for i in range(len(longs)):
             Long=int(longs[i])	
@@ -1294,10 +1295,10 @@ Resets the values in the dictionary:
 	# Transition zone along Longitudinal slice		
     if dict['y'] <> 'none':
         lats=range(  90 - int((float(dict['theta_max']))*r2d) , 90 - int((float(dict['theta_min'])) *r2d))
-        print "transition zone at depth in km"
-        print    Transition_depth
-        print "transition zone at non-dimensional depth"
-        print    z_transition 
+        print("transition zone at depth in km")
+        print(     Transition_depth)
+        print("transition zone at non-dimensional depth")
+        print(     z_transition)
         Trans_Lat=open('transition_lat.xy',"w")
         for i in range(len(lats)):
             Lat=int(lats[i])	
@@ -1326,25 +1327,25 @@ Return value:
 '''
     # Define vel input file
     vel_infile=dict['velocity_file']
-    print "============================="
-    print "   Set Velocity file         "
-    print "============================="
-    print       vel_infile
+    print("=============================")
+    print("   Set Velocity file         ")
+    print("=============================")
+    print(       vel_infile)
     # Define output vel file
-    print "============================="
-    print "   Set Velocity out file     "
-    print "============================="
+    print("=============================")
+    print("   Set Velocity out file     ")
+    print("=============================")
     vel_outfile=open('sampled_velfile.xy','w')
-    print       vel_outfile
+    print(vel_outfile)
     # parse velocity increment 
     vel_density = .01
     # get the sampling density from vel_density
     if dict.get('vel_density'): 
         vel_density = float(dict.get('vel_density'))
-    print "============================="
-    print " Using a sampling density of "
-    print "============================="
-    print   vel_density
+    print("=============================")
+    print(" Using a sampling density of ")
+    print("=============================")
+    print(vel_density)
     # How many entries are there in the vel file
     file_info=commands.getoutput("wc -l "+vel_infile+"")
     vel_file_length=int(file_info.split(' ')[0])
