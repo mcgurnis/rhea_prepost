@@ -16,7 +16,8 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 #=====================================================================
 # imports
-import os, string, sys, math, time, pprint, random, commands
+import os, string, sys, math, time, pprint, random
+import subprocess
 from datetime import datetime as dt
 
 import Core_Util
@@ -58,7 +59,7 @@ Return value:
 
     # Use grdmath to generate a grid with only 1 or 0 values
     cmd = 'grdmath -V %(mask)s ISNAN = %(isnan)s' % vars()
-    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd
+    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)  
     os.system(cmd)
 
     # Use grdclip to change the 0's to NAN's
@@ -155,13 +156,13 @@ Return value:
     # remove any existing page 
     ps = args['ps']
     cmd = 'rm -rf %(ps)s\n' % vars()
-    if verbose: print now(), 'start_page: cmd=\n', cmd
+    if verbose: print(dt.now(), 'start_page: cmd=\n', cmd)
     os.system(cmd)
 
     # remove any existing .gmtdefaults 
     ps = args['ps']
     cmd = 'rm -rf .gmtdefaults4\n' % vars()
-    if verbose: print now(), 'start_page: cmd=\n', cmd
+    if verbose: print(dt.now(), 'start_page: cmd=\n', cmd)
     os.system(cmd)
 
     # check for eps
@@ -179,7 +180,7 @@ Return value:
 
     cmd += '\n'
 
-    if verbose: print now(), 'start_page: cmd=\n', cmd
+    if verbose: print(dt.now(), 'start_page: cmd=\n', cmd)
     os.system(cmd)
     
     text = '  '
@@ -218,7 +219,7 @@ Return value:
  none
 '''
 
-    if verbose: print now(), 'end_page:'
+    if verbose: print(dt.now(), 'end_page:')
 
     text = ' ' 
     if args.get('page_number'):
@@ -379,14 +380,14 @@ Return value:
 
     # query rotated xyz for -R values
     cmd = 'minmax -I0.01/0.01 %(xyz)s' % vars()
-    if verbose: print now(), 'get_region: cmd =\n', cmd
+    if verbose: print(dt.now(), 'get_region: cmd =\n', cmd)
     pipe = os.popen(cmd)
     line = pipe.readline()
     R = line.strip()
     pipe.close()
     # strip off preceeding '-R' 
     R = R[2:]
-    if verbose: print now(), 'get_region: R=', R
+    if verbose: print(dt.now(), 'get_region: R=', R)
     args['R'] = R
 #=====================================================================
 #=====================================================================
@@ -444,13 +445,13 @@ Return value:
         cmd += '-H%(H)s ' % vars()
     if args.get('file_in_latlon'): cmd += '-: ' % vars()
     cmd += '-I%(grid_increment)s -R%(R)s > %(mean_file)s' % vars()
-    if verbose: print now(), 'make_grid: cmd =\n', cmd
+    if verbose: print(dt.now(), 'make_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # check for file 
     if not os.path.exists( mean_file ):
         msg = 'blockmean may have failed: file not found: %(mean_file)s' % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
 
     # create the grid
     cmd = 'surface %(mean_file)s ' % vars()
@@ -468,7 +469,7 @@ Return value:
     # check for file 
     if not os.path.exists( grid_file ):
         msg = 'surface may have failed: file not found: %(mean_file)s' % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
 
     # clean up
     cmd = "rm -rf %(mean_file)s" % vars()
@@ -517,7 +518,7 @@ Output argugments:
     cmd = 'grdinfo '
     if verbose: cmd += '-V '
     cmd += '-C -M %(grid)s' % vars() 
-    if verbose: print now(), 'grdinfo: cmd =\n', cmd
+    if verbose: print(dt.now(), 'grdinfo: cmd =\n', cmd)
     pipe = os.popen(cmd)
     line = pipe.readline()
     pipe.close()
@@ -540,22 +541,22 @@ Output argugments:
     args['n_nan'] = list[15]
 
     if verbose:
-        print 'west =', list[1]
-        print 'east =', list[2]
-        print 'south =', list[3]
-        print 'north =', list[4]
-        print 'z0 =', list[5]
-        print 'z1 =', list[6]
-        print 'dx =', list[7]
-        print 'dy =', list[8]
-        print 'nx =', list[9]
-        print 'ny =', list[10]
-        print 'x0 =', list[11]
-        print 'y0 =', list[12]
-        print 'x1 =', list[13]
-        print 'y1 =', list[14]
-        print 'n_nan =', list[15]
-        print 'R  =', str( '/'.join(list[1:5]) )
+        print('west =', list[1])
+        print('east =', list[2])
+        print('south =', list[3])
+        print('north =', list[4])
+        print('z0 =', list[5])
+        print('z1 =', list[6])
+        print('dx =', list[7])
+        print('dy =', list[8])
+        print('nx =', list[9])
+        print('ny =', list[10])
+        print('x0 =', list[11])
+        print('y0 =', list[12])
+        print('x1 =', list[13])
+        print('y1 =', list[14])
+        print('n_nan =', list[15])
+        print('R  =', str( '/'.join(list[1:5]) ))
 
     # combine raw grid data into plot parameters
     args['R'] = '/'.join(list[1:5]) 
@@ -940,7 +941,7 @@ Return value:
         D = args.get('D') 
     else:
         msg = "must set args['pslegend_file'] and args['pslegend_D'] or args['D'] before calling pslegend" % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
 
     cmd = 'pslegend ' % vars()
 
@@ -1202,7 +1203,7 @@ def plot_image( args ):
         cpt = args['C']
         if cpt.startswith('tmp.') :
             cmd = 'rm -rf %(cpt)s' % vars()
-            if verbose: print now(), 'plot_image: cmd =\n', cmd
+            if verbose: print(dt.now(), 'plot_image: cmd =\n', cmd)
             os.system(cmd)
 #=====================================================================
 #=====================================================================
@@ -1276,10 +1277,10 @@ Resets the values in the dictionary:
     nodez_loc=int((total_nodez)-(prop*total_nodez) )
     print("=================================")
     print("  nodez to 670 transition zone   ")
-    print(    nodez_loc)
+    print(nodez_loc)
     print("=================================")
     # Transition zone along Latitudinal slice
-    if dict['x'] <> 'none':
+    if dict['x'] != 'none':
         longs=range(  int((float(dict['fi_min'])) *r2d) , int((float(dict['fi_max']))*r2d))
         print("transition zone at depth in km")
         print(     Transition_depth)
@@ -1293,7 +1294,7 @@ Resets the values in the dictionary:
         dict['xy']='transition_long.xy'
         dict['N']='-N'
 	# Transition zone along Longitudinal slice		
-    if dict['y'] <> 'none':
+    if dict['y'] != 'none':
         lats=range(  90 - int((float(dict['theta_max']))*r2d) , 90 - int((float(dict['theta_min'])) *r2d))
         print("transition zone at depth in km")
         print(     Transition_depth)
@@ -1306,7 +1307,7 @@ Resets the values in the dictionary:
         Trans_Lat.close()
         dict['xy']='transition_lat.xy'
         dict['N']='-N'
-	return
+    return
 
 #=====================================================================
 #=====================================================================
@@ -1347,7 +1348,7 @@ Return value:
     print("=============================")
     print(vel_density)
     # How many entries are there in the vel file
-    file_info=commands.getoutput("wc -l "+vel_infile+"")
+    file_info=subprocess.getoutput("wc -l "+vel_infile+"")
     vel_file_length=int(file_info.split(' ')[0])
     sampling=int(vel_file_length*vel_density)
     # Store random numbers in a vector
@@ -1357,9 +1358,9 @@ Return value:
     # Select vel vectors at random locations
     infile=open(vel_infile,'r')
     for i in range(vel_file_length):
-	line=infile.readline()
-	if random_numbers.count(i):
-		vel_outfile.write(line)
+	    line=infile.readline()
+	    if random_numbers.count(i):
+		    vel_outfile.write(line)
     vel_outfile.close()
     infile.close()
     dict['velocity_sampled_file']='sampled_velfile.xy'
@@ -1414,7 +1415,7 @@ Returns
     # check for file 
     if not os.path.exists( mean_file ):
         msg = 'blockmean may have failed: file not found: %(mean_file)s' % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
     # create the grid
     cmd = 'surface %(mean_file)s ' % vars()
     if dict.get('file_headers'): 
@@ -1428,7 +1429,7 @@ Returns
     # check for file 
     if not os.path.exists( grid_file ):
         msg = 'surface may have failed: file not found: %(mean_file)s' % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
     # filter the grid file
     cmd = 'grdfilter %(grid_file2)s -D2 -Fg%(width)g -V -G%(grid_file)s' % vars()
     os.system(cmd)   
@@ -1602,12 +1603,12 @@ def makecpt_def( argv ):
 F\t255\t255\t255
 N\t255\t255\t255'''
 
-    print header
+    print(header)
     for l in r_lines:
-        print l
+        print(l)
     for l in b_lines:
-        print l
-    print footer
+        print(l)
+    print(footer)
 
 #=====================================================================
 #=====================================================================
