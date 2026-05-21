@@ -16,7 +16,8 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 #=====================================================================
 # imports
-import getopt, os, string, sys, math, time, datetime, pprint
+import getopt, os, string, sys, math, time, pprint
+from datetime import datetime as dt
 #=====================================================================
 # Global variables
 verbose = False
@@ -36,7 +37,7 @@ def command(command):
     data = child.read()
     err = child.close()
     if err:
-        raise RuntimeError, '%s failed w/ exit code %d' % (command, err)
+        raise RuntimeError('%s failed w/ exit code %d' % (command, err))
     return data
 #=====================================================================
 #=====================================================================
@@ -46,7 +47,7 @@ def test( argv ):
     verbose = True 
 
     file = argv[1]
-    print now(), 'test: file = %(file)s' % vars()
+    print(dt.now(), 'test: file = %(file)s' % vars())
 #=====================================================================
 #=====================================================================
 if __name__ == "__main__":
@@ -107,23 +108,23 @@ def test_sample( argv ):
     y = 4
     dict['x'] = x
     dict['y'] = y
-    print now(), 'test: x = %(x)s' % vars()
-    print now(), 'test: y = %(y)s' % vars()
+    print(dt.now(), 'test: x = %(x)s' % vars())
+    print(dt.now(), 'test: y = %(y)s' % vars())
 
     # call function, get new values 
     w = sample_function (dict) 
     z = dict['z'] 
-    print now(), 'test: z = %(z)s' % vars()
-    print now(), 'test: w = %(w)s' % vars()
+    print(dt.now(), 'test: z = %(z)s' % vars())
+    print(dt.now(), 'test: w = %(w)s' % vars())
 
     # raise and error message if test fails:
     if w != x * y: 
        msg = 'w is not correct, for x=', x, 'and y=', y
-       raise ValueError, msg
+       raise ValueError(msg)
 
     if z != x + y:
        msg = 'w is not correct, for x=', x, 'and y=', y
-       raise ValueError, msg
+       raise ValueError(msg)
 
 
     # 
@@ -133,22 +134,22 @@ def test_sample( argv ):
     y = int ( argv[2] )
     dict['x'] = x
     dict['y'] = y
-    print now(), 'test: x = %(x)s' % vars()
-    print now(), 'test: y = %(y)s' % vars()
+    print(dt.now(), 'test: x = %(x)s' % vars())
+    print(dt.now(), 'test: y = %(y)s' % vars())
 
     # call function, get new values 
     w = sample_function (dict) 
     z = dict['z'] 
-    print now(), 'test: z = %(z)s' % vars()
-    print now(), 'test: w = %(w)s' % vars()
+    print(dt.now(), 'test: z = %(z)s' % vars())
+    print(dt.now(), 'test: w = %(w)s' % vars())
 
     # raise and error message if test fails:
     if w != x * y:
        msg = 'w is not correct, for x=', x, 'and y=', y
-       raise ValueError, msg
+       raise ValueError(msg)
 
     if z != x + y:
        msg = 'w is not correct, for x=', x, 'and y=', y
-       raise ValueError, msg
+       raise ValueError(msg)
 #=====================================================================
 #=====================================================================
