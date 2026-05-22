@@ -4,9 +4,9 @@
 #         Preprocessing, Data Assimilation, and Postprocessing
 #                  ---------------------------------
 #
-#                    AUTHORS: Mark Turner, Dan Bower
+#             AUTHORS: Mark Turner, Dan Bower, Michael Gurnis    
 #
-#             (c) California Institute of Technology 2007
+#             (c) California Institute of Technology 2007-2026
 #                        ALL RIGHTS RESERVED
 #=====================================================================
 '''A set of general purpose functions for working with Files.
@@ -20,7 +20,7 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 # imports
 import getopt, os, string, sys, math, time
-import datetime
+from datetime import datetime as dt
 import pprint
 
 import CitcomParser 
@@ -39,7 +39,7 @@ def read_slab_db_into_dictionary( filename ):
     '''read a slab_db file into a dictionary and return it'''
 
     if verbose:
-        print now(), 'read_slab_db_into_dictionary:', filename
+        print(dt.now(), 'read_slab_db_into_dictionary:', filename)
 
     file = open(filename)
     try : 
@@ -123,12 +123,12 @@ def read_slab_db_into_dictionary( filename ):
             continue # to next line 
 
         else:
-           print "WARNING: line not understood as key or values?:"
-           print line
+           print("WARNING: line not understood as key or values?:")
+           print(line)
 
 
     if verbose:
-      print now(), 'read_slab_db_into_dictionary: slab_dictionary='
+      print(dt.now(), 'read_slab_db_into_dictionary: slab_dictionary=')
 
       pprint.PrettyPrinter(indent=2).pprint(slab_dictionary)
 
@@ -154,7 +154,7 @@ def parse_control_file( filename ):
         file.close()
 
     if verbose:
-        print now(), 'parse_control_file: read: %(filename)s' % vars()
+        print(dt.now(), 'parse_control_file: read: %(filename)s' % vars())
 
     # read
     for line in lines:
@@ -171,7 +171,7 @@ def parse_control_file( filename ):
         if line.startswith('[END') : 
             section = None
             if verbose:
-                print now(), 'parse_control_file: END section = ', section
+                print(dt.now(), 'parse_control_file: END section = ', section)
 
             continue # to next line in control file
 
@@ -183,7 +183,7 @@ def parse_control_file( filename ):
             section = line
             num_sections += 1
             if verbose:
-                print now(), 'parse_control_file: section = ', section
+                print(dt.now(), 'parse_control_file: section = ', section)
 
             # establish an empty map for this section
             settings[section] = {}
@@ -202,7 +202,7 @@ def parse_control_file( filename ):
         val = int_float_string( val )
 
         if verbose:
-            print now(), 'parse_control_file: key , val = ',key,',',val
+            print(dt.now(), 'parse_control_file: key , val = ',key,',',val)
 
         if (section) :
             # this key val pair is part of a figure spec
@@ -214,9 +214,9 @@ def parse_control_file( filename ):
             settings[key] = val
 
     if verbose:
-        print now(), 'parse_control_file: settings ='
+        print(dt.now(), 'parse_control_file: settings =')
         pprint.PrettyPrinter(indent=2).pprint(settings)
-        print now(), 'parse_control_file: settings ='
+        print(dt.now(), 'parse_control_file: settings =')
 
     return settings
 #=====================================================================
@@ -252,11 +252,11 @@ def gplates_velocity_to_xyz(args):
     iage = args['iage']
     if not args.get('overlay_gplates_velocity_increment'):
         msg = 'gplates_velocity_to_xyz: ERROR: Parameter "overlay_gplates_velocity_increment" is reqired to read gplates velocity files' % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
 
     if not args.get('overlay_gplates_velocity_vector_scale') :
         msg = 'gplates_velocity_to_xyz: ERROR: Parameter "overlay_gplates_velocity_vector_scale" is reqired to read gplates velocity files' % vars()
-        raise ValueError, msg
+        raise ValueError(msg)
 
     scale = args['overlay_gplates_velocity_vector_scale']
     increment = args['overlay_gplates_velocity_increment']
@@ -264,7 +264,7 @@ def gplates_velocity_to_xyz(args):
     # final output file
     out = 'gplates_velocity.%s.xyz' % (iage)
     out_file = open(out, 'w')
-    if verbose: print now(), 'cap_to_xyVelocity: open,w ', out
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: open,w ', out)
 
     # set initial path to find gplates data 
     path = args.get('overlay_gplates_velocity_path')
@@ -286,38 +286,38 @@ def gplates_velocity_to_xyz(args):
         f = prefix + '%(iage)s.%(c)s' % vars() 
         gpv = os.path.join(path, f )
 
-        if verbose: print now(), 'gplates_velocity_to_xyz: cor =', cor
-        if verbose: print now(), 'gplates_velocity_to_xyz: tmp1 =', tmp1
-        if verbose: print now(), 'gplates_velocity_to_xyz: tmp2 =', tmp2
-        if verbose: print now(), 'gplates_velocity_to_xyz: gpv =', gpv
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: cor =', cor)
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: tmp1 =', tmp1)
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: tmp2 =', tmp2)
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: gpv =', gpv)
 
         # check for files
         if not os.path.exists(gpv):
             msg = 'gplates_velocity_to_xyz: ERROR: file missing: %(gpv)s' % vars()
-            raise ValueError, msg
+            raise ValueError(msg)
         
         # check for files
         if not os.path.exists(cor):
             msg = 'gplates_velocity_to_xyz: ERROR: file missing: %(cor)s' % vars()
-            raise ValueError, msg
+            raise ValueError(msg)
 
         # build temporay file 
         cmd = 'grep "1.000000e+00" %(cor)s | cut -d" " -f1,2,3 > %(tmp1)s' % vars()
-        if verbose: print now(), 'gplates_velocity_to_xyz: cmd =', cmd
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: cmd =', cmd)
         os.system(cmd)
 
         cmd = 'paste -d" " %(tmp1)s %(gpv)s > %(tmp2)s' % vars()
-        if verbose: print now(), 'gplates_velocity_to_xyz: cmd =', cmd
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: cmd =', cmd)
         os.system(cmd)
 
         # open the input file 
         # read the inp file into one big list of lines
         inp_file = open(tmp2)
-        if verbose: print now(), 'gplates_velocity_to_xyz: read ', tmp2
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: read ', tmp2)
         lines = inp_file.readlines()
         inp_file.close()
-        if verbose: print now(), 'gplates_velocity_to_xyz: close ', tmp2
-        if verbose: print now(), 'gplates_velocity_to_xyz: loop start '
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: close ', tmp2)
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: loop start ')
         p = 0
         q = 0
         for line in lines:
@@ -363,19 +363,19 @@ def gplates_velocity_to_xyz(args):
                    out_file.write( '%f %f %f %f\n' % (lon, lat, azimuth, length) )
             # end of if q mod incre == 0 increment sub-sampling
         # end of loop over lines
-        if verbose: print now(), 'gplates_velocity_to_xyz: total =', q
-        if verbose: print now(), 'gplates_velocity_to_xyz: used =', p
-        if verbose: print now(), 'gplates_velocity_to_xyz: loop end '
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: total =', q)
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: used =', p)
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: loop end ')
 
         cmd = 'rm -v %(tmp1)s %(tmp2)s' % vars()
-        if verbose: print now(), 'gplates_velocity_to_xyz: cmd =', cmd
+        if verbose: print(dt.now(), 'gplates_velocity_to_xyz: cmd =', cmd)
         os.system(cmd)
 
     # end of loop over caps
 
     # close file 
     out_file.close()
-    if verbose: print now(), 'gplates_velocity_to_xyz: close: ', out
+    if verbose: print(dt.now(), 'gplates_velocity_to_xyz: close: ', out)
 
     return out
 
@@ -586,7 +586,7 @@ Return value:
 
     # this function also sets args['map_list'] with the mapping
     # list data
-    if verbose: print now(), 'Core_File: export_to_citcom_velo: call Core_Citcom.map_global_proc_to_proc_in_z_dir'
+    if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_Citcom.map_global_proc_to_proc_in_z_dir')  
     Core_Citcom.map_global_proc_to_proc_in_z_dir( args )
 
     # master loop over all processors to export data
@@ -597,21 +597,21 @@ Return value:
 
         # this function also sets args['xy'] = output file
         # args['xy'] is required by subsequent functions
-        if verbose: print now(), 'Core_File: export_to_citcom_velo: call Core_File.export_citcom_xy_nodal_coord_by_proc'
+        if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_File.export_citcom_xy_nodal_coord_by_proc')
         export_citcom_xy_nodal_coord_by_proc( args )
 
         # this function also sets args['track_files'] = output files
         # args['track_files'] is required by subsequent functions
-        if verbose: print now(), 'Core_File: export_to_citcom_velo: call Core_File.grdtrack_grid_files_by_depth'
+        if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_File.grdtrack_grid_files_by_depth')
         grdtrack_grid_files_by_depth( args )
 
         # this function also sets args['temp_list'] = output temperature
         # args['temp_list'] is required by export_to_citcom_velo
-        if verbose: print now(), 'Core_File: export_to_citcom_velo: call Core_Citcom.map_track_file_data_to_proc_node_number_list'
+        if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_Citcom.map_track_file_data_to_proc_node_number_list')
         Core_Citcom.map_track_file_data_to_proc_node_number_list( args )
 
         # export velo files 
-        if verbose: print now(), 'Core_File: export_to_citcom_velo: call Core_File.write_citcom_velo'
+        if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_File.write_citcom_velo')
         write_citcom_velo( args )
 
         # export mat files?
