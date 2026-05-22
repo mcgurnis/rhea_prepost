@@ -1,4 +1,20 @@
 #!/usr/bin/env python
+#=====================================================================
+#               Python Scripts for CitComS, gplates, and Rhea
+#          Preprocessing, Data Assimilation, and Postprocessing
+#                  ---------------------------------
+#                              Authors:
+#                            Michael Gurnis
+#                              
+#          (c) California Institute of Technology 2003-2026
+#               Free for non-commercial academic use ONLY.
+#      This program is distributed WITHOUT ANY WARRANTY whatsoever.
+#=====================================================================
+#  Copyright May 2026, by the California Institute of Technology.
+#  United States Government Sponsorship Acknowledged.
+#  ALL RIGHTS RESERVED. 
+#=====================================================================
+
 """
 GMT_files.py reads in files in long, lat, data files 
 from CitcomS.py after passing through the zslice code and
@@ -66,7 +82,7 @@ def Vfile(zfile,velfile,nc,nodex,nodey,nprocx,nprocy):
 
             #length=math.hypot(vx,vy)/50000.
             length=scalev*math.hypot(vx,vy)
-            print ' velocity =', length,' cm/yr'
+            print(dt.now(), ' velocity =', length,' cm/yr')
             length=length/25.0
             output.write('%f %f %f %f\n' % (long,lat,azimuth,length))
 
