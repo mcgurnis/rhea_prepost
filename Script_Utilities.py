@@ -3,7 +3,7 @@
 #                      Python Scripts for CitComS 
 #         Preprocessing, Data Assimilation, and Postprocessing
 #                  ---------------------------------
-#             (c) California Institute of Technology 2007
+#             (c) California Institute of Technology 2007-2026
 #                        ALL RIGHTS RESERVED
 #=====================================================================
 '''
@@ -16,7 +16,7 @@ SYNOPSIS
 #=====================================================================
 #=====================================================================
 # imports
-import getopt, os, string, sys, math, time, commands
+import getopt, os, string, sys, math, time, subprocess
 import datetime
 import pprint
 #=====================================================================
@@ -47,7 +47,7 @@ def parse_control_file( settings ):
         file.close()
 
     if verbose:
-        print now(), 'parse_control_file: read: %(filename)s' % vars()
+        print(dt.now(), 'parse_control_file: read: %(filename)s' % vars())
 
     # read
     for line in lines:
@@ -64,7 +64,7 @@ def parse_control_file( settings ):
         if line.startswith('[END') : 
             section = None
             if verbose:
-                print now(), 'parse_control_file: END section = ', section
+                print(dt.now(), 'parse_control_file: END section = ', section)
 
             continue # to next line in control file
 
@@ -76,7 +76,7 @@ def parse_control_file( settings ):
             section = line
             num_sections += 1
             if verbose:
-                print now(), 'parse_control_file: section = ', section
+                print(dt.now(), 'parse_control_file: section = ', section)
 
             # establish an empty map for this section
             settings[section] = {}
@@ -91,7 +91,7 @@ def parse_control_file( settings ):
         (key,val) = string.split(opt, '=')
 
         if verbose:
-            print now(), 'parse_control_file: key , val = ',key,',',val
+            print(dt.now(), 'parse_control_file: key , val = ',key,',',val)
 
         if (section) :
             # this key val pair is part of a figure spec
@@ -102,8 +102,8 @@ def parse_control_file( settings ):
             settings[key] = val
 
     if verbose:
-        print now(), 'parse_control_file: settings =\n', \
-            pprint.PrettyPrinter(indent=2).pprint(settings)
+        print(dt.now(), 'parse_control_file: settings =\n', \
+            pprint.PrettyPrinter(indent=2).pprint(settings))
 #=====================================================================
 #=====================================================================
 #=====================================================================
@@ -112,7 +112,7 @@ def animate( settings ):
 
     # test input 
     if settings.get('inp_list') == None:
-        raise ValueError, 'No image files given.'
+        raise ValueError('No image files given.')   
 
     # defaults
     loop = 1
@@ -139,7 +139,7 @@ def animate( settings ):
     for file in settings.get('inp_list'):
         # check for file existance
         if not os.path.exists(file):
-            raise ValueError, 'File "%(file)s" not found.' % vars()
+            raise ValueError('File "%(file)s" not found.' % vars())
         # FIX - probably should check if the file is an image file?
 
     # Convert each input file to a .gif file 
@@ -162,7 +162,7 @@ def animate( settings ):
         else :
            cmd = 'convert %(file)s %(gif)s' % vars()
 
-        if verbose: print now(), "animate: cmd =", cmd
+        if verbose: print(dt.now(), "animate: cmd =", cmd)
         os.system(cmd)
         # end of loop over input files
 
@@ -171,7 +171,7 @@ def animate( settings ):
     for gif in gif_list:
         cmd += '%(gif)s ' % vars()
     cmd += ' %(animation)s' % vars()
-    if verbose: print now(), "animate: cmd =", cmd
+    if verbose: print(dt.now(), "animate: cmd =", cmd)
     os.system(cmd)
 
     # clean up
@@ -184,8 +184,8 @@ if __name__ == "__main__":
 
     # generate a list of input files
     cmd = "ls -r1t raster_*"
-    if verbose: print now(), "main: cmd =", cmd
-    ret = commands.getoutput( cmd )
+    if verbose: print(dt.now(), "main: cmd =", cmd)
+    ret = subprocess.getoutput( cmd )
     list = ret.split()
 
     # empty settings dict

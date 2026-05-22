@@ -12,7 +12,7 @@
 #
 #=====================================================================
 #
-#  Copyright Aug. 2006, by the California Institute of Technology.
+#  Copyright Aug. 2026, by the California Institute of Technology.
 #  ALL RIGHTS RESERVED. United States Government Sponsorship Acknowledged.
 #
 #=====================================================================
