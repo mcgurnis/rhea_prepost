@@ -6,7 +6,7 @@
 #
 #                              Authors:
 #                            Michael Gurnis
-#          (c) California Institute of Technology 2006
+#          (c) California Institute of Technology 2006-2026
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #
@@ -80,28 +80,28 @@ def erf_array(n):
     profile=range(0,n)
     #Define the central value to be zero
     if(n%2):
-	profile[(n-1)/2]=0.0
+        profile[(n-1)/2]=0.0
     else:
-	profile[n/2-1]=0.0	 
-  	profile[n/2]=0.0 
+        profile[n/2-1]=0.0	 
+        profile[n/2]=0.0 
  
     xmax=2.0 # Maximum xscale (normalized)
     i=1
     while 1:
-	print i,n/2
-	loc=2*i*xmax/n
-	if(n%2):
-	    profile[(n-1)/2-i]=erf(loc)
-	    profile[(n-1)/2+i]=profile[(n-1)/2-i]
-	else:
-	    profile[n/2-i-1]=erf(loc)
+        print(i,n/2)
+        loc=2*i*xmax/n
+        if(n%2):
+            profile[(n-1)/2-i]=erf(loc)
+            profile[(n-1)/2+i]=profile[(n-1)/2-i]
+        else:
+            profile[n/2-i-1]=erf(loc)
             profile[n/2+i]=profile[n/2-i-1]
-	i+=1
-	if(i>=n/2): break
-	if(n%2):
-	    loc=2*(i+1)*xmax/n
-	    profile[0]=erf(loc)
-	    profile[n-1]=profile[0]
+        i+=1
+        if(i>=n/2): break
+        if(n%2):
+	        loc=2*(i+1)*xmax/n
+	        profile[0]=erf(loc)
+	        profile[n-1]=profile[0]
 
     return(profile)
 
@@ -129,20 +129,20 @@ def mk_lith_temp_file( depth, nd_depth, afile, dict ):
     lith_blend = 'lith_blend_%d.grd' % ( depth )
 
     cmd = 'grdsample %s -Gtmp0.grd -I%g' % (afile, grd_res)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     # maximum and minimum ages
     cmd = 'grdclip tmp0.grd -Gage.grd -Sa%f/%f -Sb%f/%f' % (age_max, age_max, age_min, age_min)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     cmd = 'grdmath age.grd %g DIV SQRT = tmp1.grd' % (scalet)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     cmd = 'grdmath %g 0.5 MUL tmp1.grd DIV ERF = %s' % (nd_depth, lith_blend)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     return lith_blend
