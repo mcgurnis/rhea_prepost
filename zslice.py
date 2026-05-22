@@ -116,7 +116,7 @@ def check_layers(layers, nodez):
         ## otherwise, check bounds of layers
         for layer in layers:
             if not (0<= layer < nodez):
-                raise ValueError, 'layer out of range (0-%d)' % (nodez - 1)
+                raise ValueError('layer out of range (0-%d)' % (nodez - 1))
 
     return layers
 
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     import sys
 
     if len(sys.argv) < 2:
-        print __doc__
+        print(__doc__)
         sys.exit(1)
 
     prefix = sys.argv[1]
