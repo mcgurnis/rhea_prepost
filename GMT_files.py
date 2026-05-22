@@ -30,6 +30,7 @@ outout:
 
 """
 import sys, string, os, math
+from datetime import datetime as dt
 
 def Vfile(zfile,velfile,nc,nodex,nodey,nprocx,nprocy):
 
