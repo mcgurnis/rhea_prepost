@@ -7,16 +7,16 @@
 #                            Michael Gurnis
 #                               Eh Tan
 #                             Mark Turner
-#          (c) California Institute of Technology 2003-2007
+#          (c) California Institute of Technology 2003-2026
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #=====================================================================
-#  Copyright July 2007, by the California Institute of Technology.
+#  Copyright July 2026, by the California Institute of Technology.
 #  United States Government Sponsorship Acknowledged.
 #  ALL RIGHTS RESERVED. 
 #=====================================================================
 import sys, string, os, math, glob
-import datetime
+from datetime import datetime as dt
 import CitcomParser, zslice, GMT_files
 from Script_Utilities import now
 
@@ -47,7 +47,7 @@ def cap_to_xySurfTopo(parameters_file, time):
     # open output file 
     out = '%s.%s.surf.xyz' % (model, time)
     out_file = open(out, 'w')
-    if verbose: print now(), 'cap_to_xySurfTopo: open,w ', out
+    if verbose: print(dt.now(), 'cap_to_xySurfTopo: open,w ', out)
 
     # loop over caps
     for c in range (nproc_surf):
@@ -58,7 +58,7 @@ def cap_to_xySurfTopo(parameters_file, time):
         # open the cap input file 
         inp = '%(model)s.surf%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'cap_to_xySurfTopo: open ', inp
+        if verbose: print(dt.now(), 'cap_to_xySurfTopo: open ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
@@ -88,7 +88,7 @@ def cap_to_xySurfTopo(parameters_file, time):
 
     # close file 
     out_file.close()
-    if verbose: print now(), 'cap_to_xySurfTopo: close: ', out
+    if verbose: print(dt.now(), 'cap_to_xySurfTopo: close: ', out)
     return out
 #=====================================================================
 #=====================================================================
@@ -117,7 +117,7 @@ def cap_to_xyComposition(parameters_file, time, level):
     # open output file
     out = '%s.%s.z%03d.xyComposition' % (model, time, level)
     out_file = open(out, 'w')
-    if verbose: print now(), 'cap_to_xyComposition: open,w ', out
+    if verbose: print(dt.now(), 'cap_to_xyComposition: open,w ', out)
 
     # loop over caps
     for c in range (nproc_surf):
@@ -125,7 +125,7 @@ def cap_to_xyComposition(parameters_file, time, level):
 
         cap = '%(model)s.cap%(c)s.%(time)s' % vars()
         cap_file = open(cap)
-        if verbose: print now(), 'cap_to_xyComposition: read ', cap
+        if verbose: print(dt.now(), 'cap_to_xyComposition: read ', cap)
         # read the regular cap file into one big list of lines
         cap_lines = cap_file.readlines()
         # pop the header line
@@ -136,7 +136,7 @@ def cap_to_xyComposition(parameters_file, time, level):
 
         # open the file 
         opt_file = open(opt)
-        if verbose: print now(), 'cap_to_xyComposition: read ', opt
+        if verbose: print(dt.now(), 'cap_to_xyComposition: read ', opt)
 
         # read the regular cap file into one big list of lines
         opt_lines = opt_file.readlines()
@@ -171,7 +171,7 @@ def cap_to_xyComposition(parameters_file, time, level):
 
     # close file 
     out_file.close()
-    if verbose: print now(), 'cap_to_xyComposition: close: ', out
+    if verbose: print(dt.now(), 'cap_to_xyComposition: close: ', out)
     return out
 
 #=====================================================================
@@ -185,7 +185,7 @@ def cap_to_xy_file(out_name, type, parameters_file, field, time, cap_list, xlist
     types = ['point', 'xslice', 'yslice', 'zslize', 'volume']
     if type not in types:
         msg = 'type keyword', type, 'must be one of:', types
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # citcom model data
     parser = CitcomParser.Parser()
@@ -210,14 +210,14 @@ def cap_to_xy_file(out_name, type, parameters_file, field, time, cap_list, xlist
     # ...
     else:
         msg = 'field "' + field + '" is not recognized.'
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # check cap input
     for c in cap_list:
         if not nproc_surf > c > -1:
           msg = 'cap_list element "' + str(c) + \
           '" is out of bounds: [0,', nproc_surf, ']'
-          raise IndexError, msg
+          raise IndexError(msg)
 
     # check x,y,z input
     if xlist != None:
@@ -225,25 +225,25 @@ def cap_to_xy_file(out_name, type, parameters_file, field, time, cap_list, xlist
         if not nodex > x > -1:
           msg = 'xlist element "' + str(x) + \
           '" is out of bounds: [0,' + str(nodex-1) + ']'
-          raise IndexError, msg
+          raise IndexError(msg)
 
     if ylist != None:
       for y in ylist:
         if not nodey > y > -1:
           msg = 'ylist element "' + str(y) + \
           '" is out of bounds: [0,' + str(nodey-1) + ']'
-          raise IndexError, msg
+          raise IndexError(msg)
 
     if zlist != None:
       for z in zlist:
         if not nodex > z > -1:
           msg = 'zlist element "' + str(z) + \
           '" is out of bounds: [0,' + str(nodex-1) + ']'
-          raise IndexError, msg
+          raise IndexError(msg)
 
     # open output files
     out_file = open(out_name, 'w')
-    if verbose: print now(), 'cap_to_xy_file: open,w ', out_file
+    if verbose: print(dt.now(), 'cap_to_xy_file: open,w ', out_file)
 
 
     # loop over caps
@@ -253,12 +253,12 @@ def cap_to_xy_file(out_name, type, parameters_file, field, time, cap_list, xlist
         # open the cap input file 
         inp = '%(model)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'cap_to_xy_file: open ', inp
+        if verbose: print(dt.now(), 'cap_to_xy_file: open ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
         inp_file.close()
-        if verbose: print now(), 'cap_to_xy_file: close ', inp
+        if verbose: print(dt.now(), 'cap_to_xy_file: close ', inp)
 
         # pop the header line
         lines = lines[1:]
@@ -298,7 +298,7 @@ def cap_to_xy_file(out_name, type, parameters_file, field, time, cap_list, xlist
 
                     # ... 
 
-                    print 'j i k n = %(j)d %(i)d %(k)d %(n)d -- lon lat rad value = %(lon)f %(lat)f %(rad)f %(field)f' % vars()
+                    print('j i k n = %(j)d %(i)d %(k)d %(n)d -- lon lat rad value = %(lon)f %(lat)f %(rad)f %(field)f' % vars())
 
                 # end of k loop over Z
             # end of i loop over X
@@ -329,7 +329,7 @@ def cap_to_xyTemperature(parameters_file, time, level):
     # open output file 
     out = '%s.%s.z%03d.temp.xyz' % (model, time, level)
     out_file = open(out, 'w')
-    if verbose: print now(), 'cap_to_xyTemperature: open,w ', out
+    if verbose: print(dt.now(), 'cap_to_xyTemperature: open,w ', out)
 
     # loop over caps
     for c in range (nproc_surf):
@@ -338,7 +338,7 @@ def cap_to_xyTemperature(parameters_file, time, level):
         # open the cap input file 
         inp = '%(model)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'cap_to_xyTemperature: read ', inp
+        if verbose: print(dt.now(), 'cap_to_xyTemperature: read ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
@@ -374,7 +374,7 @@ def cap_to_xyTemperature(parameters_file, time, level):
 
     # close file 
     out_file.close()
-    if verbose: print now(), 'cap_to_xyTemperature: close: ', out
+    if verbose: print(dt.now(), 'cap_to_xyTemperature: close: ', out)
     return out
 #=====================================================================
 #=====================================================================
@@ -396,7 +396,7 @@ def cap_to_xyViscosity(parameters_file, time, level):
     # open output file 
     out = '%s.%s.z%03d.visc.xyz' % (model, time, level)
     out_file = open(out, 'w')
-    if verbose: print now(), 'cap_to_xyViscosity: open,w ', out
+    if verbose: print(dt.now(), 'cap_to_xyViscosity: open,w ', out)
 
     # loop over caps
     for c in range (nproc_surf):
@@ -405,7 +405,7 @@ def cap_to_xyViscosity(parameters_file, time, level):
         # open the cap input file 
         inp = '%(model)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'cap_to_xyViscosity: open ', inp
+        if verbose: print(dt.now(), 'cap_to_xyViscosity: open ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
@@ -446,7 +446,7 @@ def cap_to_xyViscosity(parameters_file, time, level):
 
     # close file 
     out_file.close()
-    if verbose: print now(), 'cap_to_xyViscosity: close: ', out
+    if verbose: print(dt.now(), 'cap_to_xyViscosity: close: ', out)
     return out
 #=====================================================================
 #=====================================================================
@@ -470,17 +470,17 @@ def cap_to_xyVelocity(parameters_file, time, level, increment, scale):
     therm_diff = parser.getfloat('thermdiff')
     scalev=(therm_diff/(layer_km*1e3))*(100.0*3600.0*24.0*365.25)
 
-    if verbose: print now(), 'cap_to_xyVelocity: parameters_file =', parameters_file
-    if verbose: print now(), 'cap_to_xyVelocity: time =', time
-    if verbose: print now(), 'cap_to_xyVelocity: level =', level
-    if verbose: print now(), 'cap_to_xyVelocity: increment =', increment
-    if verbose: print now(), 'cap_to_xyVelocity: 1/increment =', int(1/float(increment))
-    if verbose: print now(), 'cap_to_xyVelocity: scale =', scale
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: parameters_file =', parameters_file)
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: time =', time)
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: level =', level)
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: increment =', increment)
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: 1/increment =', int(1/float(increment)))
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: scale =', scale)
 
     # open output file 
     out = '%s.%s.z%03d.velo_xy.xyz' % (model, time, level)
     out_file = open(out, 'w')
-    if verbose: print now(), 'cap_to_xyVelocity: open,w ', out
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: open,w ', out)
 
     # loop over caps
     for c in range (nproc_surf):
@@ -489,19 +489,19 @@ def cap_to_xyVelocity(parameters_file, time, level, increment, scale):
         # open the cap input file 
         inp = '%(model)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'cap_to_xyVelocity: read ', inp
+        if verbose: print(dt.now(), 'cap_to_xyVelocity: read ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
         inp_file.close()
-        if verbose: print now(), 'cap_to_xyVelocity: close ', inp
+        if verbose: print(dt.now(), 'cap_to_xyVelocity: close ', inp)
 
         # pop the header line
         lines = lines[1:]
 
         # loop over the node numbers, picking out the requested level
         # NOTE loop order: Y , X , Z 
-        if verbose: print now(), 'cap_to_xyVelocity: loop start '
+        if verbose: print(dt.now(), 'cap_to_xyVelocity: loop start ')
         p = 0
         q = 0
 
@@ -579,24 +579,24 @@ def cap_to_xyVelocity(parameters_file, time, level, increment, scale):
             # end of k loop over z
           # end of i loop over x
         # end of j loop over y
-        if verbose: print now(), 'cap_to_xyVelocity: total =', q
-        if verbose: print now(), 'cap_to_xyVelocity: used =', p
+        if verbose: print(dt.now(), 'cap_to_xyVelocity: total =', q)
+        if verbose: print(dt.now(), 'cap_to_xyVelocity: used =', p)
 
         if p == 0 :
-         print now(), 'cap_to_xyVelocity: ERROR: no velocity values selected!'
-         print now(), 'cap_to_xyVelocity: ERROR: increase "overlay_velocity_increment" control to a larger value.'
+         print(dt.now(), 'cap_to_xyVelocity: ERROR: no velocity values selected!')
+         print(dt.now(), 'cap_to_xyVelocity: ERROR: increase "overlay_velocity_increment" control to a larger value.')
 
-        if verbose: print now(), 'cap_to_xyVelocity: loop end '
+        if verbose: print(dt.now(), 'cap_to_xyVelocity: loop end ')
 
     # end of loop over caps
 
     # close file 
     out_file.close()
-    if verbose: print now(), 'cap_to_xyVelocity: close: ', out
+    if verbose: print(dt.now(), 'cap_to_xyVelocity: close: ', out)
 
     # FIX TEST
     #cmd = 'cp %(out)s %(out)s.%(increment)s.SAVE' % vars()
-    #if verbose: print now(), 'cap_to_xyVelocity: cmd =', cmd
+    #if verbose: print(dt.now(), 'cap_to_xyVelocity: cmd =', cmd)
     #os.system(cmd)
 
     return out
@@ -638,18 +638,18 @@ def read_combine_opts(parameters_file, time, level, field):
         # prepend the coordinates from cooresponding capXX file
         cmd = 'cut -d" " -f1,2,3 %(inp)s > %(cor)s' % vars()
         if verbose: 
-            print now(), 'read_combine_opts: cmd =', cmd
+            print(dt.now(), 'read_combine_opts: cmd =', cmd)
         os.system(cmd)
 
         cmd = 'paste -d" " %(cor)s %(opt)s > %(tmp)s' % vars()
         if verbose: 
-            print now(), 'read_combine_opts: cmd =', cmd
+            print(dt.now(), 'read_combine_opts: cmd =', cmd)
         os.system(cmd)
 
         # open the tmp file 
         tmp_file = open(tmp)
         if verbose: 
-            print now(), 'read_combine_opts: open ', tmp
+            print(dt.now(), 'read_combine_opts: open ', tmp)
 
         # read the tmp file into one big list of lines
         lines = tmp_file.readlines()
@@ -660,7 +660,7 @@ def read_combine_opts(parameters_file, time, level, field):
         out = '%s.coor_opt%s.%s.z%03d.xyCo' % (model, c, time, level)
         out_file = open(out, 'w')
         if verbose: 
-            print now(), 'read_combine_opts: open,w ', out
+            print(dt.now(), 'read_combine_opts: open,w ', out)
 
         # open temp
         # open opt
@@ -689,23 +689,23 @@ def read_combine_opts(parameters_file, time, level, field):
         out_file.close()
 
         cmd = 'cat %(out)s >> %(combined_opt)s' % vars()
-        if verbose: print now(), 'read_combine_opts: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_opts: cmd=', cmd)
         os.system(cmd)
 
         cmd = 'wc -l %s'  % (combined_opt)
-        if verbose: print now(), 'read_combine_opts: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_opts: cmd=', cmd)
         os.system(cmd)
 
     # end of loop over caps
 
     # combine the caps
     #cmd = 'cat %s.coor_opt??.%s.z%03d.xyCo > %s'  % (model, time, level, combined_opt)
-    #if verbose: print now(), 'read_combine_opts: cmd=', cmd
+    #if verbose: print(dt.now(), 'read_combine_opts: cmd=', cmd)
     #os.system(cmd)
 
     # report
     cmd = 'wc -l %s'  % (combined_opt)
-    if verbose: print now(), 'read_combine_opts: cmd=', cmd
+    if verbose: print(dt.now(), 'read_combine_opts: cmd=', cmd)
     os.system(cmd)
 
     # clean up
@@ -715,7 +715,7 @@ def read_combine_opts(parameters_file, time, level, field):
     rm_str += '%(model)s.coor_opt??.%(time)s ' % vars()
     rm_str += '%s.coor_opt??.%s.z%03d.xyCo ' % (model, time, level)
     cmd = 'rm -fv %(rm_str)s'  % vars()
-    if verbose: print now(), 'read_combine_opts: cmd=', cmd
+    if verbose: print(dt.now(), 'read_combine_opts: cmd=', cmd)
     os.system(cmd)
 
     return combined_opt
@@ -746,38 +746,38 @@ def read_combine_caps(parameters_file, time, layer, field):
         tempfile = "%(zfile)s.xyTe" % vars()
         viscfile = "%(zfile)s.xyVi" % vars()
 
-        if verbose: print now(), 'read_combine_caps: ifile=', ifile
-        if verbose: print now(), 'read_combine_caps: zfile=', zfile
-        if verbose: print now(), 'read_combine_caps: velfile=', viscfile
-        if verbose: print now(), 'read_combine_caps: tempfile=', tempfile
-        if verbose: print now(), 'read_combine_caps: viscfile=', viscfile
+        if verbose: print(dt.now(), 'read_combine_caps: ifile=', ifile)
+        if verbose: print(dt.now(), 'read_combine_caps: zfile=', zfile)
+        if verbose: print(dt.now(), 'read_combine_caps: velfile=', viscfile)
+        if verbose: print(dt.now(), 'read_combine_caps: tempfile=', tempfile)
+        if verbose: print(dt.now(), 'read_combine_caps: viscfile=', viscfile)
 
         # only extract if layer not found
         if not os.path.exists(zfile):
-            if verbose: print now(), 'read_combine_caps: calling zslice'
+            if verbose: print(dt.now(), 'read_combine_caps: calling zslice')
             zslice.zslice(ifile, layer)
 
         if field.startswith('temp'): 
             if not os.path.exists(tempfile):
                 if verbose: 
-                    print now(), 'read_combine_caps: calling Tfile'
+                    print(dt.now(), 'read_combine_caps: calling Tfile')
                 GMT_files.Tfile(zfile,tempfile,nc,nodex,nodey,nprocx,nprocy)
 
         if field.startswith('visc'):
             if not os.path.exists(viscfile):
                 if verbose: 
-                    print now(), 'read_combine_caps: calling Vifile'
+                    print(dt.now(), 'read_combine_caps: calling Vifile')
                 GMT_files.Vifile(zfile,viscfile,nc,nodex,nodey,nprocx,nprocy)
 
         if field.startswith('velo'):
             if not os.path.exists(velfile):
                 if verbose: 
-                    print now(), 'read_combine_caps: calling Vfile'
+                    print(dt.now(), 'read_combine_caps: calling Vfile')
                 GMT_files.Vfile(zfile,velfile,nc,nodex,nodey,nprocx,nprocy)
 
         # clean up 
         cmd = "rm -vf %s" % (zfile)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
 
         nc = nc+1
@@ -811,36 +811,36 @@ def read_combine_caps(parameters_file, time, layer, field):
         # 
 
         cmd = 'rm -f %s' % (combined_temp)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
         cmd = 'cat %s.cap*.%d.z%03d.xyTe > %s' \
             % (modelname, time, layer, combined_temp)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
         cmd = 'rm -rfv %s.cap*.%d.z%03d.xyTe' % (modelname, time, layer)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
 
         cmd = 'rm -f %s' % (combined_visc)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
         cmd = 'cat %s.cap*.%d.z%03d.xyVi > %s' \
             % (modelname, time, layer, combined_visc)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
         cmd = 'rm -rfv %s.cap*.%d.z%03d.xyVi' % (modelname, time, layer)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
 
         cmd = 'rm -f %s' % (combined_velo)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
         cmd = 'cat %s.cap*.%d.z%03d.xyVe > %s' \
             % (modelname, time, layer, combined_velo)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
         cmd = 'rm -rfv %s.cap*.%d.z%03d.xyVe' % (modelname, time, layer)
-        if verbose: print now(), 'read_combine_caps: cmd=', cmd
+        if verbose: print(dt.now(), 'read_combine_caps: cmd=', cmd)
         os.system(cmd)
 
     return combined_temp, combined_visc, combined_velo
@@ -887,10 +887,10 @@ def get_depth(parameters_file, level):
         else: 
             # level not found
             msg = 'level ' + str(level) + ' not found in coordinate file ' + '"' + coor_file + '"'
-            raise IndexError, msg
+            raise IndexError(msg)
 
     else:
-        print 'ERROR -- could not open coor_file\:',coor_file,"\n"
+        print('ERROR -- could not open coor_file\:',coor_file,"\n")
         sys.exit(0)
 
     return depth
@@ -952,7 +952,7 @@ def read_citcoms_coord_0_file_into_zlist(parameters_file):
             zlist.append( tuple )
             level = level + 1
             if verbose: 
-                print now(), 'read_citcoms_coord_files: level, z, depth:', tuple
+                print(dt.now(), 'read_citcoms_coord_files: level, z, depth:', tuple)
 
         else: 
            continue # to next line
@@ -980,10 +980,10 @@ def read_citcoms_coor_file_into_zlist(parameters_file):
         # global
         header_prefix = 'nodez='
     else:
-        raise IOError, 'Unknown run type. \
+        raise IOError('Unknown run type. \
                         For Regional set nproc_surf=1 or \
                         Global set nproc_surf=12 in \
-                        %(parameters_file)' %vars()
+                        %(parameters_file)' %vars())
 
     # read the file into a list of lines
     file_name = parser.getstr('coor_file')
@@ -1038,7 +1038,7 @@ def read_citcoms_coor_file_into_zlist(parameters_file):
 def get_depth_from_level(parameters_file, test_level):
     '''get depth in km from model level (1 .. nodez)'''
 
-    print now(),'get_depth_from_level:'
+    print(dt.now(),'get_depth_from_level:')
 
     test_level = int(test_level)
 
@@ -1050,24 +1050,24 @@ def get_depth_from_level(parameters_file, test_level):
     # check bounds
     min = list[0][0]
     max = list[-1][0]
-    print now(),'get_depth_from_level: level min =', min
-    print now(),'get_depth_from_level: level max =', max
+    print(dt.now(),'get_depth_from_level: level min =', min)
+    print(dt.now(),'get_depth_from_level: level max =', max)
     if (test_level > max):
         msg = 'level %s > max level %s' % (test_level, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_level < min):
         msg = 'level %s < min level %s' % (test_level, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (l,z,d) in list:
         if l == int(test_level):
             if verbose:
-                print now(),'get_depth_from_level: (l,z,d) =', (l,z,d)
+                print(dt.now(),'get_depth_from_level: (l,z,d) =', (l,z,d))
             return float(d)
     else:
         msg = 'level %s not found in coordinate file.' % test_level
-        raise IndexError, msg
+        raise IndexError(msg)
 #=====================================================================
 def get_z_from_level(parameters_file, test_level):
     '''get z value from model level (1 .. nodez)'''
@@ -1080,20 +1080,20 @@ def get_z_from_level(parameters_file, test_level):
     max = list[-1][0]
     if (test_level > max):
         msg = 'level %s > max level %s' % (test_level, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_level < min):
         msg = 'depth %s < min level %s' % (test_level, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (l,z,d) in list:
         if l == int(test_level):
             if verbose:
-                print now(),'get_z_from_level: (l,z,d) =', (l,z,d)
+                print(dt.now(),'get_z_from_level: (l,z,d) =', (l,z,d))
             return z
     else:
         msg = 'level %s not found in coordinate file.' % test_level
-        raise IndexError, msg
+        raise IndexError(msg)
 #=====================================================================
 def get_level_from_depth(parameters_file, test_depth):
     '''locate and return closest level for given depth in km'''
@@ -1106,16 +1106,16 @@ def get_level_from_depth(parameters_file, test_depth):
     min = zlist[-1][2]
     if (test_depth > max):
         msg = 'depth %s km > max depth %s km' % (test_depth, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_depth < min):
         msg = 'depth %s km < min depth %s km' % (test_depth, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (l,z,d) in zlist:
         if d == float(test_depth): 
             if verbose: 
-                print now(),'get_level_from_depth: (l,z,d) =', (l,z,d)
+                print(dt.now(),'get_level_from_depth: (l,z,d) =', (l,z,d))
             return l
         
     # list comprehension to compute the difference between
@@ -1139,14 +1139,14 @@ def get_level_from_depth(parameters_file, test_depth):
 
     level = zlist[i][0]
     if verbose: 
-        print now(),'get_level_from_depth:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i
-        print now(),'get_level_from_depth:',\
-        'test=', test_depth
-        print now(),'get_level_from_depth:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i
-        print now(),'get_level_from_depth:',\
-        'index=', i, 'level=', zlist[i][0]
+        print(dt.astimezonenow(),'get_level_from_depth:',\
+        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(),'get_level_from_depth:',\
+        'test=', test_depth)
+        print(dt.now(),'get_level_from_depth:',\
+        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(),'get_level_from_depth:',\
+        'index=', i, 'level=', zlist[i][0])
     return level
 #=====================================================================
 def get_level_from_z(parameters_file, test_z):
@@ -1159,16 +1159,16 @@ def get_level_from_z(parameters_file, test_z):
     min = zlist[0][1]
     if (test_z > max):
         msg = 'z value %s > than max z %s' % (test_z, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_z < min):
         msg = 'z value %s < than min z %s' % (test_z, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (l,z,d) in zlist:
         if float(z) == float(test_z): 
             if verbose: 
-                print now(),'get_level_from_z: (l,z,d) = ', (l,z,d)
+                print(dt.now(),'get_level_from_z: (l,z,d) = ', (l,z,d))
             return l
         
     # list comprehension to compute the difference between
@@ -1192,14 +1192,14 @@ def get_level_from_z(parameters_file, test_z):
 
     level = zlist[i][0]
     if verbose: 
-        print now(),'get_level_from_z:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i
-        print now(),'get_level_from_z:',\
-        'test=', test_z
-        print now(),'get_level_from_z:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i
-        print now(),'get_level_from_z:',\
-        'index=', i, 'level=', zlist[i][0]
+        print(dt.now(),'get_level_from_z:',\
+        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(),'get_level_from_z:',\
+        'test=', test_z)
+        print(dt.now(),'get_level_from_z:',\
+        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(),'get_level_from_z:',\
+        'index=', i, 'level=', zlist[i][0])
     return level
 #=====================================================================
 def read_citcoms_time_file(parameters_file):
@@ -1237,25 +1237,22 @@ def read_citcoms_time_file(parameters_file):
 
         # re-check for file existance
         if not os.path.exists(timefile):
-            raise IOError, 'File not found: %(timefile)s' % vars()
+            raise IOError('File not found: %(timefile)s' % vars())
 
     # open the file 
-    try :
-        time_file = open(timefile)
-    except IOError, (errno, strerror):
-        print 'I/O error(%s): %s' % (errno, strerror)
-    except:
-        print 'Unexpected error:', sys.exc_info()[0]
+    try:
+        with open(timefile) as time_file:
+            lines = time_file.read().splitlines()
+    except IOError as e:
+        print('I/O error(%s): %s' % (e.errno, e.strerror))
+        return []
+    except Exception:
+        print('Unexpected error:', sys.exc_info()[0])
         raise
 
     # empty list
     tlist = []
-
-    # read the file
-    try: 
-        lines = time_file.read().splitlines()
-    finally:
-        time_file.close()
+    time_file.close()
 
     # loop over time file
     for line in lines:
@@ -1289,20 +1286,20 @@ def get_age_from_step(parameters_file, test_step):
     max = list[-1][0]
     if (int(test_step) > max):
         msg = 'step %s > than max step %s' % (test_step, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (int(test_step) < min):
         msg = 'step %s < than min step %s' % (test_step, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (s,a,r) in list:
         if s == int(test_step):
             if verbose: 
-                print now(),'get_age_from_step: (s,a,r) =',(s,a,r)
+                print(dt.now(),'get_age_from_step: (s,a,r) =',(s,a,r))
             return a
     else:
         msg = 'step %s not found in .time file.' % test_step
-        raise IndexError, msg    
+        raise IndexError(msg)
 #=====================================================================
 def get_runtime_from_step(parameters_file, test_step):
     '''get runtime in Myr from model time step'''
@@ -1315,20 +1312,20 @@ def get_runtime_from_step(parameters_file, test_step):
     max = list[-1][0]
     if (test_step > max):
         msg = 'step %s > than max step %s' % (test_step, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_step < min):
         msg = 'step %s < than min step %s' % (test_step, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (s,a,r) in list:
         if s == int(test_step):
             if verbose:
-                print now(),'get_runtime_from_step: (s,a,r) =',(s,a,r)
+                print(dt.now(),'get_runtime_from_step: (s,a,r) =',(s,a,r))
             return r
     else:
         msg = 'step %(test_step)i not found in .time file.' % vars()
-        raise IndexError, msg    
+        raise IndexError(msg)
 #=====================================================================
 def get_step_from_age(parameters_file, test_age):
     '''locate and return the closest step for given age in Ma'''
@@ -1342,17 +1339,17 @@ def get_step_from_age(parameters_file, test_age):
 
     if (test_age > max_age):
         msg = 'age %f Ma > max age %f Ma' % (test_age, max_age)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     if (test_age < min_age):
         msg = 'age %f Ma < min age %f Ma' % (test_age, min_age)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (s,a,r) in list:
         if a == test_age:
             if verbose: 
-                print now(),'get_step_from_age: (s,a,r) =',(s,a,r)
+                print(dt.now(),'get_step_from_age: (s,a,r) =',(s,a,r))
             return s
 
     # list comprehension to compute the difference between 
@@ -1379,9 +1376,9 @@ def get_step_from_age(parameters_file, test_age):
     step = list[i][0]
 
     if verbose:
-        print now(), 'get_step_from_age:', 'prev=', list[prev_i], 'delta=', prev_delta, 'i=', prev_i
-        print now(), 'get_step_from_age:', 'test=', test_age
-        print now(), 'get_step_from_age:', 'next=', list[next_i], 'delta=', next_delta, 'i=', prev_i
+        print(dt.now(), 'get_step_from_age:', 'prev=', list[prev_i], 'delta=', prev_delta, 'i=', prev_i)
+        print(dt.now(), 'get_step_from_age:', 'test=', test_age)
+        print(dt.now(), 'get_step_from_age:', 'next=', list[next_i], 'delta=', next_delta, 'i=', prev_i)
 
     return step
 #=====================================================================
@@ -1396,16 +1393,16 @@ def get_step_from_runtime(parameters_file, test_runtime):
     min_runtime = list[0][2]
     if (test_runtime > max_runtime):
         msg = 'runtime %f Myr > max runtime %f Myr' % (test_runtime, max_runtime)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_runtime < min_runtime):
         msg = 'runtime %f Myr < min runtime %f Myr' % (test_runtime, min_runtime)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (s,a,r) in list:
         if float(r) == float(test_runtime):
             if verbose: 
-                print now(),'get_step_from_runtime: (s,a,r) =', (s,a,r)
+                print(dt.now(),'get_step_from_runtime: (s,a,r) =', (s,a,r))
             return s
 
     # list comprehension to compute the difference between 
@@ -1431,12 +1428,12 @@ def get_step_from_runtime(parameters_file, test_runtime):
 
     step = list[i][0]
     if verbose:
-        print now(), 'get_step_from_runtime:', \
-        'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i
-        print now(), 'get_step_from_runtime:', \
-        'test=', test_runtime
-        print now(), 'get_step_from_runtime:', \
-        'next=', list[next_i],'delta=', next_delta,'i=', prev_i
+        print(dt.now(), 'get_step_from_runtime:', \
+        'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i)
+        print(dt.now(), 'get_step_from_runtime:', \
+        'test=', test_runtime)
+        print(dt.now(), 'get_step_from_runtime:', \
+        'next=', list[next_i],'delta=', next_delta,'i=', prev_i)
     return step
 #=====================================================================
 def get_time(pfile,time):
@@ -1580,12 +1577,12 @@ def read_citcoms_tracers_into_dictionary(figure):
 
 
         if verbose:
-            print now(), 'read_citcoms_tracers_into_dictionary: r_min =', r_min
-            print now(), 'read_citcoms_tracers_into_dictionary: r_max =', r_max
-            print now(), 'read_citcoms_tracers_into_dictionary: lon_min =', lon_min
-            print now(), 'read_citcoms_tracers_into_dictionary: lon_max =', lon_max
-            print now(), 'read_citcoms_tracers_into_dictionary: lat_min =', lat_min
-            print now(), 'read_citcoms_tracers_into_dictionary: lat_max =', lat_max
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: r_min =', r_min)
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: r_max =', r_max)
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: lon_min =', lon_min)
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: lon_max =', lon_max)
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: lat_min =', lat_min)
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: lat_max =', lat_max)
 
     # FIX : etc
     # if figure.get('overlay_tracers_angle_spacing') :
@@ -1608,7 +1605,7 @@ def read_citcoms_tracers_into_dictionary(figure):
             file.close()
 
         if verbose:
-            print now(), 'read_citcoms_tracers_into_dictionary: tracer file name =', name
+            print(dt.now(), 'read_citcoms_tracers_into_dictionary: tracer file name =', name)
 
         # diagnostic output
         num_tracers_in_file = 0
@@ -1699,8 +1696,8 @@ def read_citcoms_tracers_into_dictionary(figure):
             num_tracers_in_file += 1
 
         # end of look over lines
-        print now(), 'read_citcoms_tracers_into_dictionary: num_tracers_in_file =', num_tracers_in_file
-        print now(), 'read_citcoms_tracers_into_dictionary: num_tracers_to_keep =', num_tracers_to_keep
+        print(dt.now(), 'read_citcoms_tracers_into_dictionary: num_tracers_in_file =', num_tracers_in_file)
+        print(dt.now(), 'read_citcoms_tracers_into_dictionary: num_tracers_to_keep =', num_tracers_to_keep)
 
     # end of loop over filenames
 
@@ -1721,7 +1718,7 @@ def clean_dir_of_z_data(figure):
     cmd += ' %(model)s.cap??.%(time)s.z???.xy??' % vars()
     cmd += ' %(model)s.cap??.%(time)s.z???' % vars()
     if verbose: 
-        print now(), 'clean_dir_of_z_data: cmd =', cmd
+        print(dt.now(), 'clean_dir_of_z_data: cmd =', cmd)
     os.system(cmd)
 
     # data for cross sections 
@@ -1729,7 +1726,7 @@ def clean_dir_of_z_data(figure):
     cmd += ' %(model)s.%(time)s.z???.xy??' % vars()
     cmd += ' %(model)s.%(time)s.z???' % vars()
     if verbose: 
-        print now(), 'clean_dir_of_z_data: cmd =', cmd
+        print(dt.now(), 'clean_dir_of_z_data: cmd =', cmd)
     os.system(cmd)
 
 #=====================================================================
@@ -1756,9 +1753,9 @@ def xslice_regional(figure):
     level = figure['level']
 
     if verbose:
-        print now(),'xslice_regional: parameters = %(parameters)s ' % vars()
-        print now(),'xslice_regional: time_step = %(time_step)s ' % vars()
-        print now(),'xslice_regional: xnode = %(xnode)s ' % vars()
+        print(dt.now(), 'xslice_regional: parameters = %(parameters)s ' % vars())
+        print(dt.now(), 'xslice_regional: time_step = %(time_step)s ' % vars())
+        print(dt.now(), 'xslice_regional: xnode = %(xnode)s ' % vars())
 
     parser = CitcomParser.Parser()
     parser.read(parameters)
@@ -1780,10 +1777,10 @@ def xslice_regional(figure):
     figure['xslice_lat_max'] = lat_max
     figure['xslice_lon_min'] = lon_min
     figure['xslice_lon_max'] = lon_max
-    if verbose: print now(), 'xslice_regional: lat_max = %(lat_max)s ' % vars()
-    if verbose: print now(), 'xslice_regional: lat_min = %(lat_min)s ' % vars()
-    if verbose: print now(), 'xslice_regional: lon_max = %(lon_max)s ' % vars()
-    if verbose: print now(), 'xslice_regional: lon_min = %(lon_min)s ' % vars()
+    if verbose: print(dt.now(), 'xslice_regional: lat_max = %(lat_max)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: lat_min = %(lat_min)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: lon_max = %(lon_max)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: lon_min = %(lon_min)s ' % vars())
 
     # set mins and maxes in km
     xmax = parser.getfloat('theta_max') * layer_km
@@ -1801,7 +1798,7 @@ def xslice_regional(figure):
     # process cap files
     nc='00' # Only 1 cap for regional model
     ifile = '%(modelname)s.cap%(nc)s.%(time_step)s' % vars()
-    if verbose: print now(), 'xslice_regional: open cap file: %(ifile)s' % vars()
+    if verbose: print(dt.now(), 'xslice_regional: open cap file: %(ifile)s' % vars())
     input = open(ifile)
 
     xytfile = '%(ifile)s.xsec.%(xnode)d.xyt' % vars() 
@@ -1812,9 +1809,9 @@ def xslice_regional(figure):
     out_xyv= open(xyvfile,"w")
     out_xyp= open(xypfile,"w")
 
-    if verbose: print now(), 'xslice_regional: open output xytfile = %(xytfile)s ' % vars()
-    if verbose: print now(), 'xslice_regional: open output xyvfile = %(xyvfile)s ' % vars()
-    if verbose: print now(), 'xslice_regional: open output xypfile = %(xypfile)s ' % vars()
+    if verbose: print(dt.now(), 'xslice_regional: open output xytfile = %(xytfile)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: open output xyvfile = %(xyvfile)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: open output xypfile = %(xypfile)s ' % vars())
 
     # read cap
     nodex, nodey, nodez = input.readline().split('x')
@@ -1822,10 +1819,10 @@ def xslice_regional(figure):
     nodey = int(nodey)
     nodez = int(nodez)
 
-    if verbose: print now(), 'xslice_regional: nodex = %(nodex)s ' % vars()
-    if verbose: print now(), 'xslice_regional: nodey = %(nodey)s ' % vars()
-    if verbose: print now(), 'xslice_regional: nodez = %(nodez)s ' % vars()
-    if verbose: print now(), 'xslice_regional: reading cap file: %(ifile)s' % vars()
+    if verbose: print(dt.now(), 'xslice_regional: nodex = %(nodex)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: nodey = %(nodey)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: nodez = %(nodez)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: reading cap file: %(ifile)s' % vars())
 
     # read all the lines into a list
     lines = input.read().split('\n')
@@ -1890,12 +1887,12 @@ def xslice_regional(figure):
     figure['xslice_xyv'] = xyvfile
     figure['xslice_xyp'] = xypfile
 
-    if verbose: print now(), 'xslice_regional: ymin = %(ymin)s ' % vars()
-    if verbose: print now(), 'xslice_regional: ymax = %(ymax)s ' % vars()
-    if verbose: print now(), 'xslice_regional: zmin = %(zmin)s ' % vars()
-    if verbose: print now(), 'xslice_regional: zmax = %(zmax)s ' % vars()
-    if verbose: print now(), 'xslice_regional: rmin = %(rmin)s ' % vars()
-    if verbose: print now(), 'xslice_regional: rmax = %(rmax)s ' % vars()
+    if verbose: print(dt.now(), 'xslice_regional: ymin = %(ymin)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: ymax = %(ymax)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: zmin = %(zmin)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: zmax = %(zmax)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: rmin = %(rmin)s ' % vars())
+    if verbose: print(dt.now(), 'xslice_regional: rmax = %(rmax)s ' % vars())
 
     figure['xslice_ymin'] = ymin
     figure['xslice_ymax'] = ymax
@@ -2055,16 +2052,16 @@ def test_time_functions():
     test_runtime = float( sys.argv[4] )
     
     age = get_age_from_step( file, test_step )
-    print now(), 'test_time_functions: test_step = %(test_step)i --> age = %(age)f' % vars()
+    print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> age = %(age)f' % vars())
 
     runtime = get_runtime_from_step( file, test_step )
-    print now(), 'test_time_functions: test_step = %(test_step)i --> runtime = %(runtime)f' % vars()
+    print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> runtime = %(runtime)f' % vars())
 
     step = get_step_from_age( file, test_age )
-    print now(), 'test_time_functions: test_age = %(test_age)f --> step = %(step)i' % vars()
+    print(dt.now(), 'test_time_functions: test_age = %(test_age)f --> step = %(step)i' % vars())
 
     step = get_step_from_runtime( file, test_runtime )
-    print now(), 'test_time_functions: test_runtime = %(test_runtime)f --> step = %(step)i' % vars()
+    print(dt.now(), 'test_time_functions: test_runtime = %(test_runtime)f --> step = %(step)i' % vars())
 
 #=====================================================================
 def test_cap_reader():
