@@ -6,7 +6,7 @@
 #
 #                              Authors:
 #                             Mike Gurnis
-#          (c) California Institute of Technology 2013-2014
+#          (c) California Institute of Technology 2013-2026
 #
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
@@ -22,6 +22,7 @@
 #  MG Mar. 7, 2014
 #  MG Mar 31, 2016
 #  JH Sep 18, 2018
+#  MG May 21, 2026  
 
 #=====================================================================
 """
@@ -337,7 +338,7 @@ def make_pdf(psfile):
 def overlay_RUM_slabs(psfile):
 
     cmd="psxy %s -J -R -B -W1/128/128/128 -M -P -O -K >> %s" % (rum_slab_contours,psfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     return
@@ -355,10 +356,10 @@ def plot_slab(s,date,psfile):
         perimeter="%s%s_rum.clip.xy" % (RUM_XY_dir,s)
     #cmd="grdimage %s -Cslab_depth.cpt -J -R -B -P -O -K >> %s" % (grd_depth,psfile)
     cmd="psxy %s -Cslab_depth.cpt -J -R -m -P -O -K >> %s" % (gmt_depth,psfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
     cmd="psxy %s -J -W3/1 -R -B -K -O >> %s" % (perimeter,psfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     return
@@ -366,7 +367,7 @@ def plot_slab(s,date,psfile):
 def overlay_coastlines(psfile):
 
     cmd="pscoast -J -R -B -Di -W -P -O -K >> %s" % (psfile)
-    print cmd 
+    print(cmd)
     os.system(cmd)
 
     return
@@ -518,7 +519,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         os.system(cmd)
 
         cmd="psscale -Cslab_depth.cpt -D1.0/-0.4/2.0/0.15h -B200::/:km: -X0. -Y0 -O -K >> %s" % (psfile)
-        print cmd
+        print(cmd)
         os.system(cmd)
 
 
@@ -589,7 +590,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 cmd="mv %s %s" % (tmp_profile,depth_profile)
                 os.system(cmd)
                 cmd="psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
-                print cmd
+                print(cmd)
                 os.system(cmd)
 
             #Depth Profile: RUM
@@ -789,7 +790,7 @@ def shift_profile(profile,shift_dir,xs,zs):
             else:
                 break
     elif shift_dir == "P":
-        print "P"
+        print("P")  
         line=PR.readline()
         sx1,sz1=line.split()
         poff=float(sx1)
@@ -1011,7 +1012,7 @@ def new_point(x1,y1,depth,dip,str,slab_width):
 
 #=====================================================================
 def simple_slab_depth_correction(depth_grd,correction_grd):
-    print 'depth_grd, correction_grd: ',depth_grd,correction_grd
+    print('depth_grd, correction_grd: ',depth_grd,correction_grd)   
     new_grd_depth="new_depth.grd"
 
     cmd="grdmath %s %s SUB = %s" % (depth_grd,correction_grd,new_grd_depth)

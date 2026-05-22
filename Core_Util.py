@@ -3,7 +3,7 @@
 #                      Python Scripts for CitComS 
 #         Preprocessing, Data Assimilation, and Postprocessing
 #                  ---------------------------------
-#             (c) California Institute of Technology 2008
+#             (c) California Institute of Technology 2008-2026
 #                        ALL RIGHTS RESERVED
 #=====================================================================
 ''' A set of general purpose functions.
