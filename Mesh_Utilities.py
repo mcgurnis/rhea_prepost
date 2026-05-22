@@ -3,7 +3,7 @@
 #                      Python Scripts for CitComS 
 #         Preprocessing, Data Assimilation, and Postprocessing
 #                  ---------------------------------
-#             (c) California Institute of Technology 2007
+#             (c) California Institute of Technology 2007-2026
 #                        ALL RIGHTS RESERVED
 #=====================================================================
 '''
@@ -51,8 +51,8 @@ verbose = False
 def main():
     '''main sequence of script actions'''
 
-    print now(), 'Mesh_Utilities.py:'
-    print now(), 'main:'
+    print(dt.now(), 'Mesh_Utilities.py:')
+    print(dt.now(), 'main:')
 
     # empty dictonary to hold script settings 
     settings = {}
@@ -70,12 +70,12 @@ def main():
     
     # print all settings
     if verbose: 
-        print now(), "main: settings="
+        print(dt.now(), "main: settings=")
         pprint.PrettyPrinter(indent=2).pprint(settings)
-        print " " 
+        print(" ")
 
     if 'test_only' in settings.keys() :
-        print now(), 'main: test_only exit'
+        print(dt.now(), 'main: test_only exit')
         sys.exit()
     
     # 
@@ -83,15 +83,15 @@ def main():
     # 
     interpolate_to_plate_frame( settings )
  
-    print now(), 'main: exit'
+    print(dt.now(), 'main: exit')
     sys.exit()
 #=====================================================================
 def usage():
     '''print a simple help message'''
-    print 'Please use -h for documentation'
-    print ' '
+    print("Please use -h for documentation")
+    print(" ")
     #print __doc__ 
-    print ' '
+    print(" ")
 #=====================================================================
 def get_options( settings ) :
     '''process the comand line options and populate a dictionary with long option, argument key, value pairs'''
@@ -132,7 +132,7 @@ def get_options( settings ) :
 
     except getopt.GetoptError:
         # print help information and exit:
-        print "ERROR: Unknown cmd line options.\n"
+        print("ERROR: Unknown cmd line options.\n")
         usage()
         sys.exit(2)
 
@@ -166,7 +166,7 @@ def check_settings( settings ):
     global verbose
 
     if 'help' in settings.keys() : 
-        print __doc__
+        print(__doc__)
         sys.exit()
     
     if 'verbose' in settings.keys():
@@ -175,7 +175,7 @@ def check_settings( settings ):
         GMT_Utilities.verbose = verbose
         PlotUtilities.verbose = verbose
 
-    print settings
+    print(settings)
 
     # read settings from control file 
     if 'file' in settings.keys() :
@@ -248,30 +248,30 @@ def interpolate_to_plate_frame(settings):
 
 
     # 2. 
-    if verbose: print now(), 'interpolate_to_plate_frame: 2.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 2.')
 
     if settings.get('force360'):
         force_xy = '%(mesh_xy)s.force360.xy' %vars()
         cmd = "cat %(mesh_xy)s | awk '{if (($2<0) && ($4<0)) print ($1, $2 + 360, $3, $4 + 360); else if ($2<0) print ($1, $2 + 360, $3, $4); else if ($4<0) print ($1, $2, $3, $4 + 360); else print ($0)} ' > %(force_xy)s" % vars()
-        if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+        if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
         os.system(cmd)
         mesh_xy = force_xy
 
     if settings.get('force180'):
         force_xy = '%(mesh_xy)s.force180.xy' %vars()
         cmd = "cat %(mesh_xy)s | awk '{if (($2>180) && ($4>180)) print ($1, $2 - 360, $3, $4 - 360); else if ($2>180) print ($1, $2 - 360, $3, $4); else if ($4>180) print ($1, $2, $3, $4 - 360); else print ($0)} ' > %(force_xy)s" % vars()
-        if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+        if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
         os.system(cmd)
         mesh_xy = force_xy
 
 
     # Sample the original citcoms grid at the mesh on plate points
     cmd = 'grdtrack %(mesh_xy)s -V -Lg -: -G%(grid)s > %(track)s' % vars()
-    if verbose: print now(), 'interpolate_to_plate_frame: cmd=', cmd
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd=', cmd)
     os.system(cmd)
 
     # 3. 
-    if verbose: print now(), 'interpolate_to_plate_frame: 3.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 3.')
     # Cut out and save only three columns: lat lon field
 
     # select globe or plate frame coordinates 
@@ -280,41 +280,41 @@ def interpolate_to_plate_frame(settings):
         col_spec = '1-2,4-'
    
     cmd = 'cut -f %(col_spec)s %(track)s > %(cut_xyz)s' % vars()
-    if verbose: print now(), 'interpolate_to_plate_frame: cmd=', cmd
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd=', cmd)
     os.system(cmd)
 
 
     # 4. 
-    if verbose: print now(), 'interpolate_to_plate_frame: 4.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 4.')
     # reset region to user values
     region = settings.get('interpolate_to_plate_frame_region')
     settings['region'] = region
     if verbose: 
-        print now(), "interpolate_to_plate_frame: region =", region
+        print(dt.now(), "interpolate_to_plate_frame: region =", region)
 
 
     # 5. 
-    if verbose: print now(), 'interpolate_to_plate_frame: 5.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 5.')
     # create a median file from cut file
     cmd = "blockmedian %(cut_xyz)s -V -: -I%(grid_increment)s -R%(region)s > %(med_xyz)s" % vars()
-    if verbose: print now(), "interpolate_to_plate_frame: cmd =", cmd
+    if verbose: print(dt.now(), "interpolate_to_plate_frame: cmd =", cmd)
     os.system(cmd)
 
 
     # 6. 
-    if verbose: print now(), 'interpolate_to_plate_frame: 6.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 6.')
     # create a surface grid from median file
     if grid_min != 'none' or grid_max != 'none':
         cmd = "surface %(med_xyz)s -V -: -G%(grd)s -I%(grid_increment)s -R%(region)s -T%(grid_ten)g -Ll%(grid_min)g -Lu%(grid_max)g" % vars()
     else:
         cmd = "surface %(med_xyz)s -V -: -G%(grd)s -I%(grid_increment)s -R%(region)s -T%(grid_ten)g" % vars()
 
-    if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
     os.system(cmd)
 
 
     # 7.
-    if verbose: print now(), 'interpolate_to_plate_frame: 7.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 7.')
     # check for masking of grid
     if mask != None:
         # output masking grid file
@@ -329,32 +329,32 @@ def interpolate_to_plate_frame(settings):
         if settings.get('force360'):
             force_xy = '%(mask_xy)s.force360.xy' %vars()
             cmd = "cat %(mask_xy)s | awk '{if ($2<0) print ($1, $2 + 360); else print ($0)} ' > %(force_xy)s" % vars()
-            if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+            if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
             os.system(cmd)
             mask_xy = force_xy
 
         if settings.get('force180'):
             force_xy = '%(mask_xy)s.force180.xy' %vars()
             cmd = "cat %(mask_xy)s | awk '{if ($2>180) print ($1, $2 - 360); else print ($0)} ' > %(force_xy)s" % vars()
-            if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+            if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
             os.system(cmd)
             mask_xy = force_xy
 
 
         # -N outside/edge/inside polygon boundary
         cmd = "grdmask %(mask_xy)s -V -NNaN/0/0 -M -: -G%(msk)s -I%(grid_increment)s -R%(region)s" % vars()
-        if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+        if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
         os.system(cmd)
         # grdmath to mask the grid
         src = grd
         grd = '%(plate_frame_mesh)s.%(time)s.%(level)s.grd' % vars()
         cmd = "grdmath -N -V %(src)s %(msk)s OR = %(grd)s" % vars()
-        if verbose: print now(), 'interpolate_to_plate_frame: cmd =', cmd
+        if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
         os.system(cmd)
         settings['rm_list'] += [ msk ]
 
     # 8. finish up 
-    if verbose: print now(), 'interpolate_to_plate_frame: 8.'
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: 8.')
 
     # save the new grid file 
     settings['grid_file'] = grd
@@ -369,7 +369,7 @@ def interpolate_to_plate_frame(settings):
     # final clean up
     # final clean up taken care of by caller
     cmd ='rm -vrf ' + ' '.join( settings['rm_list'] )
-    if verbose: print now(), 'interpolate_to_plate_frame: cmd=', cmd
+    if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd=', cmd)
     os.system(cmd)
 
 #=====================================================================
