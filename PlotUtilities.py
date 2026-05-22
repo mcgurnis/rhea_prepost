@@ -11,7 +11,7 @@
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #=====================================================================
-#  Copyright July 2026, by the California Institute of Technology.
+#  Copyright May 2026, by the California Institute of Technology.
 #  United States Government Sponsorship Acknowledged.
 #  ALL RIGHTS RESERVED. 
 #=====================================================================
