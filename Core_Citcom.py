@@ -20,13 +20,12 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 # imports
 import getopt, os, string, sys, math, time, commands
-import datetime
+from datetime import datetime as dt
 import pprint
 
 import Core_File
 import CitcomParser, Core_Util
 
-from Core_Util import now
 #=====================================================================
 #=====================================================================
 # global variables
@@ -57,7 +56,7 @@ Return value:
     settings = {}
 
     file = open(filename)
-    if verbose: print now(), 'parse_citcoms_cfg_file: read: %(filename)s' % vars()
+    if verbose: print(dt.now(), 'parse_citcoms_cfg_file: read: %(filename)s' % vars())  
 
     try : 
         # read into a list of lines
@@ -170,7 +169,7 @@ Return value:
     else:
         args['zone'] = None
         msg = 'Unable to determine model type: gloabal or regional.'
-        raise ValueError, msg
+        raise ValueError(msg)
 
     # re-set the zone to 2D for 'thin' models 
     if args['nodex'] <= 3 or args['nodey'] <= 3 :
@@ -183,9 +182,9 @@ Return value:
 
 
     if verbose: 
-        print now(), 'set_model_region: datafile =', args['datafile']
-        print now(), 'set_model_region: zone =', args['zone']
-        print now(), 'set_model_region: R =', args['R']
+        print(dt.now(), 'set_model_region: datafile =', args['datafile'])
+        print(dt.now(), 'set_model_region: zone =', args['zone'])
+        print(dt.now(), 'set_model_region: R =', args['R'])
 #=====================================================================
 #=====================================================================
 #=====================================================================
@@ -235,12 +234,12 @@ WARNING:
     if args.get('cap_list'):
         cap_list = args.get('cap_list')
 
-    if verbose: print now(), 'write_cap_polygons: cap_list ', cap_list
+    if verbose: print(dt.now(), 'write_cap_polygons: cap_list ', cap_list)
 
     # final output file name
     poly_file = 'polygon.cap_bounds.xy' % vars()
     out_poly= open(poly_file, 'w')
-    if verbose: print now(), 'write_cap_polygons: open(w) ', poly_file
+    if verbose: print(dt.now(), 'write_cap_polygons: open(w) ', poly_file)
 
     gmtchar=">"
 
@@ -261,10 +260,10 @@ WARNING:
         lon_deg=range(nodex*nodey)
 
         if verbose: 
-            print now(), 'write_cap_polygons: loop over file: ', inp
-            print now(), 'write_cap_polygons: loop over j: 0,', nodey
-            print now(), 'write_cap_polygons: loop over i: 0,', nodex
-            print now(), 'write_cap_polygons: loop over k: 0,', nodez
+            print(dt.now(), 'write_cap_polygons: loop over file: ', inp)
+            print(dt.now(), 'write_cap_polygons: loop over j: 0,', nodey)
+            print(dt.now(), 'write_cap_polygons: loop over i: 0,', nodex)
+            print(dt.now(), 'write_cap_polygons: loop over k: 0,', nodez)
 
         for i in range(nodey):
             for j in range(nodex): 
@@ -348,7 +347,7 @@ Slice type may be one of:
     'yslice' for a fixed lon, with data written in 'lat radius data',
     'xslice' for a fixed lat, with data written in 'lon radius data',
 where lat ranges -90 to 90, lon ranges 0 to 360, radius ranges 1.0 to 0.55'''
-        raise IndexError, msg
+        raise IndexError(msg)
 #=====================================================================
 #=====================================================================
 def zslice( args = {} ):
@@ -414,7 +413,7 @@ Return value:
     if value.count(','):
         # update list
         field_list = value.split(',')
-    if verbose: print now(), 'zslice: field_list ', field_list
+    if verbose: print(dt.now(), 'zslice: field_list ', field_list)
 
     # parse velocity scale
     velocity_scale = 1.0
@@ -455,19 +454,19 @@ Return value:
         # open the cap input file 
         inp = '%(datafile)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'zslice: open ', inp
+        if verbose: print(dt.now(), 'zslice: open ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
         inp_file.close()
-        if verbose: print now(), 'zslice: close ', inp
+        if verbose: print(dt.now(), 'zslice: close ', inp)
 
         # remove the header line
         lines = lines[1:]
 
         # composition file
         if 'comp' in field_list:
-            print "opening composition file"
+            print(dt.now(), "opening composition file")
             # form file name from model parameters
             opt = '%(datafile)s.opt%(c)s.%(time)s' % vars()
             # open the file 
@@ -476,10 +475,10 @@ Return value:
             # pop the header line
             opt_lines = opt_lines[1:]
 
-        if verbose: print now(), 'zslice: loop over file: ', inp
-        if verbose: print now(), 'zslice: loop over j: 0,', nodey
-        if verbose: print now(), 'zslice: loop over i: 0,', nodex
-        if verbose: print now(), 'zslice: loop over k: 0,', nodez
+        if verbose: print(dt.now(), 'zslice: loop over file: ', inp)
+        if verbose: print(dt.now(), 'zslice: loop over j: 0,', nodey)
+        if verbose: print(dt.now(), 'zslice: loop over i: 0,', nodex)
+        if verbose: print(dt.now(), 'zslice: loop over k: 0,', nodez)
         # loop over the node numbers
         # NOTE loop order: Y , X , Z 
         for j in range(nodey):
@@ -571,38 +570,38 @@ Return value:
         # open output file
         out_name = out_prefix + 'temp' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'zslice: open,w ', out_name
+        if verbose: print(dt.now(), 'zslice: open,w ', out_name)
         for line in temp_list:
             out_file.write( '%s\n' % line )
         out_file.close()
         out_list.append(out_name)
-        if verbose: print now(), 'zslice: close: ', out_name
+        if verbose: print(dt.now(), 'zslice: close: ', out_name)
 
     if field_list.count('visc'): 
         # open output file
         out_name = out_prefix + 'visc' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'zslice: open,w ', out_name
+        if verbose: print(dt.now(), 'zslice: open,w ', out_name)
         for line in visc_list:
             out_file.write( '%s\n' % line )
         out_file.close()
         out_list.append(out_name)
-        if verbose: print now(), 'zslice: close: ', out_name
+        if verbose: print(dt.now(), 'zslice: close: ', out_name)
 
     if 'comp' in field_list: 
         out_name = out_prefix + 'comp' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'zslice: open,w ', out_name
+        if verbose: print(dt.now(), 'zslice: open,w ', out_name)
         for line in composition_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'zslice: close: ', out_name
+        if verbose: print(dt.now(), 'zslice: close: ', out_name)
 
     if field_list.count('velocity'): 
         # open output file
         out_name = out_prefix + 'velocity' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'zslice: open,w ', out_name
+        if verbose: print(dt.now(), 'zslice: open,w ', out_name)
         p = 0
         q = 0 
         for line in velocity_list:
@@ -613,7 +612,7 @@ Return value:
             out_file.write( '%s\n' % line )
         out_file.close()
         out_list.append(out_name)
-        if verbose: print now(), 'zslice: close: ', out_name
+        if verbose: print(dt.now(), 'zslice: close: ', out_name)
 
     return out_list
 #=====================================================================
@@ -688,7 +687,7 @@ Return value:
     if value.count(','):
         # update list
         field_list = value.split(',')
-    if verbose: print now(), 'xslice: field_list ', field_list
+    if verbose:print(dt.now(), 'xslice: field_list ', field_list)
 
     # parse velocity scale
     velocity_scale = 1.0
@@ -734,19 +733,19 @@ Return value:
         # open the cap input file 
         inp = '%(datafile)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'xslice: open ', inp
+        if verbose: print(dt.now(), 'xslice: open ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
         inp_file.close()
-        if verbose: print now(), 'xslice: close ', inp
+        if verbose: print(dt.now(), 'xslice: close ', inp)
 
         # remove the header line
         lines = lines[1:]
 
         # composition file
         if 'comp' in field_list:
-            print "opening composition file"
+            print('xslice: opening composition file')
             # form file name from model parameters
             opt = '%(datafile)s.opt%(c)s.%(time)s' % vars()
             # open the file 
@@ -755,10 +754,10 @@ Return value:
             # pop the header line
             opt_lines = opt_lines[1:]
 
-        if verbose: print now(), 'xslice: loop over file: ', inp
-        if verbose: print now(), 'xslice: loop over j: 0,', nodey
-        if verbose: print now(), 'xslice: loop over i: 0,', nodex
-        if verbose: print now(), 'xslice: loop over k: 0,', nodez
+        if verbose: print(dt.now(), 'xslice: loop over file: ', inp)
+        if verbose: print(dt.now(), 'xslice: loop over j: 0,', nodey)
+        if verbose: print(dt.now(), 'xslice: loop over i: 0,', nodex)
+        if verbose: print(dt.now(), 'xslice: loop over k: 0,', nodez)
         # loop over the node numbers
         # NOTE loop order: Y , X , Z 
         for j in range(nodey):
@@ -851,43 +850,43 @@ Return value:
     if 'temp' in field_list:
         out_name = out_prefix + 'temp' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'xslice: open,w ', out_name
+        if verbose: print(dt.now(), 'xslice: open,w ', out_name)
         for line in temp_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'xslice: close: ', out_name
+        if verbose: print(dt.now(), 'xslice: close: ', out_name)
 
     if 'visc' in field_list: 
         out_name = out_prefix + 'visc' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'xslice: open,w ', out_name
+        if verbose: print(dt.now(), 'xslice: open,w ', out_name)
         for line in visc_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'xslice: close: ', out_name
+        if verbose: print(dt.now(), 'xslice: close: ', out_name)
 
     if 'phase' in field_list: 
         out_name = out_prefix + 'phase' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'xslice: open,w ', out_name
+        if verbose: print(dt.now(), 'xslice: open,w ', out_name)
         for line in phase_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'xslice: close: ', out_name
+        if verbose: print(dt.now(), 'xslice: close: ', out_name)
 
     if 'comp' in field_list: 
         out_name = out_prefix + 'comp' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'xslice: open,w ', out_name
+        if verbose: print(dt.now(), 'xslice: open,w ', out_name)
         for line in composition_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'xslice: close: ', out_name
+        if verbose: print(dt.now(), 'xslice: close: ', out_name)
 
     if 'velocity' in field_list: 
         out_name = out_prefix + 'velocity' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'xslice: open,w ', out_name
+        if verbose: print(dt.now(), 'xslice: open,w ', out_name)
         p = 0
         q = 0 
         for line in velocity_list:
@@ -898,9 +897,9 @@ Return value:
             p = p + 1
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'xslice: total points read: ', q
-        if verbose: print now(), 'xslice:    points written: ', p
-        if verbose: print now(), 'xslice: close: ', out_name
+        if verbose: print(dt.now(), 'xslice: total points read: ', q)
+        if verbose: print(dt.now(), 'xslice:    points written: ', p)
+        if verbose: print(dt.now(), 'xslice: close: ', out_name)
 
 
 #=====================================================================
@@ -974,7 +973,7 @@ Return value:
     if value.count(','):
         # update list
         field_list = value.split(',')
-    if verbose: print now(), 'yslice: field_list ', field_list
+    if verbose: print(dt.now(), 'yslice: field_list ', field_list)
 
     # parse velocity scale
     velocity_scale = 1.0
@@ -1020,19 +1019,19 @@ Return value:
         # open the cap input file 
         inp = '%(datafile)s.cap%(c)s.%(time)s' % vars()
         inp_file = open(inp)
-        if verbose: print now(), 'yslice: open ', inp
+        if verbose: print(dt.now(), 'yslice: open ', inp)
 
         # read the cap file into one big list of lines
         lines = inp_file.readlines()
         inp_file.close()
-        if verbose: print now(), 'yslice: close ', inp
+        if verbose: print(dt.now(), 'yslice: close ', inp)
 
         # remove the header line
         lines = lines[1:]
 
         # composition file
         if 'comp' in field_list:
-            print "opening composition file"
+            print('yslice: opening composition file')
             # form file name from model parameters
             opt = '%(datafile)s.opt%(c)s.%(time)s' % vars()
             # open the file 
@@ -1041,10 +1040,10 @@ Return value:
             # pop the header line
             opt_lines = opt_lines[1:]
 
-        if verbose: print now(), 'yslice: loop over file: ', inp
-        if verbose: print now(), 'yslice: loop over j: 0,', nodey
-        if verbose: print now(), 'yslice: loop over i: 0,', nodex
-        if verbose: print now(), 'yslice: loop over k: 0,', nodez
+        if verbose: print(dt.now(), 'yslice: loop over file: ', inp)
+        if verbose: print(dt.now(), 'yslice: loop over j: 0,', nodey)
+        if verbose: print(dt.now(), 'yslice: loop over i: 0,', nodex)
+        if verbose: print(dt.now(), 'yslice: loop over k: 0,', nodez)
         # loop over the node numbers
         # NOTE loop order: Y , X , Z 
         for j in range(nodey):
@@ -1136,43 +1135,43 @@ Return value:
     if 'temp' in field_list:
         out_name = out_prefix + 'temp' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'yslice: open,w ', out_name
+        if verbose: print(dt.now(), 'yslice: open,w ', out_name)
         for line in temp_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'yslice: close: ', out_name
+        if verbose: print(dt.now(), 'yslice: close: ', out_name)
 
     if 'visc' in field_list: 
         out_name = out_prefix + 'visc' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'yslice: open,w ', out_name
+        if verbose: print(dt.now(), 'yslice: open,w ', out_name)
         for line in visc_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'yslice: close: ', out_name
+        if verbose: print(dt.now(), 'yslice: close: ', out_name)
 
     if 'phase' in field_list: 
         out_name = out_prefix + 'phase' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'yslice: open,w ', out_name
+        if verbose: print(dt.now(), 'yslice: open,w ', out_name)
         for line in phase_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'yslice: close: ', out_name
+        if verbose: print(dt.now(), 'yslice: close: ', out_name)
 
     if 'comp' in field_list: 
         out_name = out_prefix + 'comp' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'yslice: open,w ', out_name
+        if verbose: print(dt.now(), 'yslice: open,w ', out_name)
         for line in composition_list:
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'yslice: close: ', out_name
+        if verbose: print(dt.now(), 'yslice: close: ', out_name)
 
     if 'velocity' in field_list: 
         out_name = out_prefix + 'velocity' + '.xyz'
         out_file = open(out_name, 'w')
-        if verbose: print now(), 'yslice: open,w ', out_name
+        if verbose: print(dt.now(), 'yslice: open,w ', out_name)
         p = 0
         q = 0 
         for line in velocity_list:
@@ -1183,9 +1182,9 @@ Return value:
             p = p + 1
             out_file.write( '%s\n' % line )
         out_file.close()
-        if verbose: print now(), 'yslice: total points read: ', q
-        if verbose: print now(), 'yslice:    points written: ', p
-        if verbose: print now(), 'yslice: close: ', out_name
+        if verbose: print(dt.now(), 'yslice: total points read: ', q)
+        if verbose: print(dt.now(), 'yslice:    points written: ', p)
+        if verbose: print(dt.now(), 'yslice: close: ', out_name)
 #=====================================================================
 #=====================================================================
 def read_time_file(parameters_file):
@@ -1235,15 +1234,15 @@ Return value:
 
         # re-check for file existance
         if not os.path.exists(timefile):
-            raise IOError, 'File not found: %(timefile)s' % vars()
+            raise IOError('File not found: %(timefile)s' % vars())
 
     # open the file 
     try :
         time_file = open(timefile)
-    except IOError, (errno, strerror):
-        print 'I/O error(%s): %s' % (errno, strerror)
+    except IOError as e:
+        print('I/O error({}): {}'.format(e.errno, e.strerror))
     except:
-        print 'Unexpected error:', sys.exc_info()[0]
+        print('Unexpected error:', sys.exc_info()[0])
         raise
 
     # empty list
@@ -1300,20 +1299,20 @@ Return value:
     max = list[-1][0]
     if (int(test_step) > max):
         msg = 'step %s > than max step %s' % (test_step, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (int(test_step) < min):
         msg = 'step %s < than min step %s' % (test_step, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (s,a,r) in list:
         if s == int(test_step):
             if verbose: 
-                print now(),'get_age_from_step: (s,a,r) =',(s,a,r)
+                print(dt.now()),'get_age_from_step: (s,a,r) =',(s,a,r)
             return a
     else:
         msg = 'step %s not found in .time file.' % test_step
-        raise IndexError, msg    
+        raise IndexError(msg)    
 #=====================================================================
 #=====================================================================
 def get_runtime_from_step(parameters_file, test_step):
@@ -1341,20 +1340,20 @@ Return value:
     max = list[-1][0]
     if (test_step > max):
         msg = 'step %s > than max step %s' % (test_step, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_step < min):
         msg = 'step %s < than min step %s' % (test_step, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (s,a,r) in list:
         if s == int(test_step):
             if verbose:
-                print now(),'get_runtime_from_step: (s,a,r) =',(s,a,r)
+                print(dt.now()),'get_runtime_from_step: (s,a,r) =',(s,a,r)
             return r
     else:
         msg = 'step %(test_step)i not found in .time file.' % vars()
-        raise IndexError, msg    
+        raise IndexError(msg)    
 
 #=====================================================================
 #=====================================================================
@@ -1385,17 +1384,17 @@ Return value:
 
     if (test_age > max_age):
         msg = 'age %f Ma > max age %f Ma' % (test_age, max_age)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     if (test_age < min_age):
         msg = 'age %f Ma < min age %f Ma' % (test_age, min_age)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (s,a,r) in list:
         if a == test_age:
             if verbose: 
-                print now(),'get_step_from_age: (s,a,r) =',(s,a,r)
+                print(dt.now()),'get_step_from_age: (s,a,r) =',(s,a,r)
             return s
 
     # list comprehension to compute the difference between 
@@ -1422,9 +1421,9 @@ Return value:
     step = list[i][0]
 
     if verbose:
-        print now(), 'get_step_from_age:', 'prev=', list[prev_i], 'delta=', prev_delta, 'i=', prev_i
-        print now(), 'get_step_from_age:', 'test=', test_age
-        print now(), 'get_step_from_age:', 'next=', list[next_i], 'delta=', next_delta, 'i=', prev_i
+        print(dt.now()), 'get_step_from_age:', 'prev=', list[prev_i], 'delta=', prev_delta, 'i=', prev_i
+        print(dt.now()), 'get_step_from_age:', 'test=', test_age
+        print(dt.now()), 'get_step_from_age:', 'next=', list[next_i], 'delta=', next_delta, 'i=', prev_i
 
     return step
 #=====================================================================
@@ -1454,16 +1453,16 @@ Return value:
     min_runtime = list[0][2]
     if (test_runtime > max_runtime):
         msg = 'runtime %f Myr > max runtime %f Myr' % (test_runtime, max_runtime)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_runtime < min_runtime):
         msg = 'runtime %f Myr < min runtime %f Myr' % (test_runtime, min_runtime)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (s,a,r) in list:
         if float(r) == float(test_runtime):
             if verbose: 
-                print now(),'get_step_from_runtime: (s,a,r) =', (s,a,r)
+                print(dt.now()),'get_step_from_runtime: (s,a,r) =', (s,a,r)
             return s
 
     # list comprehension to compute the difference between 
@@ -1489,12 +1488,12 @@ Return value:
 
     step = list[i][0]
     if verbose:
-        print now(), 'get_step_from_runtime:', \
-        'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i
-        print now(), 'get_step_from_runtime:', \
-        'test=', test_runtime
-        print now(), 'get_step_from_runtime:', \
-        'next=', list[next_i],'delta=', next_delta,'i=', prev_i
+        print(dt.now(), 'get_step_from_runtime:', \
+        'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i)
+        print(dt.now(), 'get_step_from_runtime:', \
+        'test=', test_runtime)
+        print(dt.now(), 'get_step_from_runtime:', \
+        'next=', list[next_i],'delta=', next_delta,'i=', prev_i)
     return step
 #=====================================================================
 #=====================================================================
@@ -1604,7 +1603,7 @@ Return value:
             zlist.append( tuple )
             z = z + 1
             if verbose: 
-                print now(), 'read_citcoms_coord_files: z, r, depth:', tuple
+                print(di.now(), 'read_citcoms_coord_files: z, r, depth:', tuple)
 
         else: 
            continue # to next line
@@ -1651,10 +1650,10 @@ Return value:
         # global
         header_prefix = 'nodez='
     else:
-        raise IOError, 'Unknown run type. \
+        raise IOError('Unknown run type. \
                         For Regional set nproc_surf=1 or \
                         Global set nproc_surf=12 in \
-                        %(parameters_file)' %vars()
+                        %(parameters_file)' %vars())
 
     # read the file into a list of lines
     file = open(coor_file)
@@ -1731,10 +1730,10 @@ Return value:
 
     if (test_z > max):
         msg = 'z %s > max z %s' % (test_z, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_z < min):
         msg = 'z %s < min z %s' % (test_z, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (z,r,d) in list:
@@ -1742,7 +1741,7 @@ Return value:
             return float(d)
     else:
         msg = 'z %s not found in coordinate file.' % z
-        raise IndexError, msg
+        raise IndexError(msg)
 #=====================================================================
 #=====================================================================
 def get_r_from_z(parameters_file, test_z):
@@ -1773,10 +1772,10 @@ Return value:
 
     if (test_z > max):
         msg = 'z %s > max z %s' % (test_z, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_z < min):
         msg = 'z %s < min z %s' % (test_z, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # loop over tuples
     for (z,r,d) in list:
@@ -1784,7 +1783,7 @@ Return value:
             return float(r)
     else:
         msg = 'z %s not found in coordinate file.' % z
-        raise IndexError, msg
+        raise IndexError(msg)
 #=====================================================================
 #=====================================================================
 def get_z_from_depth(parameters_file, test_depth):
@@ -1812,16 +1811,16 @@ Return value:
     min = zlist[-1][2]
     if (test_depth > max):
         msg = 'depth %s km > max depth %s km' % (test_depth, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_depth < min):
         msg = 'depth %s km < min depth %s km' % (test_depth, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (z,r,d) in zlist:
         if d == float(test_depth): 
             if verbose: 
-                print now(),'get_z_from_depth: (z,r,d) =', (z,r,d)
+                print(dt.now()), 'get_z_from_depth: (z,r,d) =', (z,r,d)
             return z
         
     # list comprehension to compute the difference between
@@ -1845,14 +1844,14 @@ Return value:
 
     z = zlist[i][0]
     if verbose: 
-        print now(),'get_z_from_depth:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i
-        print now(),'get_z_from_depth:',\
-        'test=', test_depth
-        print now(),'get_z_from_depth:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i
-        print now(),'get_z_from_depth:',\
-        'index=', i, 'z=', zlist[i][0]
+        print(dt.now(), 'get_z_from_depth:',\
+        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(), 'get_z_from_depth:',\
+        'test=', test_depth)
+        print(dt.now(), 'get_z_from_depth:',\
+        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(), 'get_z_from_depth:',\
+        'index=', i, 'z=', zlist[i][0])
     return z
 #=====================================================================
 #=====================================================================
