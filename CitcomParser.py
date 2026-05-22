@@ -1,4 +1,23 @@
 #!/usr/bin/env python
+#=====================================================================
+#
+#                    Python Scripts for CitcomS 
+#                  ---------------------------------
+#
+#                              Authors:
+#      Eh Tan, Eun-seo Choi, Pururav Thoutireddy, and Michael Gurnis
+#          (c) California Institute of Technology 2006-2026
+#               Free for non-commercial academic use ONLY.
+#      This program is distributed WITHOUT ANY WARRANTY whatsoever.
+#
+#=====================================================================
+#
+#  Copyright Aug. 2026, by the California Institute of Technology.
+#  ALL RIGHTS RESERVED. United States Government Sponsorship Acknowledged.
+#
+#=====================================================================
+
+
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
@@ -161,13 +180,13 @@ class Parser(object):
 
     def __getvector(self, conv, option):
         val = []
-        v = string.split(self.get(option),',')
+        v = self.get(option).split(',')
         try:
             for item in v:
                 val.append(conv(item))
             return val
-        except TypeError, ValueError:
-            raise ValueError, "`%s' is not a vector: %s" % (option, v)
+        except (TypeError, ValueError):
+            raise ValueError("Option '%s' is not a valid vector: %s" % (option, v))
 
     def getstr(self, option):
         v = self.get(option)
@@ -192,7 +211,7 @@ class Parser(object):
                   '0': 0, 'no': 0, 'false': 0, 'off': 0}
         v = self.get(option)
         if not states.has_key(string.lower(v)):
-            raise ValueError, 'Not a boolean: %s' % v
+            raise ValueError("Not a boolean: %s" % v)
         return states[string.lower(v)]
 
 
@@ -221,16 +240,14 @@ class Parser(object):
             # remove anything after '#'
             line = string.split(line, '#')[0]
 
-            # key/value pairs can be seperated by whitespaces
-            for opt in string.split(line):
-                #if opt in string.whitespace:
-                #    continue
-                keyval = string.split(opt, '=')
+            # key/value pairs must be in the form name=value with no spaces around '='
+            if '=' in line:
+                keyval = line.split('=', 1)
                 if len(keyval) == 2:
-                    self.__options[keyval[0]] = keyval[1]
+                    keyval = string.split(opt, '=', 1)
                 else:
                     e = ParsingError(fpname)
-                    e.append(lineno, `line`)
+                    e.append(lineno, repr(line))
 
         # if any parsing errors occurred, raise an exception
         if e:
@@ -242,7 +259,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) != 2:
         import os.path
-        print "usage: %s inputfile" % os.path.basename(sys.argv[0])
+        print("usage: %s inputfile" % os.path.basename(sys.argv[0]))
         sys.exit(1)
 
     parser = Parser()
@@ -260,7 +277,7 @@ if __name__ == '__main__':
                         val = f(keyin)
                 except (TypeError, ParsingError, ValueError):
                     continue
-                print "%s=%s\n" % (keyin, str(val))
+                print("%s=%s\n" % (keyin, str(val)))
 
         else:
             break
