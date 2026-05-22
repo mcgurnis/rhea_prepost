@@ -1879,16 +1879,16 @@ Return value:
     min = zlist[0][1]
     if (test_r > max):
         msg = 'r value %s > than max r %s' % (test_r, max)
-        raise IndexError, msg
+        raise IndexError(msg)
     if (test_r < min):
         msg = 'r value %s < than min r %s' % (test_r, min)
-        raise IndexError, msg
+        raise IndexError(msg)
 
     # shortcut for exact values
     for (z,r,d) in zlist:
         if float(z) == float(test_r): 
             if verbose: 
-                print now(),'get_z_from_r: (z,r,d) = ', (z,r,d)
+                print(dt.now()), 'get_z_from_r: (z,r,d) = ', (z,r,d)
             return z
         
     # list comprehension to compute the difference between
@@ -1912,14 +1912,14 @@ Return value:
 
     z = zlist[i][0]
     if verbose: 
-        print now(),'get_z_from_r:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i
-        print now(),'get_z_from_r:',\
-        'test=', test_r
-        print now(),'get_z_from_r:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i
-        print now(),'get_z_from_r:',\
-        'index=', i, 'level=', zlist[i][0]
+        print(dt.now(), 'get_z_from_r:',\
+        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(), 'get_z_from_r:',\
+        'test=', test_r)
+        print(dt.now(), 'get_z_from_r:',\
+        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(), 'get_z_from_r:',\
+        'index=', i, 'level=', zlist[i][0])
     return z
 #=====================================================================
 #=====================================================================
@@ -1945,14 +1945,14 @@ Return value:
     radius_outer = args.get('radius_outer')
     if radius_outer == None: 
         msg = "radius_outer must be set in pid file"
-        raise ValueError, msg
+        raise ValueError(msg)
 
     # convert strings to numbers
     radius_outer = float ( radius_outer )
 
-    #if verbose: print now(), "get_phase: radius_outer =", radius_outer
-    #if verbose: print now(), "get_phase: radius =", radius
-    #if verbose: print now(), "get_phase: t =", t
+    #if verbose: print(dt.now()), "get_phase: radius_outer =", radius_outer
+    #if verbose: print(dt.now()), "get_phase: radius =", radius
+    #if verbose: print(dt.now()), "get_phase: t =", t
 
     # initial total phase value
     total_phase = 0.0
@@ -2030,16 +2030,16 @@ def test_time_functions():
     test_runtime = float( sys.argv[4] )
     
     age = get_age_from_step( file, test_step )
-    print now(), 'test_time_functions: test_step = %(test_step)i --> age = %(age)f' % vars()
+    print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> age = %(age)f' % vars())
 
     runtime = get_runtime_from_step( file, test_step )
-    print now(), 'test_time_functions: test_step = %(test_step)i --> runtime = %(runtime)f' % vars()
+    print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> runtime = %(runtime)f' % vars())    
 
     step = get_step_from_age( file, test_age )
-    print now(), 'test_time_functions: test_age = %(test_age)f --> step = %(step)i' % vars()
+    print(dt.now(), 'test_time_functions: test_age = %(test_age)f --> step = %(step)i' % vars())
 
     step = get_step_from_runtime( file, test_runtime )
-    print now(), 'test_time_functions: test_runtime = %(test_runtime)f --> step = %(step)i' % vars()
+    print(dt.now(), 'test_time_functions: test_runtime = %(test_runtime)f --> step = %(step)i' % vars())
 
 #=====================================================================
 #=====================================================================
@@ -2053,35 +2053,35 @@ def test_depth_functions():
     # test depth from z for all z, 0 to nodez - 1 
     for z in range( int(dict['nodez']) ):
         d = get_depth_from_z(pid_file, z)
-        print now(), 'test_depth_functions: get_depth_from_z(pid, z) z = %(z)s; d = %(d)s' % vars()
+        print(dt.now(), 'test_depth_functions: get_depth_from_z(pid, z) z = %(z)s; d = %(d)s' % vars())
 
-    print ' ' 
-    print ' ' 
+    print(' ') 
+    print(' ') 
 
     # test depth from z for all z, 0 to nodez - 1 
     for z in range( int(dict['nodez']) ):
         r = get_r_from_z(pid_file, z)
-        print now(), 'test_depth_functions: get_r_from_z(pid, z) z = %(z)s; r = %(r)s' % vars()
+        print(dt.now(), 'test_depth_functions: get_r_from_z(pid, z) z = %(z)s; r = %(r)s' % vars())
 
-    print ' ' 
-    print ' ' 
+    print(' ') 
+    print(' ') 
 
     # test z from depth for some values, 0 to 2000
     d_list = range(0, 2000, 200)
     for d in d_list:
         z = get_z_from_depth(pid_file, d) 
-        print now(), 'test_depth_functions: get_z_from_depth(pid_file, d) z = %(z)s; d = %(d)s' % vars()
-        print ' ' 
+        print(dt.now(), 'test_depth_functions: get_z_from_depth(pid_file, d) z = %(z)s; d = %(d)s' % vars())
+        print(' ') 
 
-    print ' ' 
-    print ' ' 
+    print(' ') 
+    print(' ') 
 
     # test z from r for some values from 0.6 to 1.0 
     r_list = [i * 0.1 for i in range(6, 11)]
     for r in r_list:
         z = get_z_from_r(pid_file, r) 
-        print now(), 'test_depth_functions: get_z_from_r(pid_file, d) z = %(z)s; r = %(r)s' % vars()
-        print ' ' 
+        print(dt.now(), 'test_depth_functions: get_z_from_r(pid_file, d) z = %(z)s; r = %(r)s' % vars())
+        print(' ') 
 
 
 #=====================================================================
@@ -2199,7 +2199,7 @@ Return value:
     inputd.close()
     output.close()
     dict['surf_xy_file'] = surffile
-    print 'made surface file...'
+    print('made surface file...')
     return
 
 
