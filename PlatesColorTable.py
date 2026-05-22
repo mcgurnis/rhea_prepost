@@ -3,7 +3,7 @@
 #                      Python Scripts for CitComS 
 #         Preprocessing, Data Assimilation, and Postprocessing
 #                  ---------------------------------
-#             (c) California Institute of Technology 2007
+#             (c) California Institute of Technology 2007-2026
 #                        ALL RIGHTS RESERVED
 #=====================================================================
 '''
@@ -348,8 +348,8 @@ def main():
     # process any args
     if len(sys.argv) > 1:
         for id in sys.argv[1:] :
-            print get_color(id), ' '
-        print '\n'
+            print(get_color(id), ' ')
+        print('\n')
     else :
         pprint.PrettyPrinter(indent=2).pprint(color_table)
 
