@@ -15,7 +15,8 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 #=====================================================================
 # imports
-import getopt, os, string, sys, math, time, datetime, pprint
+import getopt, os, string, sys, math, time, pprint
+from datetime import datetime as dt
 
 from Core_Util import now
 #=====================================================================
@@ -65,7 +66,7 @@ Return value:
     # remove any pre-existing generated raw file;
     if os.path.exists(raw_file):
         cmd = 'rm -rfv %(raw_file)s' % vars()
-        if verbose: print now(), "S20RTS_to_xyz: cmd =", cmd
+        if verbose: print(dt.now(), "S20RTS_to_xyz: cmd =", cmd)
         os.system(cmd)
 
     # call to read the model for a specific depth
@@ -75,12 +76,12 @@ Return value:
     cmd += '%(depth)s\n' % vars()
     cmd +='END'
 
-    if verbose: print now(), "S20RTS_to_xyz: cmd =", cmd
+    if verbose: print(dt.now(), "S20RTS_to_xyz: cmd =", cmd)
     os.system(cmd)
 
     if not os.path.exists(raw_file):
         msg = 'File not found: %(file)s; "depmaphj_jr may have failed"'
-        raise StandardError, msg
+        raise Exception(msg)
 
     # These settings come directly from S20RTS code plmap:
     # #-- spherical harmonics
@@ -103,12 +104,12 @@ Return value:
     cmd += '%(xmin)s\n' % vars()
     cmd +='END'
 
-    if verbose: print now(), "S20RTS_to_xyz: cmd =", cmd
+    if verbose: print(dt.now(), "S20RTS_to_xyz: cmd =", cmd)
     os.system(cmd)
 
     if not os.path.exists(xyz):
         msg = 'File not found: %(xyz)s; "raw2xyz_jr may have failed"'
-        raise StandardError, msg
+        raise Exception(msg)
 
     return xyz
 #=====================================================================
@@ -132,20 +133,20 @@ Return value:
 '''
     # requested depth 
     d = args['depth']
-    if verbose: print now(), 'find_grand_tomography_file: depth=', d
+    if verbose: print(dt.now(), 'find_grand_tomography_file: depth=', d)
 
     # prefix for file names 
     if not args.get('file_prefix'):
         msg = 'Must set "file_prefix=string" in control file'
-        raise ValueError, msg
+        raise ValueError(msg)
     else : 
         prefix = args.get('file_prefix')
 
     import glob
     str =  prefix + '*'
     list = glob.glob( str )
-    print now(), 'find_grand_tomography_file: str =', str
-    print now(), 'find_grand_tomography_file: list =', list
+    print(dt.now(), 'find_grand_tomography_file: str =', str)
+    print(dt.now(), 'find_grand_tomography_file: list =', list)
 
     for f in list:
         # query original grid for -I values
@@ -154,15 +155,15 @@ Return value:
         line = pipe.readline()
         pipe.close()
         (min, max) = line.split()
-        if verbose: print now(), 'find_grand_tomography_file: %(f)s: min/max = %(min)s %(max)s' % vars()
+        if verbose: print(dt.now(), 'find_grand_tomography_file: %(f)s: min/max = %(min)s %(max)s' % vars())
  
         if float(min) < float(d) <= float(max): 
-            if verbose: print now(), 'find_grand_tomography_file: file =', f 
+            if verbose: print(dt.now(), 'find_grand_tomography_file: file =', f)
             # copy file 
             tmp = f + '.tmp.xyz' 
             cmd = 'cp -v %(f)s %(tmp)s' % vars()
             os.system(cmd)
-            if verbose: print now(), "find_grand_tomography_file: cmd =", cmd
+            if verbose: print(dt.now(), "find_grand_tomography_file: cmd =", cmd)
 
             # set file 
             args['xyz_file'] = tmp
@@ -172,7 +173,7 @@ Return value:
 
     # file not found, raise exception   
     msg = 'ERROR: no tomography file found'
-    raise ValueError, msg
+    raise ValueError(msg)
 
 #=====================================================================
 #=====================================================================
@@ -199,9 +200,9 @@ def test_S20RTS():
             dict['depth'] = str(d)
             dict['xyz'] = xyz 
 
-            print now(), 'test_S20RTS: resolution = %(r)s' % vars()
-            print now(), 'test_S20RTS: depth = %(d)s' % vars()
-            print now(), 'test_S20RTS: xyz = %(xyz)s' % vars()
+            print(dt.now(), 'test_S20RTS: resolution = %(r)s' % vars())
+            print(dt.now(), 'test_S20RTS: depth = %(d)s' % vars())
+            print(dt.now(), 'test_S20RTS: xyz = %(xyz)s' % vars())
 
             # create xyz file 
             S20RTS_to_xyz(dict) 
@@ -212,7 +213,7 @@ def test( argv ):
     global verbose
     verbose = True 
 
-    print now(), 'test:'
+    print(dt.now(), 'test:')
 
     model_name = argv[1]
 
