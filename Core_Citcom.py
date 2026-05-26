@@ -19,7 +19,8 @@ Most functions take a dictionary of arguments to pass and adjust paramters.
 #=====================================================================
 #=====================================================================
 # imports
-import getopt, os, string, sys, math, time, commands
+import getopt, os, string, sys, math, time
+import subprocess
 from datetime import datetime as dt
 import pprint
 
@@ -2180,7 +2181,7 @@ Return value:
     surffile=dict['datafile']+'_surf.xys' 
     r2d = 180.0/math.pi
     # Find the surface file in your current working directory
-    sfile=commands.getoutput('ls *surface*')
+    sfile = subprocess.check_output('ls *surface*', shell=True, text=True).strip()
     # make arrays of node numbers
     nodex=float(dict['nodex'])
     nodey=float(dict['nodey'])
