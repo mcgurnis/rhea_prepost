@@ -6,18 +6,19 @@
 #
 #                              Authors:
 #                            Michael Gurnis
-#             (c) California Institute of Technology 2006
+#             (c) California Institute of Technology 2006-2026
 #
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #
 #=====================================================================
 #
-#  Copyright September 2006, by the California Institute of Technology.
+#  Copyright May 2026, by the California Institute of Technology.
 #
 #=====================================================================
 
 import Thermal_Utilities
 import sys, string, os, time
+from datetime import datetime as dt
 import GMT_Utilities
 import math, random
 from Core_Util import now
@@ -45,8 +46,8 @@ def xy2xyz(xy_file,zvalue,square,spacing,bounds,res,zback):
         d_p_degrees.append(value)
         g.append(result)
 
-    print 'd_p_degrees=',d_p_degrees
-    print 'g',g
+    print('d_p_degrees=',d_p_degrees)
+    print('g',g)
 
     while 1:
         line=XYF.readline()
@@ -109,7 +110,7 @@ def xy2xyz(xy_file,zvalue,square,spacing,bounds,res,zback):
     cmd="rm -f %s" % xyz_file_3
     os.system(cmd)
     cmd = "cat %s %s > %s" % (xyz_file,xyz_file_2,xyz_file_3)
-    print 'cmd = ', cmd
+    print('cmd = ', cmd)
     os.system(cmd)
     cmd = "rm -f %s" % (xyz_file_2)
     os.system(cmd)
@@ -211,7 +212,7 @@ def slab_xy2xyz(xy_file,factor,advection,spacing,T_mantle,age_min,scalet,layer_k
 def replace_type_code(file_old,new_type_code):
     # replace type in a PLATES 4 file
 
-    print "\n\n new_type_code=",new_type_code
+    print("\n\n new_type_code=",new_type_code)
     OLD=open(file_old)
     file_new="rt_file.dat"
     cmd="rm -f %s" % file_new
@@ -259,9 +260,9 @@ def sz_slab_dip(sz_age,deep_dip,default_dip,current_age):
 #=====================================================================
 def sz_age2slab_depth(sz_age,known_depth,current_age):
 
-    print 'sz_age=',sz_age,type(sz_age)
-    print 'known_depth=',known_depth,type(known_depth)
-    print 'current_age=',current_age,type(current_age)
+    print('sz_age=',sz_age,type(sz_age))
+    print('known_depth=',known_depth,type(known_depth))
+    print('current_age=',current_age,type(current_age))
     
     #age in Myr
     slab_velocity_1=5.0 #cm/yr Above middle of TZ
@@ -308,7 +309,7 @@ def Find_slab_data( dict, input_subduction_file ):
     Assume default values and override by GPML header data
     if specified in the input configuration file (GPML_HEADER).'''
 
-    if verbose: print now(), 'Find_slab_data:'
+    if verbose: print(dt.now(), 'Find_slab_data:')
 
     # parameters
     GPML_HEADER = dict['GPML_HEADER']
@@ -342,10 +343,10 @@ def Find_slab_data( dict, input_subduction_file ):
 
         # report missing subduction zone polarities to user
         if line[1:3] not in ['sL','sR']:
-            print '!!! Find_slab_data: Unknown subduction polarity'
+            print('!!! Find_slab_data: Unknown subduction polarity')
             errorline = line.rstrip('\n')
-            print '!!! Slab assimilation will FAIL for this line segment:'
-            print '!!! %(errorline)s' % vars()
+            print('!!! Slab assimilation will FAIL for this line segment:')
+            print('!!! %(errorline)s' % vars())
 
         # default parameters
         slab_depth = depth_max
@@ -355,7 +356,7 @@ def Find_slab_data( dict, input_subduction_file ):
 
         # check for values in GPML header
         if GPML_HEADER:
-            if verbose: print now(), 'reading GPML header data'
+            if verbose: print(dt.now(), 'reading GPML header data')
             header_data = {}
             header_data = get_header_GMT_xy_file_dictionary( line )
             s_depth = header_data.get('slabFlatLyingDepth', 'Unknown') 
@@ -383,9 +384,9 @@ def Find_slab_data( dict, input_subduction_file ):
                     UM_duration = 660.0/(slab_UM_descent_rate*10.0)
 
                     #print 'slab_depth=',slab_depth, 'km'
-                    print 'age=',age,' sz_age=',sz_age
-                    print 'slab_UM_descent_rate=', slab_UM_descent_rate, 'cm/yr'
-                    print 'UM_duration=',UM_duration, 'Myr'
+                    print('age=',age,' sz_age=',sz_age)
+                    print('slab_UM_descent_rate=', slab_UM_descent_rate, 'cm/yr')
+                    print('UM_duration=',UM_duration, 'Myr')
                     s_duration = float(sz_age)-age
 
 #                   Factor of 10 gives depth in km for slab_descent_rate in cm/yr
@@ -395,7 +396,7 @@ def Find_slab_data( dict, input_subduction_file ):
                         slab_depth = 660.0 + slab_LM_descent_rate*(s_duration-UM_duration)*10.0
                     if slab_depth > depth_max:
                         slab_depth = depth_max
-                    print 'slab_depth=',slab_depth, 'km'
+                    print('slab_depth=',slab_depth, 'km')
 
         # xy header line
         outline="%s DEPTH=%f DIP=%f START_DEPTH=%f\n" % (line[0:3],slab_depth,slab_dip,sdepth)
@@ -503,7 +504,7 @@ def filter(grdfile,bounds,k,width,zmin,zmax):
 #=====================================================================
 def mk_parallel_slab_base( dict, xy_tmp ):
 
-    if verbose: print now(), 'mk_parallel_slab_base:'
+    if verbose: print(dt.now(), 'mk_parallel_slab_base:')
 
     OLD = open(xy_tmp)
     lines = OLD.readlines()
@@ -549,7 +550,7 @@ def mk_parallel_slab_base( dict, xy_tmp ):
             # dist in degrees
             dist = fszd/(math.tan(fszdd*d2r)*110.0)
 
-            if verbose: print now(), 'fszd=',fszd,'fszdd=',fszdd,'dist=',dist
+            if verbose: print(dt.now(), 'fszd=',fszd,'fszdd=',fszdd,'dist=',dist)
 
         # line data
         elif c1 != dict['gmt_char']:
@@ -661,7 +662,7 @@ def mk_backarc(sub,dmin,dmax,region,proj,age,grd_res,rotate):
                     #print "finding backarc basin location points"
                     #1. Calculate bearing from long1lat1 to midpoint
                     #brng=find_bearing(long1,lat1,longm,latm)
-		    (dist,brng)=rhumb_line(long1,lat1,long2,lat2)
+                    (dist,brng)=rhumb_line(long1,lat1,long2,lat2)
                     #2. Decide which way I want to project outwards
                     if left == 1:
                         if brng > 270:
@@ -834,7 +835,7 @@ def get_backarc(longa,lata,longb,latb,dist,blength):
     x1=math.radians(longb-longa)*R*math.cos(math.radians(latb))
     y1=math.radians(latb-lata)*R
     alpha=math.atan2(y1,x1)
-    print alpha
+    print(alpha)
     #alpha=math.atan(y1/x1)
     C=math.sqrt((dist**2)+(blength**2))
     beta=math.asin(blength/C)
@@ -1000,9 +1001,9 @@ def mk_parallel_slab(dict, xy_tmp, current_depth, advection):
     d_p_degrees = [startval+ii*spacing_slab_pts for ii in range(N_slab_pts)]
     d_p = [abs(ii*(110.0*1000.0)) for ii in d_p_degrees] # abs value in m
 
-    if verbose: print now(), 'd_p_degrees',d_p_degrees
-    if verbose: print now(), 'advection',advection
-    if verbose: print now(), 'd_p',d_p
+    if verbose: print(dt.now(), 'd_p_degrees',d_p_degrees)
+    if verbose: print(dt.now(), 'advection',advection)
+    if verbose: print(dt.now(), 'd_p',d_p)
 
     zvalue=-999.
     m=0
@@ -1107,7 +1108,7 @@ def mk_parallel_slab(dict, xy_tmp, current_depth, advection):
 #=====================================================================
 def mk_flat_slab_age_depth_file( dict ):
 
-    if verbose: print now(), 'mk_flat_slab_age_depth_file:'
+    if verbose: print(dt.now(), 'mk_flat_slab_age_depth_file:')
 
     # parameters
     flat_slab_file = dict['flat_slab_file']
@@ -1123,9 +1124,9 @@ def mk_flat_slab_age_depth_file( dict ):
     flat_slab_region = dict['flat_slab_region']
     afile_1 = dict['afile_1']
 
-    if verbose: print now(), 'sub_file=',sub_file
-    if verbose: print now(), 'leading_edge_file=',leading_edge_file
-    if verbose: print now(), 'sub_base_file=',sub_base_file
+    if verbose: print(dt.now(), 'sub_file=',sub_file)
+    if verbose: print(dt.now(), 'leading_edge_file=',leading_edge_file)
+    if verbose: print(dt.now(), 'sub_base_file=',sub_base_file)
 
     # clean up
     cmd = "rm -f flat_outline*.xy flat_slab_depth*.grd"
@@ -1230,15 +1231,15 @@ def mk_flat_slab_age_depth_file( dict ):
 
     # make mask of flat slab
     cmd="grdmask %s -Gflat_slab_mask.grd -I0.1 -R%s -NNaN/0.0/1.0 -m -V" % (flat_slab_new,bounds)
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd)
     os.system(cmd)
 
     cmd="grdmath %s flat_slab_mask.grd MUL = flat_tmp.grd" % afile_1
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd)
     os.system(cmd)
 
     cmd="grdmath %s flat_slab_mask.grd MUL = flat_depth_tmp.grd" % grd_slab_depth
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd)
     os.system(cmd)
 
 
@@ -1249,10 +1250,10 @@ def mk_flat_slab_age_depth_file( dict ):
 
     #Resample the grd files (both the age and the depth) on a mesh slightly higher res than grd_res
     cmd="grdsample flat_tmp.grd -Gflat_slab_age.grd -I%g" % resample_res 
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd) 
     os.system(cmd)
     cmd="grdsample flat_depth_tmp.grd -Gflat_slab_depth.grd -I%g" % resample_res 
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd) 
     os.system(cmd)
 
 
@@ -1269,25 +1270,25 @@ def mk_flat_slab_age_depth_file( dict ):
 
     # First plot an image of the Depth of the flat slab portion
     cmd="grdimage flat_slab_depth.grd -Cdepth.cpt -R%s -J%s -B10 -X1.0 -Y3.0 -P -K  > %s" % (bounds_z,proj_z,fs_ps)
-    print cmd 
+    print(cmd)
     os.system(cmd)
     cmd="psxy %s -B -R%s -W3/0 -J%s -O -K -m -V >> %s" % (flat_slab_new,bounds_z,proj_z,fs_ps)
-    print cmd 
+    print(cmd)
     os.system(cmd)
     sub_sR="%s/topology_subduction_boundaries_sR_%0.2fMa.xy" % (sub_dir,age)
     cmd="psxy %(sub_sR)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07rt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     sub_sL="%s/topology_subduction_boundaries_sL_%0.2fMa.xy" % (sub_dir,age)
     cmd="psxy %(sub_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K  >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     slab_sL="%s/topology_slab_edges_leading_sL_%0.2fMa.xy" % (slab_dir,age)
     cmd="psxy %(slab_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     cmd="psscale -D1.0/-0.5/2.0/0.25h -B25:'Depth (km)': -Cdepth.cpt -O -K  >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     # MG doesn't know whythis was added:
     #cmd="psxy %(sub_base_file)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0/255/0/0 -X0.0 -Y0.0 -M -O -K >> %(fs_ps)s" % vars()
@@ -1296,25 +1297,25 @@ def mk_flat_slab_age_depth_file( dict ):
 
     # Then plot an image of the age of the flat slab portion
     cmd="grdimage flat_slab_age.grd -Cage.cpt -R%s -J%s -B10 -X3.5 -Y0.0 -P -O -K  >> %s" % (bounds_z,proj_z,fs_ps)
-    print cmd 
+    print(cmd)
     os.system(cmd)
     cmd="psxy %s -B -R%s -W3/0 -J%s -O -K -m -V >> %s" % (flat_slab_new,bounds_z,proj_z,fs_ps)
-    print cmd 
+    print(cmd)
     os.system(cmd)
     sub_sR="%s/topology_subduction_boundaries_sR_%0.2fMa.xy" % (sub_dir,age)
     cmd="psxy %(sub_sR)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07rt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     sub_sL="%s/topology_subduction_boundaries_sL_%0.2fMa.xy" % (sub_dir,age)
     cmd="psxy %(sub_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K  >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     slab_sL="%s/topology_slab_edges_leading_sL_%0.2fMa.xy" % (slab_dir,age)
     cmd="psxy %(slab_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
     cmd="psscale -D1.0/-0.5/2.0/0.25h -B50:'Age (Ma)': -Cage.cpt -O >> %(fs_ps)s" % vars()
-    print cmd 
+    print(cmd)
     os.system(cmd)
 
     # End debugging
@@ -1322,11 +1323,11 @@ def mk_flat_slab_age_depth_file( dict ):
 
     flat_slab_age_file = "flat_slab_age.xyz"
     cmd="grd2xyz flat_slab_age.grd -S > %s" % flat_slab_age_file
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd)
     os.system(cmd)
     flat_slab_depth_file = "flat_slab_depth.xyz"
     cmd="grd2xyz flat_slab_depth.grd -S > %s" % flat_slab_depth_file
-    if verbose: print now(), cmd 
+    if verbose: print(dt.now(), cmd)
     os.system(cmd)
     AGE=open(flat_slab_age_file)
     DEPTH=open(flat_slab_depth_file)
@@ -1339,8 +1340,8 @@ def mk_flat_slab_age_depth_file( dict ):
             lon_a, lat_a, value_a = line_a.split()
             lon_d, lat_d, value_d = line_d.split()
             if (lon_a != lon_d) or (lat_a != lat_d):
-                print 'ERROR -- mk_flat_slab_age_file'
-                print 'incompatible values in age and depth grd files'
+                print('ERROR -- mk_flat_slab_age_file')
+                print('incompatible values in age and depth grd files')
                 sys.exit(0)
             AD.write("%s %s %s %s\n" % (lon_a,lat_a,value_a,value_d))
         else:
@@ -1406,7 +1407,7 @@ def mk_flat_slab( dict, xyz_file_in, depth ):
     os.system(cmd)
     cmd = "cat %s %s > %s" % (xyz_file_in,xyz_file,xyz_file_4)
     os.system(cmd)
-    print xyz_file_in,xyz_file,xyz_file_4
+    print(xyz_file_in,xyz_file,xyz_file_4)
 
     return xyz_file_4
 #=====================================================================
@@ -1419,10 +1420,10 @@ def mk_parallel_region(xy_tmp,spacing,grd_res,width,region_value):
     XYZF=open(xyz_file,"w")
 
     d_p_degrees=[]
-    print 'width=',width
-    print 'grd_res=',grd_res
+    print('width=',width)
+    print('grd_res=',grd_res)
     N_region_pts = int(width/grd_res)
-    print 'N_region_pts=',N_region_pts
+    print('N_region_pts=',N_region_pts)
     value=0.0
     ii=0
     while ii<N_region_pts:
@@ -1431,7 +1432,7 @@ def mk_parallel_region(xy_tmp,spacing,grd_res,width,region_value):
         value+=grd_res
         ii+=1
    
-    print 'd_p_degrees',d_p_degrees
+    print('d_p_degrees',d_p_degrees)
 
     zvalue=-999.
     background_value=0.0
@@ -1732,7 +1733,7 @@ def curving_slab(d,radius,dip):
 #-def mk_smooth_slab(xy_tmp,current_depth,radius_of_curvature,factor,advection,spacing,T_mantle,age_min,scalet,layer_km):
 def mk_smooth_slab(xy_tmp,spacing,T_mantle,age_min,scalet,layer_km):
 
-    print 'inside mk_smooth_slab'
+    print('inside mk_smooth_slab')
 
     scalet2=(layer_km*1e3*layer_km*1e3)/scalet
     OLD=open(xy_tmp)
@@ -1744,8 +1745,8 @@ def mk_smooth_slab(xy_tmp,spacing,T_mantle,age_min,scalet,layer_km):
     Myr2s=(1.0e06)*(3.15e07) # Millions of years to seconds
     kappa=1.0e-06
     scaling=Myr2s*kappa
-    print "scaling"
-    print scaling
+    print("scaling")
+    print(scaling)
     N_slab_pts=31
     d_p_degrees=[]
     d_p=[]
@@ -1904,16 +1905,16 @@ def get_header_GMT_xy_file_dictionary( line ):
 #=====================================================================
 def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
     
-    print 'grd_file',grd_file 
-    print 'mantle_temp=',mantle_temp
+    print('grd_file',grd_file)
+    print('mantle_temp=',mantle_temp)
 
     CF=open(sbf)
     while 1:
         line=CF.readline()
         if(line):
-            print 'line',line
+            print('line',line)
             s1=line[0]
-            print 's1',s1
+            print('s1',s1)
             if s1 == '>':    
                 sa, snum=line.split(',')
                 inage=int(sa.strip('>'))
@@ -1922,16 +1923,16 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                     j=0
                     while j<num:
                         line=CF.readline()
-                        print 'inage',inage,' num=',num
-                        print 'line',line
+                        print('inage',inage,' num=',num)
+                        print('line',line)
                         start, middle,end,sdip =line.split(',')
-                        print start, middle,end,sdip
+                        print(start, middle,end,sdip)
 
                         slon0,slat0=middle.split('/')
                         lon1=float(slon0)-10.0
                         lon2=float(slon0)+10.0
-			lat1=float(slat0)-10.0
-			lat2=float(slat0)+10.0
+                        lat1=float(slat0)-10.0
+                        lat2=float(slat0)+10.0
                         # bounds for map
                         bounds="%f/%f/%f/%f" % (lon1,lon2,lat1,lat2)
 
@@ -1948,7 +1949,7 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                         sd1,sd2,sage=ML.readline().split()
                         ML.close()
                         slab_age=float(sage)
-                        print 'slab_age',slab_age
+                        print('slab_age',slab_age)
 
                         # sometimes the age grids have negative ages, and this causes the 
                         # code to crash.  Bug fix by Dan J. Bower.
@@ -1961,10 +1962,10 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                         os.system(cmd)
 
                         cmd="project -C%s -E%s -Dg -G1 -Q > %s" % (start,end,profile_file)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
                         cmd="grdtrack %s -G%s > %s" % (profile_file,grd_file,track_file)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
                         TF=open(track_file)
                         max_pts=0
@@ -2027,60 +2028,60 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
 
                         expected_HS = 1.0*math.sqrt(slab_age/(math.pi*scalet) )*layer_km/math.sin(slab_dip)
                         error = int(round(abs_fint/expected_HS*100))
-                        print 'f_int=',abs_fint
-                        print 'e_int=',abs_eint
-                        print 'expected_HS=',expected_HS
-                        print 'error=',error
+                        print('f_int=',abs_fint)
+                        print('e_int=',abs_eint)
+                        print('expected_HS=',expected_HS)
+                        print('error=',error)
 
                         psfile_buoy = 'check_buoy_age%d_%d.ps' % (age,j)
                         cmd="gmtset LABEL_FONT_SIZE 12"
                         map_info="-B5 -X1.0 -Y5.0"
                         proj="M2.5"
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
 
                         cmd="grdimage %s -Ctemp.cpt -R%s -J%s %s -P -K > %s" % (grd_file,bounds,proj,map_info,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
                         cmd="psxy %s -R%s -J%s -W4/0 -X0.0 -Y0.0 -P -O -K >> %s" % (profile_file,bounds,proj,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
                         cmd="psxy %s -R%s -J%s -Sc0.1/0 -G0 -P -O -K >> %s" % (middle_loc,bounds,proj,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
                         cmd="grdimage %s -Cage.cpt -R -J -B -X4.0 -Y0.0 -P -O -K >> %s" % (age_grd_file,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
 #                        sub_sR="%s/Polygons.subduction_boundaries_sR.%d.xy" % (sub_dir,age)
                         sub_sR="%s/topology_subduction_boundaries_sR_%0.2fMa.xy" % (sub_dir,age)
                         cmd="psxy %(sub_sR)s -R -J -W3.0/0 -Sf0.2/0.07rt -m -O -K >> %(psfile_buoy)s" % vars()
-                        print cmd
+                        print(cmd)
                         os.system(cmd)
 #                        sub_sL="%s/Polygons.subduction_boundaries_sL.%d.xy" % (sub_dir,age)
                         sub_sL="%s/topology_subduction_boundaries_sL_%0.2fMa.xy" % (sub_dir,age)
                         cmd="psxy %(sub_sL)s -R -J -W3.0/0 -Sf0.2/0.07lt -m -O -K  >> %(psfile_buoy)s" % vars()
-                        print cmd
+                        print(cmd)
                         os.system(cmd)
                         cmd="psxy %s -R%s -J%s -Sc0.1 -G255 -P -O -K >> %s" % (middle_loc,bounds,proj,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
 
                         ubound = mantle_temp+0.1
                         bounds_profile="0.0/%(dist_max)f/0.0/%(ubound)s" % vars()
                         #bounds_profile="0.0/2000/0.0/1.1"
                         cmd="psxy %s -R%s -JX3.0/1.5 -B100f50:km:/a0.25f0.125:Temp:WeSn -W4/0 -P -X-3.5 -Y-2.5 -K -O >> %s" % (profile_file2,bounds_profile,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
                         cmd="psxy etemp.xy -R%s -J -W4/0/255/0 -P -X0.0 -Y0.0 -K -O >> %s" % (bounds_profile,psfile_buoy)
-                        print cmd 
+                        print(cmd)
                         os.system(cmd)
 
                         #label info
                         LAB = open('label.txt','w')
-                        print >> LAB, "3.25 1.0 14 0 1 1 Slab Buoyancy = %.02f ND T-km" % (abs_fint) 
-                        print >> LAB, "3.25 0.75 14 0 1 1 HS Buoyancy = %.02f ND T-km" % (abs_eint)
-                        print >> LAB, "3.25 0.5 14 0 1 1 HS Analytic = %.02f ND T-km" % (expected_HS)
-                        print >> LAB, "3.25 0.25 14 0 1 1 Slab Buoyancy as percent = %d" % (error)
+                        print("3.25 1.0 14 0 1 1 Slab Buoyancy = %.02f ND T-km" % (abs_fint), file=LAB)
+                        print("3.25 0.75 14 0 1 1 HS Buoyancy = %.02f ND T-km" % (abs_eint), file=LAB)
+                        print("3.25 0.5 14 0 1 1 HS Analytic = %.02f ND T-km" % (expected_HS), file=LAB)
+                        print("3.25 0.25 14 0 1 1 Slab Buoyancy as percent = %d" % (error), file=LAB)
                         LAB.close()
                         # text label
                         cmd="pstext label.txt -R0/8.5/0/11 -Jx1 -X0.0 -Y0.0 -O >> %(psfile_buoy)s" % vars()
