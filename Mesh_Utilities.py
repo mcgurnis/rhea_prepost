@@ -264,9 +264,8 @@ def interpolate_to_plate_frame(settings):
         os.system(cmd)
         mesh_xy = force_xy
 
-
     # Sample the original citcoms grid at the mesh on plate points
-    cmd = 'grdtrack %(mesh_xy)s -V -Lg -: -G%(grid)s > %(track)s' % vars()
+    cmd = 'gmt grdtrack %(mesh_xy)s -V -Lg -: -G%(grid)s > %(track)s' % vars()
     if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd=', cmd)
     os.system(cmd)
 
@@ -283,7 +282,6 @@ def interpolate_to_plate_frame(settings):
     if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd=', cmd)
     os.system(cmd)
 
-
     # 4. 
     if verbose: print(dt.now(), 'interpolate_to_plate_frame: 4.')
     # reset region to user values
@@ -292,11 +290,10 @@ def interpolate_to_plate_frame(settings):
     if verbose: 
         print(dt.now(), "interpolate_to_plate_frame: region =", region)
 
-
     # 5. 
     if verbose: print(dt.now(), 'interpolate_to_plate_frame: 5.')
     # create a median file from cut file
-    cmd = "blockmedian %(cut_xyz)s -V -: -I%(grid_increment)s -R%(region)s > %(med_xyz)s" % vars()
+    cmd = "gmt blockmedian %(cut_xyz)s -V -: -I%(grid_increment)s -R%(region)s > %(med_xyz)s" % vars()
     if verbose: print(dt.now(), "interpolate_to_plate_frame: cmd =", cmd)
     os.system(cmd)
 
@@ -305,9 +302,9 @@ def interpolate_to_plate_frame(settings):
     if verbose: print(dt.now(), 'interpolate_to_plate_frame: 6.')
     # create a surface grid from median file
     if grid_min != 'none' or grid_max != 'none':
-        cmd = "surface %(med_xyz)s -V -: -G%(grd)s -I%(grid_increment)s -R%(region)s -T%(grid_ten)g -Ll%(grid_min)g -Lu%(grid_max)g" % vars()
+        cmd = "gmt surface %(med_xyz)s -V -: -G%(grd)s -I%(grid_increment)s -R%(region)s -T%(grid_ten)g -Ll%(grid_min)g -Lu%(grid_max)g" % vars()
     else:
-        cmd = "surface %(med_xyz)s -V -: -G%(grd)s -I%(grid_increment)s -R%(region)s -T%(grid_ten)g" % vars()
+        cmd = "gmt surface %(med_xyz)s -V -: -G%(grd)s -I%(grid_increment)s -R%(region)s -T%(grid_ten)g" % vars()
 
     if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
     os.system(cmd)
@@ -342,13 +339,13 @@ def interpolate_to_plate_frame(settings):
 
 
         # -N outside/edge/inside polygon boundary
-        cmd = "grdmask %(mask_xy)s -V -NNaN/0/0 -M -: -G%(msk)s -I%(grid_increment)s -R%(region)s" % vars()
+        cmd = "gmt grdmask %(mask_xy)s -V -NNaN/0/0 -M -: -G%(msk)s -I%(grid_increment)s -R%(region)s" % vars()
         if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
         os.system(cmd)
         # grdmath to mask the grid
         src = grd
         grd = '%(plate_frame_mesh)s.%(time)s.%(level)s.grd' % vars()
-        cmd = "grdmath -N -V %(src)s %(msk)s OR = %(grd)s" % vars()
+        cmd = "gmt grdmath -N -V %(src)s %(msk)s OR = %(grd)s" % vars()
         if verbose: print(dt.now(), 'interpolate_to_plate_frame: cmd =', cmd)
         os.system(cmd)
         settings['rm_list'] += [ msk ]
