@@ -586,7 +586,7 @@ Return value:
 
     # this function also sets args['map_list'] with the mapping
     # list data
-    if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_Citcom.map_global_proc_to_proc_in_z_dir')  
+    if verbose: print(dt.now(), 'Core_File: export_to_citcom_velo: call Core_Citcom.map_global_proc_to_proc_in_z_dir')
     Core_Citcom.map_global_proc_to_proc_in_z_dir( args )
 
     # master loop over all processors to export data

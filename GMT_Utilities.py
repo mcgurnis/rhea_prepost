@@ -258,7 +258,7 @@ def mk_xyp_files(section_defs,sec_res):
     LT=open(label_name,"w")
     n=0
     for id in sec_ids:
-        print >> LT, "%g  %g 12 0 0 1 %s" % (lon_start_sec[n],lat_start_sec[n],id)
+        print("%g  %g 12 0 0 1 %s" % (lon_start_sec[n],lat_start_sec[n],id), file=LT)
         n+=1
     LT.close()
 
@@ -325,20 +325,20 @@ def mk_grd_sec(id, prefix, section_depth, depths, grd_input_files, xyp_file, gri
     res = "%g/%g" % (xres,yres)
     print(R, res)
 
-    if verbose: print(dt.now(), 'mk_grd_sec: R = ',R) 
+    if verbose: print(dt.now(), 'mk_grd_sec: R = ',R)
 
     cmd = "surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -I%(res)s -R%(R)s" % vars()
     #cmd = "surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -T1.0 -I%(res)s -R%(R)s" % vars()
-    if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd) 
+    if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
     os.system(cmd) 
 
     if grid_min != 'none' or grid_max != 'none' :
         cmd = "grdclip %(sec_grd_tmp)s -G%(sec_grd)s -Sa%(grid_max)g/%(grid_max)g -Sb%(grid_min)g/%(grid_min)g" % vars()
-        if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd) 
+        if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
         os.system(cmd) 
     else:
         cmd = "mv %(sec_grd_tmp)s %(sec_grd)s" % vars()
-        if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd) 
+        if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
         os.system(cmd)
 
 
@@ -406,7 +406,7 @@ def mk_partial_annular_grd_sec(id, prefix, r_inner,r_outer, depths, grd_input_fi
     print(R, res)
 
 
-    if verbose: print(dt.now(), 'mk_grd_sec: R = ',R) 
+    if verbose: print(dt.now(), 'mk_grd_sec: R = ',R)
 
     pdz_median_file_name=pdz_file_name+".median.pdz"
 
@@ -602,7 +602,7 @@ def make_map(figure):
     set_model_region(figure)
 
     # check what type of grid to plot 
-    if 'interpolate_to_plate_frame_mesh' in figure.keys() :
+    if 'interpolate_to_plate_frame_mesh' in list(figure.keys()) :
         Mesh_Utilities.interpolate_to_plate_frame( figure ) 
     else: 
         set_grid_parameters(figure)
@@ -920,7 +920,7 @@ def make_cpt(figure):
         cmd="makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
 
     # make the cpt file 
-    if verbose: print(now(), "make_cpt: cmd=", cmd) 
+    if verbose: print(now(), "make_cpt: cmd=", cmd)
     os.system(cmd)
 
     # update the figure data with real values
@@ -1179,7 +1179,7 @@ def make_ps_plot(figure):
 
     if field.startswith('none'):
         cmd = 'psbasemap -B%(B)s -J%(J)s -R%(R)s -X%(X)s -Y%(Y)s -K -O >> %(ps)s' % vars()
-        if verbose: print(dt.now(), 'make_ps_plot: cmd=', cmd)  
+        if verbose: print(dt.now(), 'make_ps_plot: cmd=', cmd)
         os.system(cmd)
 
         # call any extra ps cmds
@@ -1676,21 +1676,21 @@ def make_overlay_tracers(figure):
     color_list = []
     if figure.get('overlay_tracers_flavor_color_list'):
         color_list = figure.get('overlay_tracers_flavor_color_list').split(',')
-        if len(color_list) != len( tracer_dict.keys() ):
-            msg = 'Only %d color entry found in "overlay_tracers_flavor_color_list".  Expected %d, one per tracer flavor.' % (len(color_list), len( tracer_dict.keys() ))
+        if len(color_list) != len( list(tracer_dict.keys()) ):
+            msg = 'Only %d color entry found in "overlay_tracers_flavor_color_list".  Expected %d, one per tracer flavor.' % (len(color_list), len( list(tracer_dict.keys()) ))
             raise IndexError(msg)
     else:
-        color_list = [ 'green' for i in tracer_dict.keys() ]
+        color_list = [ 'green' for i in list(tracer_dict.keys()) ]
 
     # set sizes
     size_list = []
     if figure.get('overlay_tracers_flavor_size_list'):
         size_list = figure.get('overlay_tracers_flavor_size_list').split(',')
-        if len(size_list) != len( tracer_dict.keys() ):
-            msg = 'Only %d size entry found in "overlay_tracers_flavor_size_list".  Expected %d, one per tracer flavor.' % (len(size_list), len( tracer_dict.keys() ))
+        if len(size_list) != len( list(tracer_dict.keys()) ):
+            msg = 'Only %d size entry found in "overlay_tracers_flavor_size_list".  Expected %d, one per tracer flavor.' % (len(size_list), len( list(tracer_dict.keys()) ))
             raise IndexError(msg)
     else:
-        size_list = [ '1' for i in tracer_dict.keys() ]
+        size_list = [ '1' for i in list(tracer_dict.keys()) ]
 
 
 
@@ -1901,10 +1901,7 @@ def make_xyz_and_grd_files_per_level(figure):
             depths.append(d)
 
             if verbose: 
-                print(dt.now(), 'make_xyz_and_grd_files_per_level:', \
-                    'level', level, '(', section_depth, 'km)',\
-                    '<=',\
-                    'level', l, '(', d, 'km)')
+                print(dt.now(), 'make_xyz_and_grd_files_per_level:',                     'level', level, '(', section_depth, 'km)',                    '<=',                    'level', l, '(', d, 'km)')
 
 
             if field.startswith('none'):
@@ -2374,14 +2371,14 @@ def make_cross_section_overlay_tracers(figure, index):
     if figure.get('overlay_tracers_flavor_color_list'):
         color_list = figure.get('overlay_tracers_flavor_color_list').split(',')
     else:
-        color_list = [ 'black' for i in tracer_dict.keys() ]
+        color_list = [ 'black' for i in list(tracer_dict.keys()) ]
 
     # set sizes
     size_list = []
     if figure.get('overlay_tracers_flavor_size_list'):
         size_list = figure.get('overlay_tracers_flavor_size_list').split(',')
     else:
-        size_list = [ '1' for i in tracer_dict.keys() ]
+        size_list = [ '1' for i in list(tracer_dict.keys()) ]
 
     # loop over tracer dictionary flavors
     for (n, flav) in enumerate( tracer_dict.keys() ): 
@@ -2443,9 +2440,9 @@ def make_cross_section_lines(figure):
     x_lad_2 = dist_max
     z_lad_2 = lith_age_depth
     LAD = open('lad.xy','w')
-    print >> LAD, ">"
-    print >> LAD, "%g %g" % (x_lad_1,z_lad_1)
-    print >> LAD, "%g %g" % (x_lad_2,z_lad_2)
+    print(">", file=LAD)
+    print("%g %g" % (x_lad_1,z_lad_1), file=LAD)
+    print("%g %g" % (x_lad_2,z_lad_2), file=LAD)
     LAD.close()
 #=====================================================================
 def lith_age_depth(figure):
@@ -2454,9 +2451,9 @@ def lith_age_depth(figure):
     x_lad_2 = dist_max
     z_lad_2 = lith_age_depth
     LAD = open('lad.xy','w')
-    print >> LAD, ">"
-    print >> LAD, "%g %g" % (x_lad_1,z_lad_1)
-    print >> LAD, "%g %g" % (x_lad_2,z_lad_2)
+    print(">", file=LAD)
+    print("%g %g" % (x_lad_1,z_lad_1), file=LAD)
+    print("%g %g" % (x_lad_2,z_lad_2), file=LAD)
     LAD.close()
 #=====================================================================
 #=====================================================================
@@ -2539,7 +2536,7 @@ def get_radii_list(modelname, step):
     nodez = int(nodez)
 
     ### read z coordinate ###
-    radii_list = range(nodez)
+    radii_list = list(range(nodez))
     for i in range(nodez):
         radii_list[i] = float(data.readline().split()[2])
 
@@ -2667,7 +2664,7 @@ def make_annular_section(figure):
 
     # loop over levels
     for z in range(min - 1 , max, 1):
-        if verbose: print
+        if verbose: print()
         if verbose: print(dt.now(), 'make_annular_section: LOOP over levels: z = ', z)
 
         # create a combined file, a meadian file and grdfile 
@@ -2812,7 +2809,7 @@ def start_gmt(settings, page):
     # preliminary GMT cmds
     cmd = ''
     cmd += 'gmtset PAPER_MEDIA letter'
-    if 'eps' in settings.keys():
+    if 'eps' in list(settings.keys()):
         cmd += '+'
     cmd += '\n'
     cmd += 'gmtset MEASURE_UNIT inch\n'
@@ -2867,9 +2864,9 @@ def start_gmt(settings, page):
 
     # write the text file
     if page.get('page_orientation') == 'landscape':
-        print >> file, '5.5 8.0 18 0 0 CT %(title)s' % vars()
+        print('5.5 8.0 18 0 0 CT %(title)s' % vars(), file=file)
     elif page.get('page_orientation') == 'portrait':
-        print >> file, '4.25 10.5 18 0 0 CT %(title)s' % vars()
+        print('4.25 10.5 18 0 0 CT %(title)s' % vars(), file=file)
 
     file.close()
  
@@ -2937,7 +2934,7 @@ def end_gmt(settings, page):
 
 
     # write the text file
-    print >> file, '%(x)s %(y)s 12 0 0 CB Page %(n)s' % vars()
+    print('%(x)s %(y)s 12 0 0 CB Page %(n)s' % vars(), file=file)
 
     file.close()
  

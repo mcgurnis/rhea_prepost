@@ -34,7 +34,7 @@ EXAMPLES:
 #=====================================================================
 # imports
 import getopt, os, string, sys, math, time
-import datetime
+from datetime import datetime as dt
 import pprint
 
 from Script_Utilities import now
@@ -74,7 +74,7 @@ def main():
         pprint.PrettyPrinter(indent=2).pprint(settings)
         print(" ")
 
-    if 'test_only' in settings.keys() :
+    if 'test_only' in list(settings.keys()) :
         print(dt.now(), 'main: test_only exit')
         sys.exit()
     
@@ -123,8 +123,8 @@ def get_options( settings ) :
     # more options go here
 
     # build the short string and long list 
-    short_opts = "".join(options.keys())
-    long_opts = options.values()
+    short_opts = "".join(list(options.keys()))
+    long_opts = list(options.values())
 
     # use the getopt library
     try:
@@ -165,11 +165,11 @@ def check_settings( settings ):
 
     global verbose
 
-    if 'help' in settings.keys() : 
+    if 'help' in list(settings.keys()) : 
         print(__doc__)
         sys.exit()
     
-    if 'verbose' in settings.keys():
+    if 'verbose' in list(settings.keys()):
         verbose = True
         # propagate verbosity to other modules
         GMT_Utilities.verbose = verbose
@@ -178,7 +178,7 @@ def check_settings( settings ):
     print(settings)
 
     # read settings from control file 
-    if 'file' in settings.keys() :
+    if 'file' in list(settings.keys()) :
         parse_control_file( settings )
 
     # check required settings

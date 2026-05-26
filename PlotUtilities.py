@@ -1139,14 +1139,10 @@ def get_level_from_depth(parameters_file, test_depth):
 
     level = zlist[i][0]
     if verbose: 
-        print(dt.astimezonenow(),'get_level_from_depth:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
-        print(dt.now(),'get_level_from_depth:',\
-        'test=', test_depth)
-        print(dt.now(),'get_level_from_depth:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
-        print(dt.now(),'get_level_from_depth:',\
-        'index=', i, 'level=', zlist[i][0])
+        print(dt.astimezonenow(),'get_level_from_depth:',        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(),'get_level_from_depth:',        'test=', test_depth)
+        print(dt.now(),'get_level_from_depth:',        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(),'get_level_from_depth:',        'index=', i, 'level=', zlist[i][0])
     return level
 #=====================================================================
 def get_level_from_z(parameters_file, test_z):
@@ -1192,14 +1188,10 @@ def get_level_from_z(parameters_file, test_z):
 
     level = zlist[i][0]
     if verbose: 
-        print(dt.now(),'get_level_from_z:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
-        print(dt.now(),'get_level_from_z:',\
-        'test=', test_z)
-        print(dt.now(),'get_level_from_z:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
-        print(dt.now(),'get_level_from_z:',\
-        'index=', i, 'level=', zlist[i][0])
+        print(dt.now(),'get_level_from_z:',        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(),'get_level_from_z:',        'test=', test_z)
+        print(dt.now(),'get_level_from_z:',        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(),'get_level_from_z:',        'index=', i, 'level=', zlist[i][0])
     return level
 #=====================================================================
 def read_citcoms_time_file(parameters_file):
@@ -1428,12 +1420,9 @@ def get_step_from_runtime(parameters_file, test_runtime):
 
     step = list[i][0]
     if verbose:
-        print(dt.now(), 'get_step_from_runtime:', \
-        'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i)
-        print(dt.now(), 'get_step_from_runtime:', \
-        'test=', test_runtime)
-        print(dt.now(), 'get_step_from_runtime:', \
-        'next=', list[next_i],'delta=', next_delta,'i=', prev_i)
+        print(dt.now(), 'get_step_from_runtime:',         'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i)
+        print(dt.now(), 'get_step_from_runtime:',         'test=', test_runtime)
+        print(dt.now(), 'get_step_from_runtime:',         'next=', list[next_i],'delta=', next_delta,'i=', prev_i)
     return step
 #=====================================================================
 def get_time(pfile,time):
@@ -1670,7 +1659,7 @@ def read_citcoms_tracers_into_dictionary(figure):
                 #    print now(), 'read_citcoms_tracers_into_dictionary: t_ll =', t_ll, ', t,p,r', theta, phi, r, 'flav=', flavor
 
                 # sort tracer by flavors into dictionaries
-                for key in dict.keys():
+                for key in list(dict.keys()):
 
                     # flavor not set: 
                     if dict[key]['flavor'] == None:
@@ -2078,7 +2067,7 @@ def test_cap_reader():
     #cap_to_xy_file('test.xy', 'pid7038.cfg', 'vx', 300, [0], range(129), range(129), [64])
 
     # vertical slice, X vs. Z(0 to 9), at Y = 0
-    cap_to_xy_file('TEST.xy', 'xslice', 'pid18523.cfg', 'vx', 300, [0], None, [0], range(0,10))
+    cap_to_xy_file('TEST.xy', 'xslice', 'pid18523.cfg', 'vx', 300, [0], None, [0], list(range(0,10)))
 # def cap_to_xy_file(out_name, type, parameters_file, field, time, cap_list, xlist, ylist, zlist):
 #=====================================================================
 if __name__ == '__main__':

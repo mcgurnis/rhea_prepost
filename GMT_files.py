@@ -36,7 +36,7 @@ def Vfile(zfile,velfile,nc,nodex,nodey,nprocx,nprocy):
 
     gmtchar=">"
     nodes_per_proc=nodex*nodey
-    lines=range(nodes_per_proc)
+    lines=list(range(nodes_per_proc))
     #long=range(nodes_per_proc)
     #lat=range(nodes_per_proc)
     #vx=range(nodes_per_proc)
@@ -85,7 +85,7 @@ def Vfile(zfile,velfile,nc,nodex,nodey,nprocx,nprocy):
             length=scalev*math.hypot(vx,vy)
             print(dt.now(), ' velocity =', length,' cm/yr')
             length=length/25.0
-            output.write('%f %f %f %f\n' % (long,lat,azimuth,length))
+            output.write('%f %f %f %f\n' % (int,lat,azimuth,length))
 
     input.close()
     output.close()
@@ -96,19 +96,19 @@ def Tfile(zfile,tempfile,nc,nodex,nodey,nprocx,nprocy):
 
     gmtchar=">"
     nodes_per_proc=nodex*nodey
-    lines=range(nodes_per_proc)
-    long=range(nodes_per_proc)
-    lat=range(nodes_per_proc)
-    temp=range(nodes_per_proc)
+    lines=list(range(nodes_per_proc))
+    long=list(range(nodes_per_proc))
+    lat=list(range(nodes_per_proc))
+    temp=list(range(nodes_per_proc))
     input=open(zfile)
     output=open(tempfile,"w")
 
     for n in range(nodes_per_proc):
         line=input.readline()
-        long[n]=float(line.split(' ')[0])
+        int[n]=float(line.split(' ')[0])
         lat[n]=float(line.split(' ')[1])
         temp[n]=float(line.split(' ')[5])
-        output.write('%f %f %f\n' % (long[n],lat[n],temp[n]))
+        output.write('%f %f %f\n' % (int[n],lat[n],temp[n]))
 
     input.close()
     output.close()
@@ -123,19 +123,19 @@ def Vifile(zfile,viscfile,nc,nodex,nodey,nprocx,nprocy):
 
     gmtchar=">"
     nodes_per_proc=nodex*nodey
-    lines=range(nodes_per_proc)
-    long=range(nodes_per_proc)
-    lat=range(nodes_per_proc)
-    visc=range(nodes_per_proc)
+    lines=list(range(nodes_per_proc))
+    long=list(range(nodes_per_proc))
+    lat=list(range(nodes_per_proc))
+    visc=list(range(nodes_per_proc))
     input=open(zfile)
     output=open(viscfile,"w")
 
     for n in range(nodes_per_proc):
         line=input.readline()
-        long[n]=float(line.split(' ')[0])
+        int[n]=float(line.split(' ')[0])
         lat[n]=float(line.split(' ')[1])
         visc[n]=float(line.split(' ')[6])
-        output.write('%f %f %f\n' % (long[n],lat[n],log(visc[n])))
+        output.write('%f %f %f\n' % (int[n],lat[n],log(visc[n])))
 
     input.close()
     output.close()
@@ -149,10 +149,10 @@ def Sfile(zfile,surffile,nc,nodex,nodey,nprocx,nprocy,scale_s):
 
     gmtchar=">"
     nodes_per_proc=nodex*nodey
-    lines=range(nodes_per_proc)
-    long=range(nodes_per_proc)
-    lat=range(nodes_per_proc)
-    surf=range(nodes_per_proc)
+    lines=list(range(nodes_per_proc))
+    long=list(range(nodes_per_proc))
+    lat=list(range(nodes_per_proc))
+    surf=list(range(nodes_per_proc))
     input=open(zfile)
     output=open(surffile,"w")
 
@@ -160,13 +160,13 @@ def Sfile(zfile,surffile,nc,nodex,nodey,nprocx,nprocy,scale_s):
     line=input.readline()
     for n in range(nodes_per_proc):
         line=input.readline()
-        long[n]=float(line.split(' ')[1])
-        long[n]=long[n]*r2d
+        int[n]=float(line.split(' ')[1])
+        int[n]=int[n]*r2d
         lat[n]=float(line.split(' ')[0])
         lat[n] = 90 - lat[n]*r2d
         surf[n]=float(line.split(' ')[2])
         surf[n]=scale_s*surf[n]
-        output.write('%f %f %f\n' % (long[n],lat[n],surf[n]))
+        output.write('%f %f %f\n' % (int[n],lat[n],surf[n]))
 
     input.close()
     output.close()
@@ -178,15 +178,15 @@ def Efile(zfile,meshfile,procfile,nc,nodex,nodey,nprocx,nprocy):
 
     gmtchar=">"
     nodes_per_proc=nodex*nodey
-    long=range(nodes_per_proc)
-    lat=range(nodes_per_proc)
+    long=list(range(nodes_per_proc))
+    lat=list(range(nodes_per_proc))
     input=open(zfile)
     output=open(meshfile,"w")
     proc_poly=open(procfile,"w")
 
     for n in range(nodes_per_proc):
         line=input.readline()
-        long[n]=float(line.split(' ')[0])
+        int[n]=float(line.split(' ')[0])
         lat[n]=float(line.split(' ')[1])
 
     
@@ -194,13 +194,13 @@ def Efile(zfile,meshfile,procfile,nc,nodex,nodey,nprocx,nprocy):
         output.write('%s\n' % gmtchar)
         for j in range(nodey):
             n = i*nodey + j
-            output.write('%f %f\n' % (long[n],lat[n]))
+            output.write('%f %f\n' % (int[n],lat[n]))
 
     for j in range(nodey):
         output.write('%s\n' % gmtchar)
         for i in range(nodex):
             n = i*nodey + j
-            output.write('%f %f\n' % (long[n],lat[n]))
+            output.write('%f %f\n' % (int[n],lat[n]))
 
     red   = [250,   0, 150, 200, 250, 250, 150, 250, 250, 150, 150, 250]
     green = [150, 250, 150, 200, 150, 250, 150, 250, 150, 250, 150, 250]
@@ -222,25 +222,25 @@ def Efile(zfile,meshfile,procfile,nc,nodex,nodey,nprocx,nprocy):
                 jj=0
                 j=ny*(noy-1)+jj
                 n = i*nodey + j
-                proc_poly.write('%f %f\n' % (long[n],lat[n]))
+                proc_poly.write('%f %f\n' % (int[n],lat[n]))
             for jj in range(noy):
                 ii=nox-1
                 i=nx*(nox-1)+ii
                 j=ny*(noy-1)+jj
                 n = i*nodey + j
-                proc_poly.write('%f %f\n' % (long[n],lat[n]))
+                proc_poly.write('%f %f\n' % (int[n],lat[n]))
             for ii in range(nox):
                 i=nx*(nox-1)-ii
                 jj=noy-1
                 j=ny*(noy-1)+jj
                 n = i*nodey + j
-                proc_poly.write('%f %f\n' % (long[n],lat[n]))
+                proc_poly.write('%f %f\n' % (int[n],lat[n]))
             for jj in range(noy):
                 ii=0
                 i=nx*(nox-1)+ii
                 j=ny*(noy-1)+noy-1-jj
                 n = i*nodey + j
-                proc_poly.write('%f %f\n' % (long[n],lat[n]))
+                proc_poly.write('%f %f\n' % (int[n],lat[n]))
 
     input.close()
     output.close()

@@ -150,11 +150,11 @@ class Parser(object):
 
     def options(self):
         """Return a list of option names."""
-        return self.__options.keys()
+        return list(self.__options.keys())
 
     def has_option(self, option):
         """Check for the existence of a given option."""
-        return self.__options.has_key(option)
+        return option in self.__options
 
     def read(self, filename):
         """Read and parse a filename."""
@@ -210,7 +210,7 @@ class Parser(object):
         states = {'1': 1, 'yes': 1, 'true': 1, 'on': 1,
                   '0': 0, 'no': 0, 'false': 0, 'off': 0}
         v = self.get(option)
-        if not states.has_key(string.lower(v)):
+        if string.lower(v) not in states:
             raise ValueError("Not a boolean: %s" % v)
         return states[string.lower(v)]
 
@@ -268,7 +268,7 @@ if __name__ == '__main__':
     #print parser.options()
 
     while 1:
-        keyin = raw_input('key name: ')
+        keyin = input('key name: ')
         if keyin:
             for f in (parser.getint, parser.getfloat, parser.getboolean, parser.getstr, parser.getintvector, parser.getfloatvector):
                 try:

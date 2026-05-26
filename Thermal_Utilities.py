@@ -77,7 +77,7 @@ def erf(x):
 def erf_array(n):
    
     #predefine the array with length n 
-    profile=range(0,n)
+    profile=list(range(0,n))
     #Define the central value to be zero
     if(n%2):
         profile[(n-1)/2]=0.0

@@ -59,7 +59,7 @@ Return value:
 
     # Use grdmath to generate a grid with only 1 or 0 values
     cmd = 'grdmath -V %(mask)s ISNAN = %(isnan)s' % vars()
-    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)  
+    print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # Use grdclip to change the 0's to NAN's
@@ -117,7 +117,7 @@ Return value:
     # NOTE: -N out/edge/in
     cmd = 'grdmask %(xy)s -G%(tmp_grid_from_mask)s -R%(grid)s -V -m -NNaN/1/1 ' % vars()
     # will lat,lon vs. lon,lat ever go away?
-    if args.has_key(':') :
+    if ':' in args :
       toggle = args[':'] 
       cmd += '-%(toggle)s' % vars()
     print(dt.now(), 'mask_grid_by_xy_file: cmd =\n', cmd)
@@ -174,7 +174,7 @@ Return value:
 
     cmd += 'gmtset MEASURE_UNIT inch\n'
 
-    for key in args.keys():
+    for key in list(args.keys()):
         if key.startswith('gmtset '):
             cmd += '%s %s\n' % ( key, args[key] )
 
@@ -240,7 +240,7 @@ Return value:
 
     # close postscript 
     args['O'] = ' ' # ensure overlay 
-    if args.has_key('K'):
+    if 'K' in args:
         del args['K'] # continuation no longer required
     pstext(args)
 
@@ -589,7 +589,7 @@ Return value:
 
 '''
     # first, check for existing file name; 
-    if args.has_key('cpt_file'):
+    if 'cpt_file' in args:
         # update args
         args['C'] = cpt_file
         return
@@ -608,29 +608,29 @@ Return value:
     # finally, check for value from grid info 
     use_T = True
 
-    if args.has_key('cpt_z0'):
+    if 'cpt_z0' in args:
         z0 = args.get('cpt_z0')
-    elif args.has_key('grid_min'):
+    elif 'grid_min' in args:
         z0 = args.get('grid_min')
-    elif args.has_key('z0'):
+    elif 'z0' in args:
         z0 = args['z0']
     else:
         use_T = False
         
-    if args.has_key('cpt_z1'): 
+    if 'cpt_z1' in args: 
         z1 = args.get('cpt_z1')
-    elif args.has_key('grid_max'):
+    elif 'grid_max' in args:
         z1 = args.get('grid_max')
-    elif args.has_key('z1'):
+    elif 'z1' in args:
         z1 = args['z1']
     else:
         use_T = False
 
-    if args.has_key('cpt_dz'):
+    if 'cpt_dz' in args:
         dz = args.get('cpt_dz')
-    elif args.has_key('grid_increment'):
+    elif 'grid_increment' in args:
         dz = args.get('grid_increment')
-    elif args.has_key('dz'):
+    elif 'dz' in args:
         dz = args['dz']
     else:
         use_T = False
@@ -1168,7 +1168,7 @@ def plot_image( args ):
 
     # save any original -R passed in
     R = ''
-    if args.has_key('R'):
+    if 'R' in args:
         R = args['R']
 
     # start up the gmt seqence 
@@ -1281,7 +1281,7 @@ Resets the values in the dictionary:
     print("=================================")
     # Transition zone along Latitudinal slice
     if dict['x'] != 'none':
-        longs=range(  int((float(dict['fi_min'])) *r2d) , int((float(dict['fi_max']))*r2d))
+        longs=list(range(  int((float(dict['fi_min'])) *r2d) , int((float(dict['fi_max']))*r2d)))
         print("transition zone at depth in km")
         print(     Transition_depth)
         print("transition zone at non-dimensional depth")
@@ -1295,7 +1295,7 @@ Resets the values in the dictionary:
         dict['N']='-N'
 	# Transition zone along Longitudinal slice		
     if dict['y'] != 'none':
-        lats=range(  90 - int((float(dict['theta_max']))*r2d) , 90 - int((float(dict['theta_min'])) *r2d))
+        lats=list(range(  90 - int((float(dict['theta_max']))*r2d) , 90 - int((float(dict['theta_min'])) *r2d)))
         print("transition zone at depth in km")
         print(     Transition_depth)
         print("transition zone at non-dimensional depth")

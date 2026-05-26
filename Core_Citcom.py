@@ -57,7 +57,7 @@ Return value:
     settings = {}
 
     file = open(filename)
-    if verbose: print(dt.now(), 'parse_citcoms_cfg_file: read: %(filename)s' % vars())  
+    if verbose: print(dt.now(), 'parse_citcoms_cfg_file: read: %(filename)s' % vars())
 
     try : 
         # read into a list of lines
@@ -229,7 +229,7 @@ WARNING:
     # set cap list from nproc_surf
     cap_list = [0]
     if nproc_surf == 12:
-        cap_list = range(12)
+        cap_list = list(range(12))
 
     # reset cap list if requested 
     if args.get('cap_list'):
@@ -257,8 +257,8 @@ WARNING:
         nodey = int(nodey)
         nodez = int(nodez)
 
-        lat_deg=range(nodex*nodey)
-        lon_deg=range(nodex*nodey)
+        lat_deg=list(range(nodex*nodey))
+        lon_deg=list(range(nodex*nodey))
 
         if verbose: 
             print(dt.now(), 'write_cap_polygons: loop over file: ', inp)
@@ -394,7 +394,7 @@ Return value:
     # set cap list from nproc_surf
     cap_list = [0] 
     if nproc_surf == 12: 
-        cap_list = range(12)
+        cap_list = list(range(12))
 
     # reset cap list if requested 
     if args.get('cap_list'):
@@ -668,7 +668,7 @@ Return value:
     # set cap list from nproc_surf
     cap_list = [0] 
     if nproc_surf == 12: 
-        cap_list = range(12)
+        cap_list = list(range(12))
 
     # reset cap list if requested 
     if args.get('cap_list'):
@@ -818,7 +818,7 @@ Return value:
 
                         # optionally, add the local lon to keep vectors 
                         # relative to local azimuth
-                        if args.has_key('polar_angular_offset') :
+                        if 'polar_angular_offset' in args :
                             # adjust azimuth for local position
                             azimuth += lon
                             # adjust azimuth for polar projection off set
@@ -954,7 +954,7 @@ Return value:
     # set cap list from nproc_surf
     cap_list = [0] 
     if nproc_surf == 12: 
-        cap_list = range(12)
+        cap_list = list(range(12))
 
     # reset cap list if requested 
     if args.get('cap_list'):
@@ -1103,7 +1103,7 @@ Return value:
 
                         # optionally, add the local lon to keep vectors 
                         # relative to local azimuth
-                        if args.has_key('polar_angular_offset') :
+                        if 'polar_angular_offset' in args :
                             # adjust azimuth for local position
                             azimuth += lat
                             # adjust azimuth for polar projection off set
@@ -1422,9 +1422,9 @@ Return value:
     step = list[i][0]
 
     if verbose:
-        print(dt.now()), 'get_step_from_age:', 'prev=', list[prev_i], 'delta=', prev_delta, 'i=', prev_i
-        print(dt.now()), 'get_step_from_age:', 'test=', test_age
-        print(dt.now()), 'get_step_from_age:', 'next=', list[next_i], 'delta=', next_delta, 'i=', prev_i
+        print(dt.now(), 'get_step_from_age:', 'prev=', list[prev_i], 'delta=', prev_delta, 'i=', prev_i)
+        print(dt.now(), 'get_step_from_age:', 'test=', test_age)
+        print(dt.now(), 'get_step_from_age:', 'next=', list[next_i], 'delta=', next_delta, 'i=', prev_i)
 
     return step
 #=====================================================================
@@ -1489,12 +1489,9 @@ Return value:
 
     step = list[i][0]
     if verbose:
-        print(dt.now(), 'get_step_from_runtime:', \
-        'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i)
-        print(dt.now(), 'get_step_from_runtime:', \
-        'test=', test_runtime)
-        print(dt.now(), 'get_step_from_runtime:', \
-        'next=', list[next_i],'delta=', next_delta,'i=', prev_i)
+        print(dt.now(), 'get_step_from_runtime:',         'prev=', list[prev_i],'delta=', prev_delta, 'i=', prev_i)
+        print(dt.now(), 'get_step_from_runtime:',         'test=', test_runtime)
+        print(dt.now(), 'get_step_from_runtime:',         'next=', list[next_i],'delta=', next_delta,'i=', prev_i)
     return step
 #=====================================================================
 #=====================================================================
@@ -1845,14 +1842,10 @@ Return value:
 
     z = zlist[i][0]
     if verbose: 
-        print(dt.now(), 'get_z_from_depth:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
-        print(dt.now(), 'get_z_from_depth:',\
-        'test=', test_depth)
-        print(dt.now(), 'get_z_from_depth:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
-        print(dt.now(), 'get_z_from_depth:',\
-        'index=', i, 'z=', zlist[i][0])
+        print(dt.now(), 'get_z_from_depth:',        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(), 'get_z_from_depth:',        'test=', test_depth)
+        print(dt.now(), 'get_z_from_depth:',        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(), 'get_z_from_depth:',        'index=', i, 'z=', zlist[i][0])
     return z
 #=====================================================================
 #=====================================================================
@@ -1913,14 +1906,10 @@ Return value:
 
     z = zlist[i][0]
     if verbose: 
-        print(dt.now(), 'get_z_from_r:',\
-        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
-        print(dt.now(), 'get_z_from_r:',\
-        'test=', test_r)
-        print(dt.now(), 'get_z_from_r:',\
-        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
-        print(dt.now(), 'get_z_from_r:',\
-        'index=', i, 'level=', zlist[i][0])
+        print(dt.now(), 'get_z_from_r:',        'prev=', zlist[prev_i],'delta=',prev_delta,'i=',prev_i)
+        print(dt.now(), 'get_z_from_r:',        'test=', test_r)
+        print(dt.now(), 'get_z_from_r:',        'next=', zlist[next_i],'delta=',next_delta,'i=',next_i)
+        print(dt.now(), 'get_z_from_r:',        'index=', i, 'level=', zlist[i][0])
     return z
 #=====================================================================
 #=====================================================================
@@ -1951,9 +1940,9 @@ Return value:
     # convert strings to numbers
     radius_outer = float ( radius_outer )
 
-    #if verbose: print(dt.now()), "get_phase: radius_outer =", radius_outer
-    #if verbose: print(dt.now()), "get_phase: radius =", radius
-    #if verbose: print(dt.now()), "get_phase: t =", t
+    #if verbose: print(dt.now(), "get_phase: radius_outer =", radius_outer)
+    #if verbose: print(dt.now(), "get_phase: radius =", radius)
+    #if verbose: print(dt.now(), "get_phase: t =", t)
 
     # initial total phase value
     total_phase = 0.0
@@ -2034,7 +2023,7 @@ def test_time_functions():
     print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> age = %(age)f' % vars())
 
     runtime = get_runtime_from_step( file, test_step )
-    print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> runtime = %(runtime)f' % vars())    
+    print(dt.now(), 'test_time_functions: test_step = %(test_step)i --> runtime = %(runtime)f' % vars())
 
     step = get_step_from_age( file, test_age )
     print(dt.now(), 'test_time_functions: test_age = %(test_age)f --> step = %(step)i' % vars())
@@ -2068,7 +2057,7 @@ def test_depth_functions():
     print(' ') 
 
     # test z from depth for some values, 0 to 2000
-    d_list = range(0, 2000, 200)
+    d_list = list(range(0, 2000, 200))
     for d in d_list:
         z = get_z_from_depth(pid_file, d) 
         print(dt.now(), 'test_depth_functions: get_z_from_depth(pid_file, d) z = %(z)s; d = %(d)s' % vars())
@@ -2094,7 +2083,7 @@ def test_cap_polygons( argv ):
     d['citcoms_pid'] = pid_file
     d['time'] = time 
     d['cap_list'] = [0]
-    d['cap_list'] = range(12)
+    d['cap_list'] = list(range(12))
 
     write_cap_polygons( d )
 #=====================================================================

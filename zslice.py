@@ -69,8 +69,8 @@ def zslice(prefix, *ilayers):
     nlayer = len(layers)
 
     ## allocate arrays
-    output = range(nlayer)
-    lines = range(nodez)
+    output = list(range(nlayer))
+    lines = list(range(nodez))
 
     ## open output files
     for i in range(nlayer):
@@ -111,7 +111,7 @@ def zslice(prefix, *ilayers):
 def check_layers(layers, nodez):
     if layers == ():
         ## if empty, we will slice every layer
-        layers = range(nodez)
+        layers = list(range(nodez))
     else:
         ## otherwise, check bounds of layers
         for layer in layers:

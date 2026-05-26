@@ -17,7 +17,7 @@ SYNOPSIS
 #=====================================================================
 # imports
 import getopt, os, string, sys, math, time, subprocess
-import datetime
+from datetime import datetime as dt
 import pprint
 #=====================================================================
 #=====================================================================
@@ -102,8 +102,7 @@ def parse_control_file( settings ):
             settings[key] = val
 
     if verbose:
-        print(dt.now(), 'parse_control_file: settings =\n', \
-            pprint.PrettyPrinter(indent=2).pprint(settings))
+        print(dt.now(), 'parse_control_file: settings =\n',             pprint.PrettyPrinter(indent=2).pprint(settings))
 #=====================================================================
 #=====================================================================
 #=====================================================================

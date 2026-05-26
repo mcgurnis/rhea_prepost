@@ -186,7 +186,7 @@ def test_S20RTS():
     res_list = ['1.0', '0.5', '0.1']
 
     # depth_list = range(100,200,100) short list to test 
-    depth_list = range(100,2900,100) # full list for production
+    depth_list = list(range(100,2900,100)) # full list for production
 
     # loop over resolutions 
     for r in res_list: 
