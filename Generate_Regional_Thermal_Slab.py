@@ -72,7 +72,7 @@ dz2=dz**2
 dtxy = dx2*dy2/( 2*kappa*(dx2+dy2) )
 dtz = dz**2/( 2*kappa )
 dt=min(dtxy,dtz)/2.0
-print 'dt=',dt,' this should be in seconds'
+print('dt=',dt,' this should be in seconds')
 dt=0.5*dt # This is a factor to avoid instability
 
 timesteps=1  # Number of time-steps to evolve system.
@@ -145,12 +145,12 @@ global_convergence_grd_file="/net/holmes/home4/gurnis/Rhea_runs/Convergence_Velo
 #=====================================================================
 def usage():
 
-    print ''' Generate_Regional_Thermal_Slab.py
+    print(''' Generate_Regional_Thermal_Slab.py)
 
     where mode =
 
 
-'''
+''')
 
     sys.exit(0)
 #=====================================================================
@@ -161,8 +161,8 @@ def update_array_for_variable_descent(sn,xy_file_name,proj,region):
 
     cpt_file="/net/holmes/home4/gurnis/Rhea_runs/Convergence_Velocity/convergence.cpt"
 
-    cmd="grdimage %s %s -C%s -R%s -Ba10f1/a10f1 -P -K > %s" % (global_convergence_grd_file,proj,cpt_file,region,psfile)
-    print cmd
+    cmd="gmt grdimage %s %s -C%s -R%s -Ba10f1/a10f1 -P -K > %s" % (global_convergence_grd_file,proj,cpt_file,region,psfile)
+    print(cmd)
     os.system(cmd)
     overlay_plate_boundaries(psfile,0,1)
 
@@ -171,8 +171,8 @@ def update_array_for_variable_descent(sn,xy_file_name,proj,region):
     Two_D_Array=sp.zeros([nx,ny])
 
     convergence_xyz="convergence.xyz"
-    cmd="grdtrack %s -G%s > %s" % (xy_file_name,global_convergence_grd_file,convergence_xyz)
-    print cmd
+    cmd="gmt grdtrack %s -G%s > %s" % (xy_file_name,global_convergence_grd_file,convergence_xyz)
+    print(cmd)
     os.system(cmd)
 
     XYZ_FILE=open(convergence_xyz)
@@ -190,20 +190,20 @@ def update_array_for_variable_descent(sn,xy_file_name,proj,region):
     XYZ_FILE.close()
 
     for k, layer_depth in enumerate(layer_depths):
-        print ' layer_depth=',layer_depth 
+        print(' layer_depth=',layer_depth) 
         #duration_in_sec 
         Duration[:,:,k]=(layer_depth*1000)/Two_D_Array[:,:]
         #DeltaT[:,:,k]=Two_D_Array[:,:]
 
 
-    print 'dt',dt
-    print 'depth_max',depth_max
-    print 'Duration.max=',Duration.max
+    print('dt',dt)
+    print('depth_max',depth_max)
+    print('Duration.max=',Duration.max)
     timesteps=int(Duration.max()/dt)
-    print 'timesteps=',timesteps
+    print('timesteps=',timesteps)
     DeltaT=Duration/timesteps
-    print 'DeltaT.min',DeltaT.min()
-    print 'DeltaT.max',DeltaT.max()
+    print('DeltaT.min',DeltaT.min())
+    print('DeltaT.max',DeltaT.max())
 
     return
 #=====================================================================
@@ -213,7 +213,7 @@ def diffuse_with_filter(sn,layer_depths,ic_grd_file_names,convergence_vel):
 
     directory="GRD_FINAL/"+sn
     cmd="mkdir %s" % (directory)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     grd_file_names=[]
@@ -227,19 +227,19 @@ def diffuse_with_filter(sn,layer_depths,ic_grd_file_names,convergence_vel):
         #dt_kappa = time_in_sec*therm_diff
         # 6 times the normal distance in a Gaussian Filter
         diff_dist=0.001 + 9.0*math.sqrt(therm_diff*time_in_sec)/1000.0
-        cmd = "grdfilter %s -D1 -Fg%s -G%s" % (in_grd_file,diff_dist,out_grd_file)
+        cmd = "gmt grdfilter %s -D1 -Fg%s -G%s" % (in_grd_file,diff_dist,out_grd_file)
         # CURV(T) = Laplacian(T)
-        #cmd = "grdmath %s CURV %g MUL = %s" % (in_grd_file,dt_kappa,out_grd_file)
-        print cmd
+        #cmd = "gmt grdmath %s CURV %g MUL = %s" % (in_grd_file,dt_kappa,out_grd_file)
+        print(cmd)
         os.system(cmd)
 
         #Make a plot of the temperature with overlays for each depth
         psfile="temp_final_%03d.ps" % int(layer)
-        cmd="makecpt -Cpolar -T0.0/1.0/0.1 -D > temp.cpt"
-        print cmd
+        cmd="gmt makecpt -Cpolar -T0.0/1.0/0.1 -D > temp.cpt"
+        print(cmd)
         os.system(cmd)
-        cmd="grdimage %s %s -Ctemp.cpt -R%s -Ba10f1/a10f1 -P -K > %s" % (out_grd_file,proj,region,psfile)
-        print cmd
+        cmd="gmt grdimage %s %s -Ctemp.cpt -R%s -Ba10f1/a10f1 -P -K > %s" % (out_grd_file,proj,region,psfile)
+        print(cmd)
         os.system(cmd)
 
         overlay_plate_boundaries(psfile,0,1)
@@ -323,8 +323,8 @@ def T_grd2array(nx,ny,grdfile,xyfile_name):
     Two_D_Array=sp.zeros([nx,ny])
 
     tmp_file_name="tmp"+(str(datetime.datetime.now())[18:26])+".xyz"
-    cmd="grdtrack %s -G%s > %s" % (xyfile_name,grdfile,tmp_file_name)
-    print cmd
+    cmd="gmt grdtrack %s -G%s > %s" % (xyfile_name,grdfile,tmp_file_name)
+    print(cmd)
     os.system(cmd)
 
     XYZ_FILE=open(tmp_file_name)
@@ -353,7 +353,7 @@ def load_T_from_grd_2_3DArray(grd_file_names):
 
     xy_file_name="coords_2d.xy"
     XY_FILE=open(xy_file_name,"w")
-    print 'nx, ny',nx, ny
+    print('nx, ny',nx, ny)
     for i in range(nx):
         for j in range(ny):
             theta=(90.0-lat_max)+j*dtheta*r2d
@@ -363,7 +363,7 @@ def load_T_from_grd_2_3DArray(grd_file_names):
     XY_FILE.close()
             
     for k, layer_depth in enumerate(layer_depths):
-        print ' layer_depth=',layer_depth 
+        print(' layer_depth=',layer_depth) 
 
         grdfile=grd_file_names[k]
 
@@ -378,7 +378,7 @@ def generate_arrays(depth_trans_diff,width_trans_diff,convergence_vel):
 
     # Limit the layer depths to only Rhea-2 depths, which would be
     # uneven and limit the diffusion to only the horizontal direction
-    print'layer_depths',layer_depths
+    print('layer_depths',layer_depths)
 
     long_min = float(gmt_dict['west'])
     long_max = float(gmt_dict['east'])
@@ -420,7 +420,7 @@ def generate_arrays(depth_trans_diff,width_trans_diff,convergence_vel):
     #    d=int(dr*(nz-k-1)*earth_radius)
     #    print 'd:',d
     #    layer_depths.append(d)
-    print'layer_depths',layer_depths
+    print('layer_depths',layer_depths)
 
     return
 #=====================================================================
@@ -428,7 +428,7 @@ def diffuse():
     global nx,ny,nz,T,Tf,Th,Theta,CosTheta,SinTheta,R,Alpha,DeltaT,Duration, layer_depths
 
     for n in range(1, timesteps+1):
-        print "Computing Tf & Th for n =", n
+        print("Computing Tf & Th for n =", n)
         Horizontal_Sph_Diffuse()
         #Full_Sph_Diffuse()
         #T=(1.0-Alpha)*Th+Alpha*Tf
@@ -464,11 +464,11 @@ def Plot_two_times(Ta,Tb,nx,ny,nz,proj,region,slab):
     grd_a=GMT_Utilities.mk_grd(filea, region, res, tension, T_min, T_max)
     grd_b=GMT_Utilities.mk_grd(fileb, region, res, tension, T_min, T_max)
 
-    cmd="grdimage %s %s -R%s -Ctemp.cpt -B10/10 -P -X1.0 -Y7.0 -K  > %s" % (grd_a,proj,region,psfile)
-    print cmd
+    cmd="gmt grdimage %s %s -R%s -Ctemp.cpt -B10/10 -P -X1.0 -Y7.0 -K  > %s" % (grd_a,proj,region,psfile)
+    print(cmd)
     os.system(cmd)
-    cmd="grdimage %s -J -R%s -Ctemp.cpt -B -P -X0.0 -Y-4.0 -O >> %s" % (grd_b,region,psfile)
-    print cmd
+    cmd="gmt grdimage %s -J -R%s -Ctemp.cpt -B -P -X0.0 -Y-4.0 -O >> %s" % (grd_b,region,psfile)
+    print(cmd)
     os.system(cmd)
 
     make_pdf(psfile,slab)
@@ -491,35 +491,35 @@ def make_section(id,temp_grd_files,slab,depths,label,T_use,W_use):
     section_depth=700.0
     psfile="%s_section_%d.%s.ps" % (slab,id+1,label)
 
-    print 'temp_grd_files',temp_grd_files
+    print('temp_grd_files',temp_grd_files)
     temp_sec_grd, R, dist_max = GMT_Utilities.mk_grd_sec(id, prefix, section_depth, depths, temp_grd_files, profile, grid_min, grid_max)
 
-    print "temp_sec_grd, R, dist_max=",temp_sec_grd, R, dist_max
+    print("temp_sec_grd, R, dist_max=",temp_sec_grd, R, dist_max)
 
-    cmd="grdimage %s -Jx0.005/-0.005 -Ctemp.cpt -R%s -B200f50/200f100WeSn -X1.0 -Y3.0 -K -P > %s" % (temp_sec_grd,R,psfile)
-    print cmd
+    cmd="gmt grdimage %s -Jx0.005/-0.005 -Ctemp.cpt -R%s -B200f50/200f100WeSn -X1.0 -Y3.0 -K -P > %s" % (temp_sec_grd,R,psfile)
+    print(cmd)
     os.system(cmd)
 
     # Plot the plate interface on sections
     #depth_profile="%s%s_%s_depth_profile_%d.xypd" % (profile_dir,slab,w_model,id+1)
     depth_profile="%s%s_new_depth_profile_%d.xypd" % (profile_dir,slab,id+1)
     tmp_profile=positive_depths_limit(depth_profile,100)
-    cmd = "psxy %s -R -J -K -O -K -W6/green >> %s" % (tmp_profile,psfile)
-    print cmd
+    cmd = "gmt psxy %s -R -J -K -O -K -W6/green >> %s" % (tmp_profile,psfile)
+    print(cmd)
     os.system(cmd)
     #label info
     LAB = open('label.txt','w')
-    print >> LAB, "0.0 4.10 12 0 1 1 %s     Profile: %d" %  (slab,id+1)
-    print >> LAB, "0.0 3.80 12 0 1 1 Thermal: %s     Fault: %s" %  (T_use,W_use)
+    print("0.0 4.10 12 0 1 1 %s     Profile: %d" %  (slab,id+1), file=LAB)
+    print("0.0 3.80 12 0 1 1 Thermal: %s     Fault: %s" %  (T_use,W_use), file=LAB)
     LAB.close()
 
-    cmd="pstext label.txt -Jx1 -R0/8.8/0/11 -O >> %s"  % (psfile)
-    print cmd
+    cmd="gmt pstext label.txt -Jx1 -R0/8.8/0/11 -O >> %s"  % (psfile)
+    print(cmd)
     os.system(cmd)
 
 
 
-    print 'R:',R
+    print('R:',R)
 
     make_pdf(psfile,slab)
 
@@ -535,8 +535,8 @@ def generate_edge_interior_points(long_min,long_max,lat_min,lat_max):
     # edge points 
     for i in range(nlong):
         long=(long_min+i*dphi*r2d)
-        EP.write("%f  %f   %f\n" % (long,lat_min+dtheta*r2d,T_max))
-        EP.write("%f  %f   %f\n" % (long,lat_max-dtheta*r2d,T_max))
+        EP.write("%f  %f   %f\n" % (int,lat_min+dtheta*r2d,T_max))
+        EP.write("%f  %f   %f\n" % (int,lat_max-dtheta*r2d,T_max))
     for j in range(nlat):
         lat=(lat_min+j*dtheta*r2d)
         EP.write("%f  %f   %f\n" % (long_min+dphi*r2d,lat,T_max))
@@ -576,8 +576,8 @@ def generate_perimeter_points(perimeter,proj,region,res):
     #        break
     #PF.close()
     #OPF.close()
-    cmd="grdmask %s -G%s -I%f -R%s -N%f/NaN/NaN" % (perimeter,slab_mask_grd,res,region,T_max)
-    print cmd
+    cmd="gmt grdmask %s -G%s -I%f -R%s -N%f/NaN/NaN" % (perimeter,slab_mask_grd,res,region,T_max)
+    print(cmd)
     os.system(cmd)
     #return perimeter_xyz_file
     return slab_mask_grd
@@ -591,7 +591,7 @@ def generate_thermal_final_grd_files(sn,region):
 
     directory="GRD_FINAL/"+sn
     cmd="mkdir %s" % (directory)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     xyz_file_names=[]
@@ -608,9 +608,9 @@ def generate_thermal_final_grd_files(sn,region):
     for i in range(nx):
         for j in range(ny):
             for k in range(nz):
-                print 'nx, ny, nz: ',nx,ny,nz
-                print 'len(xyz_file_handles): ',len(xyz_file_handles)
-                print 'i,j,k: ',i,j,k
+                print('nx, ny, nz: ',nx,ny,nz)
+                print('len(xyz_file_handles): ',len(xyz_file_handles))
+                print('i,j,k: ',i,j,k)
                 theta=(90.0-lat_max)+j*dtheta*r2d
                 lat=90-theta
                 lon=long_min+i*dphi*r2d
@@ -625,22 +625,22 @@ def generate_thermal_final_grd_files(sn,region):
     for k, layer in enumerate(layer_depths):
         xyz_file_name=xyz_file_names[k]
 
-        print 'xyz_file_name',xyz_file_name
-        print 'region',region
+        print('xyz_file_name',xyz_file_name)
+        print('region',region)
         grd_file=GMT_Utilities.mk_grd(xyz_file_name, region, grd_res, tension, T_min, T_max)
-        print 'grd_file',grd_file
+        print('grd_file',grd_file)
 
         cmd="mv %s %s" % (grd_file,grd_file_names[k])
-        print cmd
+        print(cmd)
         os.system(cmd)
 
         #Make a plot of the temperature with overlays for each depth
         psfile="temp_final_%03d.ps" % int(layer)
-        cmd="makecpt -Cpolar -T0.0/1.0/0.1 -D > temp.cpt"
-        print cmd
+        cmd="gmt makecpt -Cpolar -T0.0/1.0/0.1 -D > temp.cpt"
+        print(cmd)
         os.system(cmd)
-        cmd="grdimage %s %s -Ctemp.cpt -R%s -Ba10f1/a10f1 -P -K > %s" % (grd_file_names[k],proj,region,psfile)
-        print cmd
+        cmd="gmt grdimage %s %s -Ctemp.cpt -R%s -Ba10f1/a10f1 -P -K > %s" % (grd_file_names[k],proj,region,psfile)
+        print(cmd)
         os.system(cmd)
 
         overlay_plate_boundaries(psfile,0,1)
@@ -652,7 +652,7 @@ def generate_thermal_final_grd_files(sn,region):
 def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,model):
 
     cmd="mkdir GRD_IC/"+sn
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     #grd_depth="%s%s_%s_clip.grd" % (depth_grids_dir,sn,model)
@@ -660,7 +660,7 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
     grd_dip="%s%s_%s_dipclip.grd" % (depth_grids_dir,sn,model)
     grd_str="%s%s_%s_strclip.grd" % (depth_grids_dir,sn,model)
     grd_age="%s%s_age.grd" % (age_grids_dir,sn)
-    print 'grd_age',grd_age
+    print('grd_age',grd_age)
     if T_use == 'RUM':
         perimeter="%s%s_rum.clip.xy" % (RUM_XY_dir,sn)
     if T_use == 'Slab1':
@@ -695,7 +695,7 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
     grd_file_names=[]
     #Create an xyz file for each layer depth
     for layer in layer_depths:
-        print ' layer=',layer 
+        print(' layer=',layer) 
         # N=normal (that is normal to slab surface) and H=horizontal
         file_layer_N_xyz_name="layer_N_%03d.xyz" % int(layer)
         xyz_N_file_names.append(file_layer_N_xyz_name)
@@ -707,24 +707,24 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
 
 
     if not check_for_existence_grd_ic_files(grd_file_names): 
-        print 'Generating ic grd files'
+        print('Generating ic grd files')
 
         generate_points_around_slab(sn,slab_Nan_age,grd_age,grd_depth,grd_dip,grd_str,gmt_dict,layer_depths,xyz_N_file_handles,xyz_H_file_handles)
 
         for i, layer in enumerate(layer_depths):
             xyz_N_file_handles[i].close()
             xyz_H_file_handles[i].close()
-            print 'i,layer:',i,layer
+            print('i,layer:',i,layer)
 
 
         #xyz_file_name=xyz_N_file_names[24]
         #xyz_file_name=xyz_N_file_names[13]
         xyz_file_name=xyz_N_file_names[3]
-        #cmd="psxy %s %s -Sc0.001 -Gblack -R%s -B10/10 -P -K > out_points.ps" % (xyz_file_name,proj,region)
+        #cmd="gmt psxy %s %s -Sc0.001 -Gblack -R%s -B10/10 -P -K > out_points.ps" % (xyz_file_name,proj,region)
         #print cmd
         #os.system(cmd)
-        cmd="psxy out_points.xy %s -Sc -Gred -R%s -B10/10 -P -K > out_points.ps" % (proj,region)
-        print cmd
+        cmd="gmt psxy out_points.xy %s -Sc -Gred -R%s -B10/10 -P -K > out_points.ps" % (proj,region)
+        print(cmd)
         os.system(cmd)
         overlay_plate_boundaries("out_points.ps",0,1)
         make_pdf("out_points.ps",sn)
@@ -736,7 +736,7 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
             #Based on normals to the slab surface
             xyz_file_name=xyz_N_file_names[i]
             cmd="cat %s %s > tmp.xyz" % (edge_points,xyz_file_name)
-            print cmd
+            print(cmd)
             os.system(cmd)
             #if(layer <= 75):
             #    cmd="cat tmp.xyz %s > slab_with_edge_data.xyz" % (perimeter_xyz_file)
@@ -744,24 +744,24 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
             #    os.system(cmd)
             #else:
             cmd="mv tmp.xyz slab_with_edge_data.xyz"
-            print cmd
+            print(cmd)
             os.system(cmd)
                 #cmd="mv tmp.xyz slab_with_edge_data.xyz"
                 #print cmd
                 #os.system(cmd)
 
-            cmd="blockmedian slab_with_edge_data.xyz -I%f -R%s > median.xyz" % (res,region)
-            print cmd
+            cmd="gmt blockmedian slab_with_edge_data.xyz -I%f -R%s > median.xyz" % (res,region)
+            print(cmd)
             os.system(cmd)
-            cmd="surface median.xyz -Gtemp_N.grd -I%f -R%s -T%f -Ll%f -Lu%f" % (res,region,tension,T_min,T_max)
-            print cmd
+            cmd="gmt surface median.xyz -Gtemp_N.grd -I%f -R%s -T%f -Ll%f -Lu%f" % (res,region,tension,T_min,T_max)
+            print(cmd)
             os.system(cmd)
 
             #Second Create the GRD file for the slab Temperature
             #Based on horizontals to the slab surface
             xyz_file_name=xyz_H_file_names[i]
             cmd="cat %s %s > tmp.xyz" % (edge_points,xyz_file_name)
-            print cmd
+            print(cmd)
             os.system(cmd)
             #if(layer <= 75):
             #    cmd="cat tmp.xyz %s > slab_with_edge_data.xyz" % (perimeter_xyz_file)
@@ -772,58 +772,58 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
             #    print cmd
             #    os.system(cmd)
 
-            cmd="blockmedian tmp.xyz -I%f -R%s > median.xyz" % (res,region)
-            print cmd
+            cmd="gmt blockmedian tmp.xyz -I%f -R%s > median.xyz" % (res,region)
+            print(cmd)
             os.system(cmd)
-            cmd="surface median.xyz -Gtemp_H.grd -I%f -R%s -T%f -Ll%f -Lu%f" % (res,region,tension,T_min,T_max)
-            print cmd
+            cmd="gmt surface median.xyz -Gtemp_H.grd -I%f -R%s -T%f -Ll%f -Lu%f" % (res,region,tension,T_min,T_max)
+            print(cmd)
             os.system(cmd)
 
             #w_h=0.5*(1.0+math.tanh((layer-300.00)/50.0))
             #w_h=1.0
             w_h=0.0
             w_n=1.0-w_h
-            print 'layer, wn, wh: ',layer,w_n,w_h
-            cmd="grdmath %f temp_N.grd MUL = wN.grd" % w_n
-            print cmd
+            print('layer, wn, wh: ',layer,w_n,w_h)
+            cmd="gmt grdmath %f temp_N.grd MUL = wN.grd" % w_n
+            print(cmd)
             os.system(cmd)
-            cmd="grdmath %f temp_H.grd MUL = wH.grd" % w_h
-            print cmd
+            cmd="gmt grdmath %f temp_H.grd MUL = wH.grd" % w_h
+            print(cmd)
             os.system(cmd)
-            cmd="grdmath wN.grd wH.grd ADD = tmp.grd"
-            print cmd
+            cmd="gmt grdmath wN.grd wH.grd ADD = tmp.grd"
+            print(cmd)
             os.system(cmd)
-            cmd="grdmath %s tmp.grd AND = %s" % (slab_mask_grd,grd_file_names[i])
-            print cmd
+            cmd="gmt grdmath %s tmp.grd AND = %s" % (slab_mask_grd,grd_file_names[i])
+            print(cmd)
             os.system(cmd)
 
             #Make a plot of the temperature with overlays for each depth
             psfile="temp_%03d.ps" % int(layer)
-            cmd="makecpt -Cpolar -T%f/%f/0.1 -D > temp.cpt" % (T_min,T_max)
-            print cmd
+            cmd="gmt makecpt -Cpolar -T%f/%f/0.1 -D > temp.cpt" % (T_min,T_max)
+            print(cmd)
             os.system(cmd)
-            cmd="grdimage %s %s -Ctemp.cpt -R%s -Ba10f1/a10f1 -P -K > %s" % (grd_file_names[i],proj,region,psfile)
-            print cmd
+            cmd="gmt grdimage %s %s -Ctemp.cpt -R%s -Ba10f1/a10f1 -P -K > %s" % (grd_file_names[i],proj,region,psfile)
+            print(cmd)
             os.system(cmd)
 
             ii=1  
             while ii<=2:
                 profile="%s%s_profile_%d.xyp" % (profile_dir,sn,ii)
-                cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
-                print cmd
+                cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
+                print(cmd)
                 os.system(cmd)
                 ii += 1
 
             overlay_plate_boundaries(psfile,0,1)
 
-            print 'layer', layer
+            print('layer', layer)
             make_pdf(psfile,sn)
         
     return grd_file_names, proj, region
 #=====================================================================
 def make_pdf(psfile,slab):
-    print "\n    Converting file to pdf ..."
-    cmd = "ps2raster %s -A -Tf -E200" % (psfile)
+    print("\n    Converting file to pdf ...")
+    cmd = "gmt ps2raster %s -A -Tf -E200" % (psfile)
     os.system(cmd)
 
     cmd='rm -f *.ps'
@@ -841,27 +841,27 @@ def overlay_plate_boundaries(psfile,RIDGES,CLOSEGMT):
     teeth="0.2/0.07lt"
     teeth="0.1/0.035lt"
     if (CLOSEGMT):
-        cmd="psxy %s -J -R -B -W2/black -Sf%s -Gblack -M -P -O >> %s" % (trenches,teeth,psfile)
+        cmd="gmt psxy %s -J -R -B -W2,black -Sf%s -Gblack -P -O >> %s" % (trenches,teeth,psfile)
     else:
-        cmd="psxy %s -J -R -B -W2/black -Sf%s -Gblack -M -P -O -K >> %s" % (trenches,teeth,psfile)
-    print cmd 
+        cmd="gmt psxy %s -J -R -B -W2,black -Sf%s -Gblack -P -O -K >> %s" % (trenches,teeth,psfile)
+    print(cmd) 
     os.system(cmd)
 
     #Ridges
     if (RIDGES):
-        cmd="psxy %s -J -R -B -W4/255/0/0 -V -M -P -O -K >> %s" % (ridges,psfile)
+        cmd="gmt psxy %s -J -R -B -W4/255/0/0 -V -M -P -O -K >> %s" % (ridges,psfile)
         #print cmd 
         #os.system(cmd)
-        cmd="psxy %s -J -R -B -W2/255/255/255 -V -M -P -O -K >> %s" % (ridges,psfile)
+        cmd="gmt psxy %s -J -R -B -W2/255/255/255 -V -M -P -O -K >> %s" % (ridges,psfile)
         #print cmd
         #os.system(cmd)
 
     #Fractures
-    cmd="psxy %s -J -R -B -W6/128/128/128 -V -M -P -O -K >> %s" % (fractures,psfile)
+    cmd="gmt psxy %s -J -R -B -W6/128/128/128 -V -M -P -O -K >> %s" % (fractures,psfile)
     #print cmd
     #os.system(cmd)
     #Interface between Trenches and Fractures (mostly)
-    cmd="psxy %s -J -R -B -W6/0/255/0 -Sf0.2/0.07lt -G0/255/0 -V -M -P -O -K >> %s" % (interface,psfile)
+    cmd="gmt psxy %s -J -R -B -W6/0/255/0 -Sf0.2/0.07lt -G0/255/0 -V -M -P -O -K >> %s" % (interface,psfile)
     #print cmd
     #os.system(cmd)
 
@@ -882,7 +882,7 @@ def shift_profile(profile,shift_dir,xs,zs):
             else:
                 break
     elif shift_dir == "P":
-        print "P"
+        print("P")
         line=PR.readline()
         sx1,sz1=line.split()
         poff=float(sx1)
@@ -912,7 +912,7 @@ def make_slab_age_grd(s,gmt_dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_di
     slab_NAN_age=Nan_age
 
     trench="%s%s_trench_0.xy" % (XY_dir,s)
-    print 'trench',trench
+    print('trench',trench)
     trench_age_sampled="trench_age.xya"
     slab_str_sampled="slab_str.xys"
     ofile="slab_ages.xya"
@@ -924,16 +924,16 @@ def make_slab_age_grd(s,gmt_dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_di
     dist=-1.0*trench_age_dist
     outside=Mat_Utilities.mk_parallel_line(xyz_file,0,dist)
     GMT_Utilities.remove_gmt_char(outside,"shifted_ages.xyz","xyz")
-    cmd="grdtrack shifted_ages.xyz -G%s > %s" % (age_grid,trench_age_sampled)
-    print cmd
+    cmd="gmt grdtrack shifted_ages.xyz -G%s > %s" % (age_grid,trench_age_sampled)
+    print(cmd)
     os.system(cmd)
     #sample str (strike of slab) grid just inside of the trench
     dist=0.25
     inside=Mat_Utilities.mk_parallel_line(xyz_file,0,dist)
     #print 'inside ',inside
     GMT_Utilities.remove_gmt_char(inside,"shifted_str.xyz","xyz")
-    cmd="grdtrack shifted_str.xyz -G%s > %s" % (grd_str,slab_str_sampled)
-    print cmd
+    cmd="gmt grdtrack shifted_str.xyz -G%s > %s" % (grd_str,slab_str_sampled)
+    print(cmd)
     os.system(cmd)
 
     #print 'trench_age_sampled',trench_age_sampled
@@ -957,7 +957,7 @@ def make_slab_age_grd(s,gmt_dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_di
             flon=float(s1)
             flat=float(s2)
             fazim=float(s4)+90.0
-            cmd="project -C%g/%g -A%g -L0/1000 -G10 -Q > trench_projected.xy" % (flon,flat,fazim)
+            cmd="gmt project -C%g/%g -A%g -L0/1000 -G10 -Q > trench_projected.xy" % (flon,flat,fazim)
             os.system(cmd)
             TP=open("trench_projected.xy")
             while 1:
@@ -982,8 +982,8 @@ def make_slab_age_grd(s,gmt_dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_di
     age_max=200.0
     tmp_grd=GMT_Utilities.mk_grd(ofile, gmt_dict['R'], gmt_dict['dx'], tension, age_min, age_max) 
     slab_age_grd="slab_age.grd"
-    cmd="grdmath %s %s OR = %s" % (tmp_grd,grd_depth,slab_age_grd)
-    print cmd
+    cmd="gmt grdmath %s %s OR = %s" % (tmp_grd,grd_depth,slab_age_grd)
+    print(cmd)
     os.system(cmd)
 
     return slab_age_grd, trench_age_sampled
@@ -1047,17 +1047,17 @@ def generate_points_around_slab(sn,slab_Nan_age,grd_age,grd_depth,grd_dip,grd_st
     xyz_str="str.xyz"
     xyz_slab_age="slab_age.xyz"
 
-    cmd="grd2xyz %s -S > %s" % (grd_depth,xyz_depth)
-    print cmd
+    cmd="gmt grd2xyz %s -S > %s" % (grd_depth,xyz_depth)
+    print(cmd)
     os.system(cmd)
-    cmd="grd2xyz %s -S > %s" % (grd_dip,xyz_dip)
-    print cmd
+    cmd="gmt grd2xyz %s -S > %s" % (grd_dip,xyz_dip)
+    print(cmd)
     os.system(cmd)
-    cmd="grd2xyz %s -S > %s" % (grd_str,xyz_str)
-    print cmd
+    cmd="gmt grd2xyz %s -S > %s" % (grd_str,xyz_str)
+    print(cmd)
     os.system(cmd)
-    cmd="grd2xyz %s -S > %s" % (grd_age,xyz_slab_age)
-    print cmd
+    cmd="gmt grd2xyz %s -S > %s" % (grd_age,xyz_slab_age)
+    print(cmd)
     os.system(cmd)
     I_DEPTH=open(xyz_depth)
     I_DIP=open(xyz_dip)
@@ -1143,15 +1143,15 @@ def generate_points_around_slab(sn,slab_Nan_age,grd_age,grd_depth,grd_dip,grd_st
 #=====================================================================
 def clean_up_and_finish():
 
-    print "Clean up"
-    print ""
+    print("Clean up")
+    print("")
     cmd="rm -f *.eps *.grd *.xyz *.xy *.tmp *.txt"
-    print cmd
+    print(cmd)
     os.system(cmd)
-    print ""
-    print ""
-    print "Done!"
-    print ""
+    print("")
+    print("")
+    print("Done!")
+    print("")
 #=====================================================================
 #=====================================================================
 #    TOP OF MAIN
@@ -1168,11 +1168,11 @@ gmt_dict = {}
 
 
 # Get the top level keys and sort them
-slab_keys = slab_dict.keys();
+slab_keys = list(slab_dict.keys());
 slab_keys.sort()
 
 
-cmd="gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
+cmd="gmt gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
 os.system(cmd)
 
 cmd="mkdir GRD_IC"
@@ -1183,13 +1183,13 @@ cmd="mkdir PDF"
 os.system(cmd)
 
 for s in slab_keys:
-    print " "
-    print "SLAB: %s" % s
-    print " "
+    print(" ")
+    print("SLAB: %s" % s)
+    print(" ")
     # Get a local copy of the sub dictionary
     sub_dict = slab_dict[s]
     # Get the sub level keys and sort them
-    sub_keys = sub_dict.keys()
+    sub_keys = list(sub_dict.keys())
     sub_keys.sort()
 
     # Previously called 'off' in Slab 1 dictionary, now called off_age
@@ -1198,7 +1198,7 @@ for s in slab_keys:
     RUM=sub_dict['RUM']
     T_use=sub_dict['T_use']
     W_use=sub_dict['W_use']
-    print 'T_use, W_use',T_use, W_use
+    print('T_use, W_use',T_use, W_use)
     slab_Nan_age=sub_dict['Nan_age']
 
     if T_use == 'Slab1':

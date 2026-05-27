@@ -32,6 +32,8 @@ Plot_Reprocess_Slab2.0.py
 """
 #=====================================================================
 
+from datetime import date
+
 import Core_GMT, GMT_Utilities, Mat_Utilities, Earthquake_Utilities
 import os, string, sys, math, time
 
@@ -48,13 +50,20 @@ Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distr
 
 New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
 
-Contours_Slab_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
+
+#Contours_Slab_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
+#New Dir on Mac
+Contours_Slab_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
+
 
 RUM_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/New_RUM_grids/"
 
 Contours_RUM_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/Contours/"
 
-XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
+#XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
+#New Dir on Mac
+XY_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/Slab2Clips/"
+
 
 RUM_XY_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/XY/"
 
@@ -69,7 +78,9 @@ coastlines="/net/holmes/home4/gurnis/Global_Plate_Polygons/cs.lines.0.xy"
 
 gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepolygons.0.xy"
 
-dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+#dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+#New directory for Mac  
+dir_old_margins="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Plate_Margins/NewDataSet"
 
 trenches="%s/Trench-1-12-10.xy" % dir_old_margins
 
@@ -88,7 +99,7 @@ rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contour
 #=====================================================================
 def usage():
 
-    print(''' Plot_Reprocess_Slab2.0.py mode
+    print(''' Plot_Reprocess_Slab2.0.py mode)
 
         where mode = S  : Summary Table of Slabs
                   C  : Contour files of slab depths
@@ -107,11 +118,11 @@ def summary_cross_section(slab_dict,slab_keys):
 
     psfile="summary_cross_section.ps"
 
-    cmd="gmtset ANNOT_FONT_PRIMARY Times-Roman LABEL_FONT Times-Roman"
+    cmd="gmt gmtset ANNOT_FONT_PRIMARY Times-Roman LABEL_FONT Times-Roman"
     print(cmd)
     os.system(cmd)
  
-    cmd='psbasemap -JX6/2 -R0/300/-100/0 -B50f25:"Distance from Trench (km)":/50f10:"Depth (km)":WesN -X1.1 -Y6 -P -K > %s' % (psfile)
+    cmd='gmt psbasemap -JX6/2 -R0/300/-100/0 -B50f25:"Distance from Trench (km)":/50f10:"Depth (km)":WesN -X1.1 -Y6 -P -K > %s' % (psfile)
     print(cmd)
     os.system(cmd)
 
@@ -121,7 +132,7 @@ def summary_cross_section(slab_dict,slab_keys):
         # Get a local copy of the sub dictionary
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
-        sub_keys = sub_dict.keys()
+        sub_keys = list(sub_dict.keys())
         sub_keys.sort()
         RUM=sub_dict['RUM']
         Sub_type=sub_dict['Sub_type']
@@ -136,25 +147,25 @@ def summary_cross_section(slab_dict,slab_keys):
                 depth_profile="Profiles/%s_slab2_depth_profile_%d.xypd" % (s,i)
                 shifted_profile_0=shift_profile(depth_profile,"P",0.0,0.0)
                 shifted_profile=shift_profile(shifted_profile_0,"Z",0.0,0.0)
-                #cmd="psxy %s -JX -R -B -W5/black -O -K >> %s" % (shifted_profile,psfile)
-                cmd="psxy %s -JX -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
+                #cmd="gmt psxy %s -JX -R -B -W5/black -O -K >> %s" % (shifted_profile,psfile)
+                cmd="gmt psxy %s -JX -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
                 print(cmd)
                 os.system(cmd)
                 i += 1
 
-    #cmd="psxy %s -J -R -B -W5/black -O >> %s" % (shifted_profile,psfile)
-    cmd="psxy %s -J -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
+    #cmd="gmt psxy %s -J -R -B -W5/black -O >> %s" % (shifted_profile,psfile)
+    cmd="gmt psxy %s -J -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
     print(cmd)
     os.system(cmd)
 
     #Overlay some models for comparison
     weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/johann_model_1.dat"
-    cmd="psxy %s -J -R -B -W4/red -O -K >> %s" % (weak_zone_model,psfile)
+    cmd="gmt psxy %s -J -R -B -W4/red -O -K >> %s" % (weak_zone_model,psfile)
     print(cmd)
     #os.system(cmd)
 
     weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/vish_model_1.dat"
-    cmd="psxy %s -J -R -B -W4/black -O >> %s" % (weak_zone_model,psfile)
+    cmd="gmt psxy %s -J -R -B -W4/black -O >> %s" % (weak_zone_model,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -172,7 +183,7 @@ def make_slab_depth_contous(slab_dict,slab_keys):
         # Get a local copy of the sub dictionary
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
-        sub_keys = sub_dict.keys()
+        sub_keys = list(sub_dict.keys())
         sub_keys.sort()
         RUM=sub_dict['RUM']
         date=sub_dict['date']
@@ -203,11 +214,11 @@ def make_slab_depth_contous(slab_dict,slab_keys):
         region="%g/%g/%g/%g" % (long_min,long_max,lat_min,lat_max)
     
         psfile="contours.ps"
-        cmd="grdcontour %s -C25.0 %s -D%s -m > %s" % (grd_depth,proj,gmt_depth,psfile)
+        cmd="gmt grdcontour %s -C25.0 %s -D%s -m > %s" % (grd_depth,proj,gmt_depth,psfile)
         print(cmd)
         os.system(cmd)
 
-        cmd="psxy %s -Cslab_depth.cpt %s -R%s -m > %s" % (gmt_depth,proj,region,psfile)
+        cmd="gmt psxy %s -Cslab_depth.cpt %s -R%s -m > %s" % (gmt_depth,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
@@ -281,12 +292,44 @@ def make_global_plot(slab_dict,slab_keys):
     RIDGES=1
 
     make_summary_map(slab_dict,slab_keys,psfile,region,proj,x_start,shift_scale,COASTLINES,RIDGES)
+    #make_test_map(slab_dict,slab_keys,psfile,region,proj,x_start,shift_scale,COASTLINES,RIDGES)
 
     return
 #=====================================================================
+def make_test_map(slab_dict,slab_keys,psfile,region,proj,x_start,shift_scale,COASTLINES,RIDGES):
+
+    print('make_test_map')
+    s="alu"
+    sub_dict = slab_dict[s]
+    date=sub_dict['date']
+    print("date=%s" % date)
+    print("sub_dict=%s" % sub_dict)
+
+    gmt_depth="%s%s_slab2_dep_%s_contours.in" % (Contours_Slab_dir,s,date)
+    perimeter="%s%s_slab2_clp_%s.csv" % (XY_dir,s,date)
+    print("gmt_depth=%s" % gmt_depth)
+    print("perimeter=%s" % perimeter)
+
+    cmd="gmt psbasemap %s -R%s -B90/90/wesn -X%g -Y%g -K > %s" % (proj,region,x_start,x_start,psfile)
+    print(cmd)
+    os.system(cmd)
+
+    cmd="gmt psxy %s -Cslab_depth.cpt %s -B90/90/wesn -R%s -K -O >> %s" % (gmt_depth,proj,region,psfile)
+    print(cmd)
+    os.system(cmd)
+
+    cmd="gmt psxy %s -J -W0.5p,128 -R -B -O >> %s" % (perimeter,psfile)
+    print(cmd)
+    os.system(cmd)
+
+    make_pdf(psfile)
+
+    return
+
+#=====================================================================
 def make_summary_map(slab_dict,slab_keys,psfile,region,proj,x_start,shift_scale,COASTLINES,RIDGES):
 
-    start_plot_with_contours(psfile,region,proj,x_start)
+    start_plot_with_blank_map(psfile,region,proj,x_start)
 
     for s in slab_keys:
         sub_dict = slab_dict[s]
@@ -306,18 +349,25 @@ def make_summary_map(slab_dict,slab_keys,psfile,region,proj,x_start,shift_scale,
     make_pdf(psfile)
 
     return
+#=====================================================================
+def start_plot_with_blank_map(psfile,region,proj,x_start):
 
+    cmd="gmt psbasemap %s -R%s -B90/90/wesn -X%g -Y2.5 -K > %s" % (proj,region,x_start,psfile)
+    print(cmd)
+    os.system(cmd)
+
+    return
 #=====================================================================
 def start_plot_with_contours(psfile,region,proj,x_start):
     #Original RUM Slab contours
-    cmd="psxy %s %s -R%s -B90/90/wesn -W1/200/200/200 -M -X%g -Y2.5 -K > %s" % (rum_slab_contours,proj,region,x_start,psfile)
+    cmd="gmt psxy %s %s -R%s -B90/90/wesn -W1/200/200/200 -M -X%g -Y2.5 -K > %s" % (rum_slab_contours,proj,region,x_start,psfile)
     print(cmd)
     os.system(cmd)
 
     return
 #=====================================================================
 def finalize_plot_with_scale(psfile,shift_scale):
-    cmd="psscale -Cslab_depth.cpt -D%g/-0.5/4.0/0.25h -B100::/:depth: -O >> %s" % (shift_scale,psfile)
+    cmd="gmt psscale -Cslab_depth.cpt -D%g/-0.5/4.0/0.25h -B100::/:depth: -O >> %s" % (shift_scale,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -325,7 +375,7 @@ def finalize_plot_with_scale(psfile,shift_scale):
 #=====================================================================
 def make_pdf(psfile):
     print ("\n    Converting file to pdf ...")
-    cmd = "ps2raster %s -A -Tf -E200" % (psfile)
+    cmd = "gmt psconvert %s -A -Tf -E200" % (psfile)
     os.system(cmd)
 
     cmd='rm -f *.ps'
@@ -337,7 +387,7 @@ def make_pdf(psfile):
 #=====================================================================
 def overlay_RUM_slabs(psfile):
 
-    cmd="psxy %s -J -R -B -W1/128/128/128 -M -P -O -K >> %s" % (rum_slab_contours,psfile)
+    cmd="gmt psxy %s -J -R -B -W1/128/128/128 -M -P -O -K >> %s" % (rum_slab_contours,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -354,11 +404,11 @@ def plot_slab(s,date,psfile):
         grd_depth="%s%s_rum_clip.grd" % (RUM_grids_dir,s)
         gmt_depth="%s%s_rum_contours_m.xy" % (Contours_RUM_dir,s)
         perimeter="%s%s_rum.clip.xy" % (RUM_XY_dir,s)
-    #cmd="grdimage %s -Cslab_depth.cpt -J -R -B -P -O -K >> %s" % (grd_depth,psfile)
-    cmd="psxy %s -Cslab_depth.cpt -J -R -m -P -O -K >> %s" % (gmt_depth,psfile)
+    #cmd="gmt grdimage %s -Cslab_depth.cpt -J -R -B -P -O -K >> %s" % (grd_depth,psfile)
+    cmd="gmt psxy %s -Cslab_depth.cpt -J -R -P -O -K >> %s" % (gmt_depth,psfile)
     print(cmd)
     os.system(cmd)
-    cmd="psxy %s -J -W3/1 -R -B -K -O >> %s" % (perimeter,psfile)
+    cmd="gmt psxy %s -J -W0.5p,128 -R -B -K -O >> %s" % (perimeter,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -366,7 +416,7 @@ def plot_slab(s,date,psfile):
 #=====================================================================
 def overlay_coastlines(psfile):
 
-    cmd="pscoast -J -R -B -Di -W -P -O -K >> %s" % (psfile)
+    cmd="gmt pscoast -J -R -B -Di -W -P -O -K >> %s" % (psfile)
     print(cmd)
     os.system(cmd)
 
@@ -377,25 +427,25 @@ def overlay_plate_boundaries(psfile,RIDGES):
     #Position of the trench
     teeth="0.2/0.07lt"
     teeth="0.1/0.035lt"
-    cmd="psxy %s -J -R -B10/10 -W2/100/100/255 -Sf%s -G100/100/255 -M -P -O -K >> %s" % (trenches,teeth,psfile)
+    cmd="gmt psxy %s -J -R -B -W1,100/100/255 -Sf%s -G100/100/255 -P -O -K >> %s" % (trenches,teeth,psfile)
     print(cmd)  
     os.system(cmd)
 
     #Ridges
     if (RIDGES):
-        cmd="psxy %s -J -R -B -W4/255/0/0 -V -M -P -O -K >> %s" % (ridges,psfile)
+        cmd="gmt psxy %s -J -R -B -W1,255/0/0 -V -P -O -K >> %s" % (ridges,psfile)
         print(cmd) 
         os.system(cmd)
-        cmd="psxy %s -J -R -B -W2/255/255/255 -V -M -P -O -K >> %s" % (ridges,psfile)
+        cmd="gmt psxy %s -J -R -B -W0.5,255/255/255 -V -P -O -K >> %s" % (ridges,psfile)
         print(cmd)
         os.system(cmd)
 
     #Fractures
-    cmd="psxy %s -J -R -B -W6/128/128/128 -V -M -P -O -K >> %s" % (fractures,psfile)
+    cmd="gmt psxy %s -J -R -B -W1,128/128/128 -V -P -O -K >> %s" % (fractures,psfile)
     print(cmd)
     os.system(cmd)
     #Interface between Trenches and Fractures (mostly)
-    cmd="psxy %s -J -R -B -W6/0/255/0 -Sf0.2/0.07lt -G0/255/0 -V -M -P -O -K >> %s" % (interface,psfile)
+    cmd="gmt psxy %s -J -R -B -W1,0/255/0 -Sf0.1/0.035lt -G0/255/0 -V -P -O -K >> %s" % (interface,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -411,7 +461,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         # Get a local copy of the sub dictionary
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
-        sub_keys = sub_dict.keys()
+        sub_keys = list(sub_dict.keys())
         sub_keys.sort()
 
         trench_age_dist=sub_dict['off_age']
@@ -461,7 +511,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         Core_GMT.grdinfo( dict )
 
         grd_slab_age, trench, trench_outside, trench_inside, slab_depth_correction_grd=make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_dist,trench_dep_dist,Nan_age)
-        print(("slab_depth_correction_grd", slab_depth_correction_grd))
+        print("slab_depth_correction_grd", slab_depth_correction_grd)
         cmd="cp %s %s" % (grd_slab_age,grd_age)
         print(cmd)
         os.system(cmd)
@@ -509,22 +559,22 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         region="%g/%g/%g/%g" % (long_min,long_max,lat_min,lat_max)
 
         if RUM == 'NONE':
-            cmd="grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_slab1,proj,region,psfile)
+            cmd="gmt grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_slab1,proj,region,psfile)
         elif RUM != 'NONE':
-            cmd="grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_rum,proj,region,psfile)
+            cmd="gmt grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_rum,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
-        print(cmd)
-        os.system(cmd)
-
-        cmd="psscale -Cslab_depth.cpt -D1.0/-0.4/2.0/0.15h -B200::/:km: -X0. -Y0 -O -K >> %s" % (psfile)
+        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
+        cmd="gmt psscale -Cslab_depth.cpt -D1.0/-0.4/2.0/0.15h -B200::/:km: -X0. -Y0 -O -K >> %s" % (psfile)
+        print(cmd)
+        os.system(cmd)
 
-        #cmd="grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (grd_age,proj,region,psfile)
-        cmd="grdimage %s -Cdepth_correction.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (slab_depth_correction_grd,proj,region,psfile)
+
+        #cmd="gmt grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (grd_age,proj,region,psfile)
+        cmd="gmt grdimage %s -Cdepth_correction.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (slab_depth_correction_grd,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
@@ -535,7 +585,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             profile="Profiles/%s_profile_%d.xyp" % (s,i)
             center=sub_dict['C%d' % i]
             endpoint=sub_dict['E%d' % i]
-            cmd="project -C%s -E%s -Dg -G10 -Q > %s" % (center,endpoint,profile)
+            cmd="gmt project -C%s -E%s -Dg -G10 -Q > %s" % (center,endpoint,profile)
             print(cmd)
             os.system(cmd) 
             i += 1
@@ -545,16 +595,16 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         i=1
         while i<=2:
             profile="Profiles/%s_profile_%d.xyp" % (s,i)
-            cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
+            cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
             print(cmd)
             os.system(cmd) 
             events_on_profile="Events/%s_%d.rs" % (s,i)
-            cmd="psxy %s %s -R%s -B -Sc0.02 -Gblue -K -O >> %s" % (profile,proj,region,psfile)
+            cmd="gmt psxy %s %s -R%s -B -Sc0.02 -Gblue -K -O >> %s" % (profile,proj,region,psfile)
             print(cmd)
             os.system(cmd) 
             i += 1
 
-        cmd="psxy %s %s -W3/1 -R%s -B10/10WeSn -O -K >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/1 -R%s -B10/10WeSn -O -K >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
@@ -573,7 +623,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
 
             # First plot hypocenters
             events_on_section="Events/%s_%d.pd" % (s,i)
-            cmd="psxy %s -JX3/2 -R-100/1200/-800/50 -B400f100/200f100WesN -Sc0.0125 -Gblue -X%s -Y%s -O -K >> %s" % (events_on_section,x_move[i-1],y_move[i-1],psfile)
+            cmd="gmt psxy %s -JX3/2 -R-100/1200/-800/50 -B400f100/200f100WesN -Sc0.0125 -Gblue -X%s -Y%s -O -K >> %s" % (events_on_section,x_move[i-1],y_move[i-1],psfile)
             print(cmd)
             os.system(cmd)
             
@@ -589,7 +639,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 TP.close()
                 cmd="mv %s %s" % (tmp_profile,depth_profile)
                 os.system(cmd)
-                cmd="psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
+                cmd="gmt psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
                 print(cmd)
                 os.system(cmd)
 
@@ -605,7 +655,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 TP.close()
                 cmd="mv %s %s" % (tmp_profile,depth_profile)
                 os.system(cmd)
-                cmd="psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
+                cmd="gmt psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
                 print(cmd)
                 os.system(cmd)
             if RUM != 'NONE' and RUM != 'only' :
@@ -615,7 +665,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 cmd="mv %s %s" % (tmp_profile,rum_depth_profile)
                 os.system(cmd)
                 
-                cmd="psxy %s -JX3/2 -R -B -W3/red -X0.0 -Y0 -O -K >> %s" % (rum_depth_profile,psfile)
+                cmd="gmt psxy %s -JX3/2 -R -B -W3/red -X0.0 -Y0 -O -K >> %s" % (rum_depth_profile,psfile)
                 print(cmd)
                 os.system(cmd)
 
@@ -625,7 +675,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             tmp_profile=get_profile(profile,new_grd_depth_name,profile_scaling)
             cmd="mv %s %s" % (tmp_profile,new_depth_profile)
             os.system(cmd)
-            cmd="psxy %s -JX -R -B -W3/orange -X0.0 -Y0.0 -O -K >> %s" % (new_depth_profile,psfile)
+            cmd="gmt psxy %s -JX -R -B -W3/orange -X0.0 -Y0.0 -O -K >> %s" % (new_depth_profile,psfile)
             print(cmd)
             os.system(cmd)
 
@@ -636,30 +686,30 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             tmp_profile_1=shift_profile(tmp_profile,"Z",xs,zs)
             cmd="mv %s %s" % (tmp_profile_1,topo_profile)
             os.system(cmd)
-            cmd="psxy %s -JX3/2 -R -B -W3/green -X0.0 -Y0 -O -K >> %s" % (topo_profile,psfile)
+            cmd="gmt psxy %s -JX3/2 -R -B -W3/green -X0.0 -Y0 -O -K >> %s" % (topo_profile,psfile)
             print(cmd)
             os.system(cmd)
 
             i += 1
 
-        #cmd="psscale -Cage.cpt -D3.0/-0.4/2.0/0.15h -B100::/:Ma: -U -X-4. -Y0 -O -K >> %s" % (psfile)
-        cmd='psscale -Cdepth_correction.cpt -D3.0/-0.4/2.0/0.15h -Ba10f2::/:"correction (km)": -U -X-4. -Y0 -O -K >> %s' % (psfile)
+        #cmd="gmt psscale -Cage.cpt -D3.0/-0.4/2.0/0.15h -B100::/:Ma: -U -X-4. -Y0 -O -K >> %s" % (psfile)
+        cmd='gmt psscale -Cdepth_correction.cpt -D3.0/-0.4/2.0/0.15h -Ba10f2::/:"correction (km)": -U -X-4. -Y0 -O -K >> %s' % (psfile)
         print(cmd)
         os.system(cmd)
 
         #label info
         LAB = open('label.txt','w')
-        print >> LAB, "3.2 6.00 12 0 1 1 Trench: %s" %  (s)
+        print("3.2 6.00 12 0 1 1 Trench: %s" %  (s), file=LAB)
         if RUM == 'only':
-            print >> LAB, " 3.2 5.7 10 0 1 1 Only RUM Slab (black) & New f RUM (Orange)"
+            print(" 3.2 5.7 10 0 1 1 Only RUM Slab (black) & New f RUM (Orange)", file=LAB)
         if RUM != 'only':
             if RUM == 'NONE':
-                print >> LAB, " 3.2 5.7 10 0 1 1 Only Slab2 (black)& New f Slab2 (Orange)"
+                print(" 3.2 5.7 10 0 1 1 Only Slab2 (black)& New f Slab2 (Orange)", file=LAB)
             if RUM != 'NONE':
-                print >> LAB, " 3.2 5.7 10 0 1 1 Slab2 (black), RUM (Red) & New f RUM (Orange)"
+                print(" 3.2 5.7 10 0 1 1 Slab2 (black), RUM (Red) & New f RUM (Orange)", file=LAB)
         #print >> LAB, "3.2 5.40 10 0 1 1 Slab Transition: Depth=%g km  Width=%g km" %  (slab_transition_depth,slab_transition_width)
         LAB.close()
-        cmd="pstext label.txt -Jx1 -R0/8.5/0/11 -X0.0 -Y0.0 -O >> %s" % (psfile)
+        cmd="gmt pstext label.txt -Jx1 -R0/8.5/0/11 -X0.0 -Y0.0 -O >> %s" % (psfile)
         print(cmd)
         os.system(cmd)
 
@@ -678,49 +728,49 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         Core_GMT.makecpt( dict )
         print(dict)
 
-        cmd="grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y8.0 -P -K > %s" % (age_grid,proj,region,psfile)
+        cmd="gmt grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y8.0 -P -K > %s" % (age_grid,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="psxy %s %s -W3/blue -R%s -B -K -O -M >> %s" % (trench,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/blue -R%s -B -K -O -M >> %s" % (trench,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="psxy %s %s -W3/blue -R%s -B -K -O >> %s" % (trench_outside,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/blue -R%s -B -K -O >> %s" % (trench_outside,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="psxy %s %s -W3/blue -R%s -B -K -O >> %s" % (trench_inside,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/blue -R%s -B -K -O >> %s" % (trench_inside,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd='psscale -Cage.cpt -D3.0/-0.5/4.0/0.25h -B100::/:"Slab age (Ma)": -X0.0 -Y0 -O -K >> %s' % (psfile)
+        cmd='gmt psscale -Cage.cpt -D3.0/-0.5/4.0/0.25h -B100::/:"Slab age (Ma)": -X0.0 -Y0 -O -K >> %s' % (psfile)
         print(cmd)
         os.system(cmd)
 
 
         # Stike
-        #cmd="grdimage %s -C%s %s -R%s -B10f2/10f2WeSn -X0.0 -Y-3.0 -P -O -K >> %s" % (grd_str,dict['C'],proj,region,psfile)
+        #cmd="gmt grdimage %s -C%s %s -R%s -B10f2/10f2WeSn -X0.0 -Y-3.0 -P -O -K >> %s" % (grd_str,dict['C'],proj,region,psfile)
         # New age grid for slab
-        cmd="grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-3.0 -P -O -K >> %s" % (grd_age,proj,region,psfile)
+        cmd="gmt grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-3.0 -P -O -K >> %s" % (grd_age,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
-        #cmd="psscale -C%s -D3.0/-0.5/4.0/0.25h -B20::/:strike: -O -K >> %s" % (dict['C'],psfile)
+        #cmd="gmt psscale -C%s -D3.0/-0.5/4.0/0.25h -B20::/:strike: -O -K >> %s" % (dict['C'],psfile)
         #print cmd
         #os.system(cmd)
 
-        cmd="grdimage %s -Cslab_dip.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (grd_dip,proj,region,psfile)
+        cmd="gmt grdimage %s -Cslab_dip.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (grd_dip,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
-        cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
-        cmd="psscale -Cslab_dip.cpt -D3.0/-0.5/4.0/0.25h -B10::/:dip: -U -O >> %s" % (psfile)
+        cmd="gmt psscale -Cslab_dip.cpt -D3.0/-0.5/4.0/0.25h -B10::/:dip: -U -O >> %s" % (psfile)
         print(cmd)
         os.system(cmd)
 
@@ -729,26 +779,26 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
 
         # Plot the epicentral locations on a map
         psfile ="%s_3.ps" % ps_name_prefix
-        cmd="psxy %s %s -R%s -B10f2/10f2WeSn -Sc0.02 -Ggreen -X0.75 -Y7.5 -P -K > %s" % (eq_simple,proj,region,psfile)
+        cmd="gmt psxy %s %s -R%s -B10f2/10f2WeSn -Sc0.02 -Ggreen -X0.75 -Y7.5 -P -K > %s" % (eq_simple,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
         events_in_section="Events/%s_1.xydm" % (s)
-        cmd="psxy %s %s -R%s -B -Sc0.02 -Gred -X0 -Y0 -P -O -K >> %s" % (events_in_section,proj,region,psfile)
+        cmd="gmt psxy %s %s -R%s -B -Sc0.02 -Gred -X0 -Y0 -P -O -K >> %s" % (events_in_section,proj,region,psfile)
         print(cmd)
         os.system(cmd)
         events_on_section="Events/%s_1.rs" % (s)
-        cmd="psxy %s %s -R%s -B -Sc0.02 -Gblue -X0 -Y0 -P -O -K >> %s" % (events_on_section,proj,region,psfile)
+        cmd="gmt psxy %s %s -R%s -B -Sc0.02 -Gblue -X0 -Y0 -P -O -K >> %s" % (events_on_section,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
         events_in_section="Events/%s_2.xydm" % (s)
-        cmd="psxy %s %s -R%s -B -Sc0.02 -Gred -X0 -Y0 -P -O -K >> %s" % (events_in_section,proj,region,psfile)
+        cmd="gmt psxy %s %s -R%s -B -Sc0.02 -Gred -X0 -Y0 -P -O -K >> %s" % (events_in_section,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
         events_on_section="Events/%s_2.rs" % (s)
-        cmd="psxy %s %s -R%s -B -Sc0.02 -Gblue -X0 -Y0 -P -O >> %s" % (events_on_section,proj,region,psfile)
+        cmd="gmt psxy %s %s -R%s -B -Sc0.02 -Gblue -X0 -Y0 -P -O >> %s" % (events_on_section,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
@@ -824,10 +874,10 @@ def project_earthquakes2xsection(all_quakes,sub_dict,s):
         events_in_section="Events/%s_%d.xydm" % (s,i)
         events_on_section="Events/%s_%d.rs" % (s,i)
         depth_section="Events/%s_%d.pd" % (s,i)
-        cmd="gmtselect %s -fg -C50/%s > %s" % (all_quakes,profile,events_in_section)
+        cmd="gmt gmtselect %s -fg -C50/%s > %s" % (all_quakes,profile,events_in_section)
         print(cmd)
         os.system(cmd)
-        cmd="project %s -C%s -E%s -Q > tmp.xyzpqrs" % (events_in_section,pro_center,pro_end)
+        cmd="gmt project %s -C%s -E%s -Q > tmp.xyzpqrs" % (events_in_section,pro_center,pro_end)
         print(cmd)
         os.system(cmd)
         XS=open("tmp.xyzpqrs")
@@ -875,7 +925,7 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
     dist=-1.0*trench_age_dist
     outside=Mat_Utilities.mk_parallel_line(xyz_file,0,dist)
     GMT_Utilities.remove_gmt_char(outside,shifted_age,"xyz")
-    cmd="grdtrack %s -G%s > %s" % (shifted_age,age_grid,trench_age_sampled)
+    cmd="gmt grdtrack %s -G%s > %s" % (shifted_age,age_grid,trench_age_sampled)
     print(cmd)
     os.system(cmd)
     #sample str (strike of slab) grid just inside of the trench
@@ -884,10 +934,10 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
     inside=Mat_Utilities.mk_parallel_line(xyz_file,0,dist)
     print('inside ',inside)
     GMT_Utilities.remove_gmt_char(inside,shifted_str,"xyz")
-    cmd="grdtrack %s -G%s > %s" % (shifted_str,grd_str,slab_str_sampled)
+    cmd="gmt grdtrack %s -G%s > %s" % (shifted_str,grd_str,slab_str_sampled)
     print(cmd)
     os.system(cmd)
-    cmd="grdtrack %s -G%s > %s" % (shifted_str,grd_depth,trench_slab_depth_sampled)
+    cmd="gmt grdtrack %s -G%s > %s" % (shifted_str,grd_depth,trench_slab_depth_sampled)
     print(cmd)
     os.system(cmd)
 
@@ -921,7 +971,7 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
             if s4 == 'NaN':
                 fdepth_c=d_prior_in_list
             d_prior_in_list=fdepth_c
-            cmd="project -C%g/%g -A%g -L0/1000 -G10 -Q > trench_projected.xy" % (flon,flat,fazim)
+            cmd="gmt project -C%g/%g -A%g -L0/1000 -G10 -Q > trench_projected.xy" % (flon,flat,fazim)
             os.system(cmd)
             TP=open("trench_projected.xy")
             while 1:
@@ -948,7 +998,7 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
     age_max=200.0
     tmp_grd=GMT_Utilities.mk_grd(ofile, dict['R'], dict['dx'], tension, age_min, age_max) 
     slab_age_grd="slab_age.grd"
-    cmd="grdmath %s %s OR = %s" % (tmp_grd,grd_depth,slab_age_grd)
+    cmd="gmt grdmath %s %s OR = %s" % (tmp_grd,grd_depth,slab_age_grd)
     print(cmd)
     os.system(cmd)
 
@@ -964,7 +1014,7 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
 def get_profile(profile,grd,scale):
 
     tmp_name="tmp.pd"
-    cmd="grdtrack %s -G%s -S > tmp.xypd" % (profile,grd)
+    cmd="gmt grdtrack %s -G%s -S > tmp.xypd" % (profile,grd)
     print(cmd)
     os.system(cmd)
     IP=open("tmp.xypd")
@@ -984,8 +1034,8 @@ def get_profile(profile,grd,scale):
             OP.write("%g %g\n" % (fp,fd))
         else:
             break
-    IP.close
-    OP.close
+    IP.close()
+    OP.close() 
 
     return tmp_name
 #=====================================================================
@@ -1012,10 +1062,10 @@ def new_point(x1,y1,depth,dip,str,slab_width):
 
 #=====================================================================
 def simple_slab_depth_correction(depth_grd,correction_grd):
-    print('depth_grd, correction_grd: ',depth_grd,correction_grd)   
+    print('depth_grd, correction_grd: ',depth_grd,correction_grd)
     new_grd_depth="new_depth.grd"
 
-    cmd="grdmath %s %s SUB = %s" % (depth_grd,correction_grd,new_grd_depth)
+    cmd="gmt grdmath %s %s SUB = %s" % (depth_grd,correction_grd,new_grd_depth)
     print(cmd)
     os.system(cmd)
     return new_grd_depth
@@ -1031,16 +1081,16 @@ def new_slab_depth(grd_depth,grd_dip,grd_str,grd_slab_age,dict,slab_transition_d
     #Set this so half-thickness is 50 km for 150 Ma old lithosphere
     thickness_factor=50.0/math.sqrt(150.0)
 
-    cmd="grd2xyz %s -S > %s" % (grd_depth,xyz_depth)
+    cmd="gmt grd2xyz %s -S > %s" % (grd_depth,xyz_depth)
     print(cmd)
     os.system(cmd)
-    cmd="grd2xyz %s -S > %s" % (grd_dip,xyz_dip)
+    cmd="gmt grd2xyz %s -S > %s" % (grd_dip,xyz_dip)
     print(cmd)
     os.system(cmd)
-    cmd="grd2xyz %s -S > %s" % (grd_str,xyz_str)
+    cmd="gmt grd2xyz %s -S > %s" % (grd_str,xyz_str)
     print(cmd)
     os.system(cmd)
-    cmd="grd2xyz %s -S > %s" % (grd_slab_age,xyz_slab_age)
+    cmd="gmt grd2xyz %s -S > %s" % (grd_slab_age,xyz_slab_age)
     print(cmd)
     os.system(cmd)
     I_DEPTH=open(xyz_depth)
@@ -1080,7 +1130,7 @@ def new_slab_depth(grd_depth,grd_dip,grd_str,grd_slab_age,dict,slab_transition_d
     O_DEPTH.close()
 
 
-    cmd="xyz2grd new_depth.xyz -Gtmp.grd -I%s/%s -R%s" % (dict['dx'],dict['dy'],dict['R'])
+    cmd="gmt xyz2grd new_depth.xyz -Gtmp.grd -I%s/%s -R%s" % (dict['dx'],dict['dy'],dict['R'])
     print(cmd)
     os.system(cmd)
     new_grd_depth='tmp.grd'
@@ -1101,10 +1151,10 @@ mode=sys.argv[1]
 
 
 # Get the top level keys and sort them
-slab_keys = slab_dict.keys();
+slab_keys = list(slab_dict.keys());
 slab_keys.sort()
 
-cmd="gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
+cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
 os.system(cmd)
 
 #=============================================================
