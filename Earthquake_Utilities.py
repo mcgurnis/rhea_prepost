@@ -7,7 +7,7 @@
 #
 #                              Authors:
 #                             Mike Gurnis
-#          (c) California Institute of Technology 2013-2015
+#          (c) California Institute of Technology 2013-2026
 #
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
@@ -41,7 +41,9 @@ earth_radius = 6371.0
 #=====================================================================
 def get_CMT_Catalog(cmtaccess_mode):
     if cmtaccess == 1:
-        CMT_Catalog="/net/holmes/scratch2/gurnis/Earthquake_Catelogs/CMT_Catalog/jan76_dec10.ndk"
+        # Updated for Mac
+        #CMT_Catalog="/net/holmes/scratch2/gurnis/Earthquake_Catelogs/CMT_Catalog/jan76_dec10.ndk"
+        CMT_Catalog="/export/scratch1/gurnis/Earthquake_Catelogs/CMT_Catalog/jan76_dec10.ndk"
         cmt_simple="cmt_lon_lat_d_mb.xydm"
 
     CMT=open(CMT_Catalog)
@@ -74,7 +76,9 @@ def get_CMT_Catalog(cmtaccess_mode):
     return cmt_simple
 #=====================================================================
 def get_EHB_Catalog(access_mode):
-    EHB_Catalog="/net/holmes/scratch2/gurnis/Earthquake_Catelogs/ISC_Catalogs/EHB_1960_2008.dat"
+    #updated for Mac
+    #EHB_Catalog="/net/holmes/scratch2/gurnis/Earthquake_Catelogs/ISC_Catalogs/EHB_1960_2008.dat"
+    EHB_Catalog="/Users/gurnis/Desktop/Gurnis_Files/Working/Data_Sets/Earthquake_Catelogs/ISC_Catalogs/EHB_1960_2008.dat"
 
     EHB=open(EHB_Catalog)
     ehb_simple="ehb_lon_lat_d_mb.xydm"

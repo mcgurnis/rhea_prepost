@@ -149,21 +149,21 @@ def mk_grd(xyzfile, region, res, tension, grid_min, grid_max):
 
     mean_file="%s_median.xyz" % tmp
     cmd="rm -f %s" % mean_file
-    cmd = "blockmedian %s -V -I%s -R%s > %s" % (xyzfile,res,region,mean_file)
+    cmd = "gmt blockmedian %s -V -I%s -R%s > %s" % (xyzfile,res,region,mean_file)
     if verbose: print(dt.now(), "mk_grd: cmd =", cmd)
     os.system(cmd)
     print('mk_grd: cmd =', cmd)
 
     if grid_min != 'none' or grid_max != 'none':
-        #cmd = "surface %(mean_file)s -V -G%(grdfile)s -I%(res)s -R%(region)s -T%(tension)g -Ll%(grid_min)g -Lu%(grid_max)g" % vars()
-        cmd = "surface %(mean_file)s -V -G%(grdfile)s -I%(res)s -R%(region)s -T%(tension)f -Ll%(grid_min)f -Lu%(grid_max)f" % vars()
+        #cmd = "gmt surface %(mean_file)s -V -G%(grdfile)s -I%(res)s -R%(region)s -T%(tension)g -Ll%(grid_min)g -Lu%(grid_max)g" % vars()
+        cmd = "gmt surface %(mean_file)s -V -G%(grdfile)s -I%(res)s -R%(region)s -T%(tension)f -Ll%(grid_min)f -Lu%(grid_max)f" % vars()
 
 
     else: 
-        cmd = "surface %(mean_file)s -V -G%(grdfile)s -I%(res)s -R%(region)s -T%(tension)g" % vars()
+        cmd = "gmt surface %(mean_file)s -V -G%(grdfile)s -I%(res)s -R%(region)s -T%(tension)g" % vars()
 
     # TEST 
-    # cmd = "xyz2grd %(xyzfile)s -G%(grdfile)s -I%(res)s -R%(region)s " % vars()
+    # cmd = "gmt xyz2grd %(xyzfile)s -G%(grdfile)s -I%(res)s -R%(region)s " % vars()
     # TEST 
 
     if verbose: print(dt.now(), 'mk_grd: cmd =', cmd)
@@ -219,7 +219,7 @@ def mk_xyp_files(section_defs,sec_res):
         sec_xyp_files.append("sec_%s.xyp" % sec_ids[n])
         if verbose: print(dt.now(), 'mk_xyp_files: id = %s; file = %s' % (id, sec_xyp_files[n]))
 
-        cmd = "project -C%f/%f -E%f/%f -Q -G%f > tmp.xyp" % ( \
+        cmd = "gmt project -C%f/%f -E%f/%f -Q -G%f > tmp.xyp" % ( \
             lon_start_sec[n], lat_start_sec[n],               \
             lon_end_sec[n], lat_end_sec[n],                   \
             sec_res)
@@ -287,8 +287,8 @@ def mk_grd_sec(id, prefix, section_depth, depths, grd_input_files, xyp_file, gri
     n=0
     for grd in grd_input_files:
         print(xypz_file)
-        #cmd = "grdtrack -V %s -G%s -Lg > %s" % (xyp_file,grd_input_files[n],xypz_file)
-        cmd = "grdtrack -V %s -G%s -fg > %s" % (xyp_file,grd_input_files[n],xypz_file)
+        #cmd = "gmt grdtrack -V %s -G%s -Lg > %s" % (xyp_file,grd_input_files[n],xypz_file)
+        cmd = "gmt grdtrack -V %s -G%s -fg > %s" % (xyp_file,grd_input_files[n],xypz_file)
         os.system(cmd)
         if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
 
@@ -327,8 +327,8 @@ def mk_grd_sec(id, prefix, section_depth, depths, grd_input_files, xyp_file, gri
 
     if verbose: print(dt.now(), 'mk_grd_sec: R = ',R)
 
-    cmd = "surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -I%(res)s -R%(R)s" % vars()
-    #cmd = "surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -T1.0 -I%(res)s -R%(R)s" % vars()
+    cmd = "gmt surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -I%(res)s -R%(R)s" % vars()
+    #cmd = "gmt surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -T1.0 -I%(res)s -R%(R)s" % vars()
     if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
     os.system(cmd) 
 
@@ -366,7 +366,7 @@ def mk_partial_annular_grd_sec(id, prefix, r_inner,r_outer, depths, grd_input_fi
     n=0
     for grd in grd_input_files:
         print(xypz_file)
-        cmd = "grdtrack -V %s -G%s -fg > %s" % (xyp_file,grd_input_files[n],xypz_file)
+        cmd = "gmt grdtrack -V %s -G%s -fg > %s" % (xyp_file,grd_input_files[n],xypz_file)
         os.system(cmd)
         if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
 
@@ -410,13 +410,13 @@ def mk_partial_annular_grd_sec(id, prefix, r_inner,r_outer, depths, grd_input_fi
 
     pdz_median_file_name=pdz_file_name+".median.pdz"
 
-    cmd = "blockmedian %(pdz_file_name)s -V -I%(res)s -R%(R)s > %(pdz_median_file_name)s" % vars()
+    cmd = "gmt blockmedian %(pdz_file_name)s -V -I%(res)s -R%(R)s > %(pdz_median_file_name)s" % vars()
     print(dt.now(), "mk_grd_sec: cmd =", cmd)
     os.system(cmd) 
 
     tension=0.0
-    #cmd = "surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -I%(res)s -R%(R)s" % vars()
-    cmd = "surface -V %(pdz_median_file_name)s -G%(sec_grd_tmp)s -T%(tension)s -I%(res)s -R%(R)s" % vars()
+    #cmd = "gmt surface -V %(pdz_file_name)s -G%(sec_grd_tmp)s -I%(res)s -R%(R)s" % vars()
+    cmd = "gmt surface -V %(pdz_median_file_name)s -G%(sec_grd_tmp)s -T%(tension)s -I%(res)s -R%(R)s" % vars()
     if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
     os.system(cmd) 
 
@@ -445,7 +445,7 @@ def mk_grd_expected_sec(scalet,layer_km,id,section_depth,depths,grd_input_file,x
     pdz_file_name="section_expected.pdz"
     pdz_file=open(pdz_file_name,"w")
 
-    cmd = "grdtrack -V %s -G%s > %s" % (xyp_file,grd_input_file,xypa_file)
+    cmd = "gmt grdtrack -V %s -G%s > %s" % (xyp_file,grd_input_file,xypa_file)
     if verbose: print(dt.now(), "mk_grd_expected_sec: cmd =", cmd)
     os.system(cmd)
 
@@ -484,7 +484,7 @@ def mk_grd_expected_sec(scalet,layer_km,id,section_depth,depths,grd_input_file,x
     yres = 10.0
     xres = dist_max/200.
     res = "%g/%g" % (xres,yres)
-    cmd = "surface %(pdz_file_name)s -G%(sec_grd)s -I%(res)s -R%(R)s" % vars()
+    cmd = "gmt surface %(pdz_file_name)s -G%(sec_grd)s -I%(res)s -R%(R)s" % vars()
     if verbose: print(dt.now(), "mk_grd_expected_sec: cmd =", cmd)
     os.system(cmd) 
 
@@ -874,7 +874,7 @@ def make_cpt(figure):
 
     elif field.startswith('temp'):
         cpt_label = 'a0.2f%(grid_cpt_delta)s::/:Temp:' % vars()
-        cmd="makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
        
     elif field.startswith('visc'):
         if str(grid_max) == str(5000):
@@ -882,7 +882,7 @@ def make_cpt(figure):
         else :
             cpt_label = 'a0.5f0.25::/:Visc:'
 
-        cmd="makecpt -M -V -D -Cpolar -I -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -D -Cpolar -I -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
 
     elif field.startswith('age'):
         cpt_label = 'a50f25:Age:/:Ma:'
@@ -896,28 +896,28 @@ def make_cpt(figure):
 
     elif field.startswith('phase'):
         cpt_label = 'a0.5f%(grid_cpt_delta)s:Phase:/:Phase:' % vars()
-        cmd="makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
-        cmd="makecpt -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s -Z > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s -Z > %(cpt_file)s" % vars()
 
     elif field.startswith('comp'):
         cpt_label = 'a0.2f%(grid_cpt_delta)s::/:Composition:' % vars()
-        cmd="makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
 
     elif field.startswith('surftopo'):
         cpt_label = 'a1.0f%(grid_cpt_delta)s::/:"Surface Topography":' % vars()
-        cmd="makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
 
     elif field.startswith('grand_tomography'):
         cpt_label = 'a1.0f%(grid_cpt_delta)s::/:"Velocity Anomaly":' % vars()
-        cmd="makecpt -M -V -I -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s -Z > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -I -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s -Z > %(cpt_file)s" % vars()
 
     elif field.startswith('S20RTS'):
         cpt_label = 'a1.0f%(grid_cpt_delta)s::/:"Velocity Anomaly":' % vars()
-        cmd="makecpt -M -V -I -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s -Z > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -I -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s -Z > %(cpt_file)s" % vars()
        
     else:
         cpt_label = 'a0.2f0.1:UNK:/:UNKNOWN:'
-        cmd="makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -M -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(grid_cpt_delta)s > %(cpt_file)s" % vars()
 
     # make the cpt file 
     if verbose: print(now(), "make_cpt: cmd=", cmd)
@@ -937,7 +937,7 @@ def make_cpt(figure):
         cpt_label = 'a0.2f0.1::/:Temp:'
         cpt_file = '.'.join([ figure['modelname'], str(figure['time']), str(field), str(figure['level']) , "overlay_temp", "cpt"])
 
-        cmd="makecpt -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(cpt_delta)s > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(cpt_delta)s > %(cpt_file)s" % vars()
         if verbose: print(dt.now(), "make_cpt: overlay_temperature: cmd=", cmd)
         os.system(cmd)
 
@@ -953,7 +953,7 @@ def make_cpt(figure):
         cpt_label = 'a0.2f0.01::/:Phase:'
         cpt_file = '.'.join([ figure['modelname'], str(figure['time']), str(field), str(figure['level']) , "overlay_phase", "cpt"])
 
-        cmd="makecpt -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(cpt_delta)s -Z > %(cpt_file)s" % vars()
+        cmd="gmt makecpt -V -Cpolar -T%(grid_min)s/%(grid_max)s/%(cpt_delta)s -Z > %(cpt_file)s" % vars()
         if verbose: print(dt.now(), "make_cpt: overlay_phase: cmd=", cmd)
         os.system(cmd)
 
@@ -1137,13 +1137,13 @@ def extra_ps_cmd(figure):
     if figure.get('number_sections'):
         for i,id in enumerate( figure.get('sec_ids') ):
             f = figure['sec_xyp_files'][i] 
-            cmd = 'psxy %(f)s -A -R%(R)s -J%(J)s -B -W3.0/0 -O -K >> %(ps)s' % vars()
+            cmd = 'gmt psxy %(f)s -A -R%(R)s -J%(J)s -B -W3.0/0 -O -K >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'extra_ps_cmd: cmd=', cmd)
             os.system(cmd)
 
         if figure.get('label_name'):
             f = figure['label_name']
-            cmd="pstext %(f)s -R%(R)s -J%(J)s -B -W255 -G0 -O -K >> %(ps)s" % vars()
+            cmd="gmt pstext %(f)s -R%(R)s -J%(J)s -B -W255 -G0 -O -K >> %(ps)s" % vars()
             if verbose: print(dt.now(), 'extra_ps_cmd: cmd=', cmd)
             os.system(cmd)
 
@@ -1152,7 +1152,7 @@ def extra_ps_cmd(figure):
 
     if figure.get('great_circle_file'):
         f = figure['great_circle_file']
-        cmd = 'psxy %(f)s -R%(R)s -J%(J)s -B -W3.0/0 -O -K >> %(ps)s' % vars()
+        cmd = 'gmt psxy %(f)s -R%(R)s -J%(J)s -B -W3.0/0 -O -K >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'extra_ps_cmd: cmd=', cmd)
         os.system(cmd)
 
@@ -1178,7 +1178,7 @@ def make_ps_plot(figure):
     # create base empty map or base grdimage map 
 
     if field.startswith('none'):
-        cmd = 'psbasemap -B%(B)s -J%(J)s -R%(R)s -X%(X)s -Y%(Y)s -K -O >> %(ps)s' % vars()
+        cmd = 'gmt psbasemap -B%(B)s -J%(J)s -R%(R)s -X%(X)s -Y%(Y)s -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_ps_plot: cmd=', cmd)
         os.system(cmd)
 
@@ -1204,12 +1204,12 @@ def make_ps_plot(figure):
        field.startswith('age') :
 
         # plot main image
-        cmd = 'grdimage %(grid)s -V -C%(C)s -B%(B)s -R%(R)s -J%(J)s -X%(X)s -Y%(Y)s -K -O >> %(ps)s' % vars()
+        cmd = 'gmt grdimage %(grid)s -V -C%(C)s -B%(B)s -R%(R)s -J%(J)s -X%(X)s -Y%(Y)s -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_ps_plot: cmd =', cmd)
         os.system(cmd)
 
         # plot the cpt scale bar
-        cmd = 'psscale -C%(C)s -D%(D)s -B%(l)s -K -O >> %(ps)s' % vars()
+        cmd = 'gmt psscale -C%(C)s -D%(D)s -B%(l)s -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_ps_plot: cmd=', cmd)
         os.system(cmd)
 
@@ -1253,7 +1253,7 @@ def make_overlay_ps(figure):
     if figure.get('overlay_xy') :
         list = figure['overlay_xy'].split(',')
         for file in list:
-            cmd='psxy %(file)s -R%(R)s -J%(J)s -W5/black -m -O -K >> %(ps)s' % vars()
+            cmd='gmt psxy %(file)s -R%(R)s -J%(J)s -W5/black -m -O -K >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1262,13 +1262,13 @@ def make_overlay_ps(figure):
     if figure.get('overlay_xy_vectors') :
         list = figure['overlay_xy_vectors'].split(',')
         for file in list:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -SV0.015i/0.06i/0.05i -G255 -: -O -K >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -SV0.015i/0.06i/0.05i -G255 -: -O -K >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
     # GMT Coast lines built-in GMT xy data
     if figure.get('overlay_coast') :
-        cmd='pscoast -R%(R)s -J%(J)s -W -Dc -K -O >> %(ps)s' % vars()
+        cmd='gmt pscoast -R%(R)s -J%(J)s -W -Dc -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
         os.system(cmd)
 
@@ -1283,7 +1283,7 @@ def make_overlay_ps(figure):
     # Velocity vectors 
     if figure.get('overlay_velocity'):
         overlay_velocity_xyz = figure['overlay_velocity_xyz']
-        cmd = 'psxy -V %(overlay_velocity_xyz)s -R%(R)s -J%(J)s -B%(B)s -SV0.015i/0.06i/0.05i -G0 -O -K >> %(ps)s' % vars()
+        cmd = 'gmt psxy -V %(overlay_velocity_xyz)s -R%(R)s -J%(J)s -B%(B)s -SV0.015i/0.06i/0.05i -G0 -O -K >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
         os.system(cmd)
         figure['rm_list'] += [ overlay_velocity_xyz ] # clean up 
@@ -1293,7 +1293,7 @@ def make_overlay_ps(figure):
     #
     if figure.get('overlay_gplates_velocity'):
         overlay_gplates_velocity_xyz = figure['overlay_gplates_velocity_xyz']
-        cmd = 'psxy -V %(overlay_gplates_velocity_xyz)s -R%(R)s -J%(J)s -B%(B)s -SV0.015i/0.06i/0.05i -G0 -O -K >> %(ps)s' % vars()
+        cmd = 'gmt psxy -V %(overlay_gplates_velocity_xyz)s -R%(R)s -J%(J)s -B%(B)s -SV0.015i/0.06i/0.05i -G0 -O -K >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
         os.system(cmd)
         figure['rm_list'] += [ overlay_gplates_velocity_xyz ] # clean up 
@@ -1321,7 +1321,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0 -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0 -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1336,7 +1336,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:  
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/green -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/green -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1351,7 +1351,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:  
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/green -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/green -m -K -O >> %(ps)s' % vars()
 
     # Network Polygon
     if figure.get('overlay_network_polygons') :
@@ -1364,7 +1364,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:  
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/green -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/green -m -K -O >> %(ps)s' % vars()
 
 
     # Subductions for all types of Topologies 
@@ -1379,7 +1379,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0/0/0 -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0/0/0 -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1391,7 +1391,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0/0/0 -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0/0/0 -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1403,7 +1403,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0/0/0 -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/0/0/0 -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1420,7 +1420,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05irt -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05irt -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1432,7 +1432,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/red -Sf0.2i/0.05irt -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/red -Sf0.2i/0.05irt -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1444,7 +1444,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05irt -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05irt -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1460,7 +1460,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05ilt -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05ilt -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1472,7 +1472,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/red -Sf0.2i/0.05ilt -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/red -Sf0.2i/0.05ilt -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1484,7 +1484,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05ilt -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W5/black -Sf0.2i/0.05ilt -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1501,7 +1501,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1514,7 +1514,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1527,7 +1527,7 @@ def make_overlay_ps(figure):
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
         else:
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1544,7 +1544,7 @@ def make_overlay_ps(figure):
             file = os.path.join(path, prefix + '.%d.xy' % iage)
         if not os.path.exists(file):
             print(dt.now(), 'make_overlay_ps: WARN: file missing: %(file)s' % vars())
-        cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
+        cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W3/green -m -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
         os.system(cmd)
 
@@ -1583,7 +1583,7 @@ def make_overlay_ps(figure):
                 if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
                 os.system(cmd)
             else:
-                cmd= 'psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -Sd3p -W2/%(color)s -m -K -O >> %(ps)s' % vars()
+                cmd= 'gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -Sd3p -W2/%(color)s -m -K -O >> %(ps)s' % vars()
                 if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
                 os.system(cmd)
 
@@ -1656,7 +1656,7 @@ def make_overlay_ps(figure):
             if figure.get('overlay_platepolygon_color'):
                 color = figure.get('overlay_platepolygon_color')
             
-            cmd='psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W2/%(color)s -m -K -O >> %(ps)s' % vars()
+            cmd='gmt psxy -V %(file)s -R%(R)s -J%(J)s -B%(B)s -W2/%(color)s -m -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_overlay_ps: cmd =', cmd)
             os.system(cmd)
 
@@ -1729,7 +1729,7 @@ def make_overlay_tracers(figure):
         out.close()
 
         # build cmd
-        cmd = 'psxy %(name)s -R%(R)s -J%(J)s -Sc1p -W%(W)s -K -O >> %(ps)s' % vars()
+        cmd = 'gmt psxy %(name)s -R%(R)s -J%(J)s -Sc1p -W%(W)s -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_overlay_tracers: cmd =', cmd)
         os.system(cmd)
 
@@ -2135,13 +2135,13 @@ def make_grids_from_slices( figure ):
 
             # create the cross section temp grid
             xytm="%(xyt)s_median.xyz" % vars()
-            cmd = "blockmedian %(xyt)s -V -I%(I)s -R%(R)s > %(xytm)s" % vars()
+            cmd = "gmt blockmedian %(xyt)s -V -I%(I)s -R%(R)s > %(xytm)s" % vars()
             if verbose: print(dt.now(), 'make_grids_from_slices: temperature:')
             if verbose: print(dt.now(), 'make_grids_from_slices: cmd =', cmd)
             os.system(cmd)
 
             tgrd = xytm + '.grd'
-            cmd = "surface %(xytm)s -V -G%(tgrd)s -I%(I)s -R%(R)s -T%(T)g -Ll%(gmin)g -Lu%(gmax)g" % vars()
+            cmd = "gmt surface %(xytm)s -V -G%(tgrd)s -I%(I)s -R%(R)s -T%(T)g -Ll%(gmin)g -Lu%(gmax)g" % vars()
             if verbose: print(dt.now(), 'make_grids_from_slices: cmd =', cmd)
             os.system(cmd)
 
@@ -2152,16 +2152,16 @@ def make_grids_from_slices( figure ):
         if field.startswith('visc') or figure.get('overlay_viscosity'):
             # create the cross section visc grid 
             xyvm="%(xyv)s_median.xyz" % vars()
-            cmd = "blockmedian %(xyv)s -V -I%(I)s -R%(R)s > %(xyvm)s" % vars()
+            cmd = "gmt blockmedian %(xyv)s -V -I%(I)s -R%(R)s > %(xyvm)s" % vars()
             if verbose: print(dt.now(), 'make_grids_from_slices: viscosity:')
             if verbose: print(dt.now(), 'make_grids_from_slices: cmd =', cmd)
             os.system(cmd)
 
             vgrd = xyvm + '.grd'
             if gmin != 'none' or gmax != 'none':
-                cmd = "surface %(xyvm)s -V -G%(vgrd)s -I%(I)s -R%(R)s -T%(T)g -Ll%(gmin)g -Lu%(gmax)g" % vars()
+                cmd = "gmt surface %(xyvm)s -V -G%(vgrd)s -I%(I)s -R%(R)s -T%(T)g -Ll%(gmin)g -Lu%(gmax)g" % vars()
             else:
-                cmd = "surface %(xyvm)s -V -G%(vgrd)s -I%(I)s -R%(R)s -T%(T)g" % vars()
+                cmd = "gmt surface %(xyvm)s -V -G%(vgrd)s -I%(I)s -R%(R)s -T%(T)g" % vars()
             if verbose: print(dt.now(), 'make_grids_from_slices: cmd =', cmd)
             os.system(cmd)
 
@@ -2172,14 +2172,14 @@ def make_grids_from_slices( figure ):
             if verbose: print(dt.now(), 'make_grids_from_slices: phase:')
             # create the cross section phase grid 
             xypm="%(xyp)s_median.xyz" % vars()
-            cmd = "blockmedian %(xyp)s -V -I%(I)s -R%(R)s > %(xypm)s" % vars()
+            cmd = "gmt blockmedian %(xyp)s -V -I%(I)s -R%(R)s > %(xypm)s" % vars()
             if verbose: print(dt.now(), 'make_grids_from_slices: cmd =', cmd)
             os.system(cmd)
             gmin = figure['overlay_phase_gmin']
             gmax = figure['overlay_phase_gmax']
 
             pgrd = xypm + '.grd'
-            cmd = "surface %(xypm)s -V -G%(pgrd)s -I%(I)s -R%(R)s -T%(T)g -Ll%(gmin)g -Lu%(gmax)g" % vars()
+            cmd = "gmt surface %(xypm)s -V -G%(pgrd)s -I%(I)s -R%(R)s -T%(T)g -Ll%(gmin)g -Lu%(gmax)g" % vars()
             if verbose: print(dt.now(), 'make_grids_from_slices: cmd =', cmd)
             os.system(cmd)
 
@@ -2294,7 +2294,7 @@ def make_cross_section_plots(figure):
             if figure['zone'] == '2D':
                 D = '6.85/0.0/3.25/0.2' # x/y/l/w of mid point
 
-            cmd = 'psscale -C%(C)s -D%(D)s -B%(l)s -K -O >> %(ps)s' % vars()
+            cmd = 'gmt psscale -C%(C)s -D%(D)s -B%(l)s -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_ps_plot: cmd=', cmd)
             os.system(cmd)
             figure['rm_list'] += [f, C]
@@ -2305,11 +2305,11 @@ def make_cross_section_plots(figure):
             f = figure['temp_sec_grd_files'][n]
             C = figure['overlay_temperature_cpt_file']
 
-            cmd ='grdcontour %(f)s -D%(d)s -M -C%(C)s -B%(B)s -R%(R)s -J%(J)s -W > /dev/null' % vars()
+            cmd ='gmt grdcontour %(f)s -D%(d)s -M -C%(C)s -B%(B)s -R%(R)s -J%(J)s -W > /dev/null' % vars()
             if verbose: print(dt.now(), 'make_cross_section_plots: cmd=', cmd)
             os.system(cmd)
 
-            cmd ='psxy %(d)s -m -W3.0/0 -R%(R)s -J%(J)s -K -O >> %(ps)s' % vars()
+            cmd ='gmt psxy %(d)s -m -W3.0/0 -R%(R)s -J%(J)s -K -O >> %(ps)s' % vars()
             if verbose: print(dt.now(), 'make_cross_section_plots: cmd=', cmd)
             os.system(cmd)
 
@@ -2321,11 +2321,11 @@ def make_cross_section_plots(figure):
             f = figure['phase_sec_grd_files'][n]
             C = figure['overlay_phase_cpt_file']
 
-            cmd ='grdcontour %(f)s -D%(d)s -M -C%(C)s -B%(B)s -R%(R)s -J%(J)s -V > /dev/null' % vars()
+            cmd ='gmt grdcontour %(f)s -D%(d)s -M -C%(C)s -B%(B)s -R%(R)s -J%(J)s -V > /dev/null' % vars()
             if verbose: print(dt.now(), 'make_cross_section_plots: cmd=', cmd)
             os.system(cmd)
 
-            cmd ='psxy %(d)s -m -W3.0/0 -R%(R)s -J%(J)s -K -O >> %(ps)s' % vars()
+            cmd ='gmt psxy %(d)s -m -W3.0/0 -R%(R)s -J%(J)s -K -O >> %(ps)s' % vars()
             if verbose: 
                 print(dt.now(), 'make_cross_section_plots: cmd=', cmd)
             os.system(cmd)
@@ -2405,20 +2405,20 @@ def make_cross_section_overlay_tracers(figure, index):
         tmp1_out.close()
 
         # filter list with GMT select
-        cmd = 'gmtselect -V %(tmp1)s -L%(dist)s/%(line)s > %(tmp2)s' % vars()
+        cmd = 'gmt gmtselect -V %(tmp1)s -L%(dist)s/%(line)s > %(tmp2)s' % vars()
         if verbose: 
             print(dt.now(), 'make_cross_section_overlay_tracers: cmd=', cmd)
         os.system(cmd)
         
         # project the tracers onto the section plane
-        cmd = 'project %(tmp2)s -C%(lon0)s/%(lat0)s -E%(lon1)s/%(lat1)s -Q -Fpz > %(tmp3)s' % vars()
+        cmd = 'gmt project %(tmp2)s -C%(lon0)s/%(lat0)s -E%(lon1)s/%(lat1)s -Q -Fpz > %(tmp3)s' % vars()
         if verbose:
             print(dt.now(), 'make_cross_section_overlay_tracers: cmd=', cmd)
         os.system(cmd)
         
         # write the filtered results an xy file
         # build cmd
-        cmd = 'psxy -V %(tmp3)s -R%(R)s -J%(J)s -Sc1p -W%(W)s -K -O >> %(ps)s' % vars()
+        cmd = 'gmt psxy -V %(tmp3)s -R%(R)s -J%(J)s -Sc1p -W%(W)s -K -O >> %(ps)s' % vars()
         if verbose: print(dt.now(), 'make_cross_section_overlay_tracers: cmd =', cmd)
         os.system(cmd)
 
@@ -2587,7 +2587,7 @@ def make_great_circle_path(gcproj, grid_increment_azimuth):
     gcfile = 'circle.xyp'
 
     # create great circle path #
-    cmd = 'project %(gcproj)s -G%(grid_increment_azimuth)s > %(gcfile)s' % vars()
+    cmd = 'gmt project %(gcproj)s -G%(grid_increment_azimuth)s > %(gcfile)s' % vars()
     if verbose: 
         print(dt.now(), 'make_great_circle_path: cmd=', cmd)
     os.system(cmd)
@@ -2605,7 +2605,7 @@ def make_great_circle_arc(p1, p2, resolution, outfile):
     p2lon = p2[0]
     p2lat = p2[1]
 
-    cmd = 'project -C%(p1lon)s/%(p1lat)s -E%(p2lon)s/%(p2lat)s -G%(resolution)s > %(outfile)s' % vars()
+    cmd = 'gmt project -C%(p1lon)s/%(p1lat)s -E%(p2lon)s/%(p2lat)s -G%(resolution)s > %(outfile)s' % vars()
     if verbose: 
         print(dt.now(), 'make_great_circle_arc: cmd=', cmd)
     os.system(cmd)
@@ -2686,18 +2686,18 @@ def make_annular_section(figure):
             raise ValueError(msg)
 
         # smooth the data
-        cmd = 'blockmedian %(xyzfile)s -V -I%(grid_inc_az)s -R%(bounds)s > %(medfile)s' % vars()
+        cmd = 'gmt blockmedian %(xyzfile)s -V -I%(grid_inc_az)s -R%(bounds)s > %(medfile)s' % vars()
         if verbose: print(dt.now(), 'make_annular_section: cmd =', cmd)
         os.system(cmd)
 
 
         # surface the data
-        cmd = 'surface %(medfile)s -V -I%(grid_inc_az)s -G%(grdfile)s -R%(bounds)s -N1 -Ll%(grid_min)s -Lu%(grid_max)s' % vars()
+        cmd = 'gmt surface %(medfile)s -V -I%(grid_inc_az)s -G%(grdfile)s -R%(bounds)s -N1 -Ll%(grid_min)s -Lu%(grid_max)s' % vars()
         if verbose: print(dt.now(), 'make_annular_section: cmd =', cmd)
         os.system(cmd)
 
         # sample the level grdfile along the great circle
-        cmd = 'grdtrack -V %(gcfile)s -G%(grdfile)s -Lg' % vars()
+        cmd = 'gmt grdtrack -V %(gcfile)s -G%(grdfile)s -Lg' % vars()
         if verbose: print(dt.now(), cmd)
         xyptfp = os.popen(cmd)
 
@@ -2771,16 +2771,16 @@ def make_annular_plot(figure):
     R = '-180/180/%f/%f' % (radii_list[botlayer], radii_list[toplayer])
 
     # surface the grid
-    cmd = 'surface %(xs)s -V -G%(grdfile2)s -I%(I)s -R%(R)s -Ll%(grid_min)s -Lu%(grid_max)s' % vars()
+    cmd = 'gmt surface %(xs)s -V -G%(grdfile2)s -I%(I)s -R%(R)s -Ll%(grid_min)s -Lu%(grid_max)s' % vars()
     if verbose: print(dt.now(), 'make_annular_plot: cmd=', cmd)
     os.system(cmd)
 
-    cmd = 'grdimage %(grdfile2)s -V -C%(C)s -JP%(mw)fa -B%(B)s -R%(R)s -X%(X)s -Y%(Y)s -P -O -K >> %(ps)s' % vars()
+    cmd = 'gmt grdimage %(grdfile2)s -V -C%(C)s -JP%(mw)fa -B%(B)s -R%(R)s -X%(X)s -Y%(Y)s -P -O -K >> %(ps)s' % vars()
     if verbose: print(dt.now(), 'make_annular_plot: cmd=', cmd)
     os.system(cmd)
 
     # plot the cpt scale bar
-    cmd = 'psscale -C%(C)s -D%(D)s -B%(l)s -K -O >> %(ps)s' % vars()
+    cmd = 'gmt psscale -C%(C)s -D%(D)s -B%(l)s -K -O >> %(ps)s' % vars()
     if verbose: print(dt.now(), 'make_ps_plot: cmd=', cmd)
     os.system(cmd)
 
@@ -2871,7 +2871,7 @@ def start_gmt(settings, page):
     file.close()
  
     # call pstext with the txt file 
-    cmd = 'pstext %(name)s -N -G0 -W255 -Jx1.0/1.0 ' % vars()
+    cmd = 'gmt pstext %(name)s -N -G0 -W255 -Jx1.0/1.0 ' % vars()
 
     if page.get('page_orientation') == 'portrait':
         cmd += '-R0/8.5/0/11.0 -P '
@@ -2939,7 +2939,7 @@ def end_gmt(settings, page):
     file.close()
  
     # call pstext with the txt file 
-    cmd = 'pstext %(name)s -N -G0 -W255 -Jx1.0/1.0 ' % vars()
+    cmd = 'gmt pstext %(name)s -N -G0 -W255 -Jx1.0/1.0 ' % vars()
 
     if page.get('page_orientation') == 'portrait':
         cmd += '-R0/8.5/0/11.0 -P '

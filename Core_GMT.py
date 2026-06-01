@@ -3,7 +3,7 @@
 #                      Python Scripts for CitComS 
 #         Preprocessing, Data Assimilation, and Postprocessing
 #                  ---------------------------------
-#             (c) California Institute of Technology 2008
+#             (c) California Institute of Technology 2008-2026  
 #                        ALL RIGHTS RESERVED
 #=====================================================================
 ''' A set of functions to build and execute GMT commands.
@@ -515,13 +515,14 @@ Output argugments:
 #
     grid = args['grid']
 
-    cmd = 'grdinfo '
+    cmd = 'gmt grdinfo '
     if verbose: cmd += '-V '
     cmd += '-C -M %(grid)s' % vars() 
     if verbose: print(dt.now(), 'grdinfo: cmd =\n', cmd)
     pipe = os.popen(cmd)
     line = pipe.readline()
     pipe.close()
+
 
     list = line.split()
     args['west'] = list[1]

@@ -1,5 +1,5 @@
-#!/usr/bin/env python2.7
-#=====================================================================
+#!/usr/bin/env python
+# #=====================================================================
 #
 #       Python Scripts for Geodynamics pre- and post- processing
 #                  ---------------------------------
@@ -988,7 +988,7 @@ def make_slab_age_grd(s,gmt_dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_di
 
     return slab_age_grd, trench_age_sampled
 #=====================================================================
-def new_point(AboveBelow,x,y,s_depth,s_dip,s_str,d_depth):
+def displace_from_slab_surface(AboveBelow,x,y,s_depth,s_dip,s_str,d_depth):
  
     #colatitude
     theta=90.0-y
@@ -1094,7 +1094,7 @@ def generate_points_around_slab(sn,slab_Nan_age,grd_age,grd_depth,grd_dip,grd_st
                 if(float(layer) > s_depth):
                     d_depth=layer-s_depth
                     if d_depth < 200:
-                        xnew,ynew,actual_dist=new_point('B',x,y,s_depth,s_dip,s_str,d_depth)
+                        xnew,ynew,actual_dist=displace_from_slab_surface('B',x,y,s_depth,s_dip,s_str,d_depth)
                         if actual_dist < 200:
                             non_dim_dist=actual_dist/layer_km
                             #a=100.0
@@ -1105,7 +1105,7 @@ def generate_points_around_slab(sn,slab_Nan_age,grd_age,grd_depth,grd_dip,grd_st
                 #Ascend into the layers above this point
                 if(float(layer) <= s_depth):
                     d_depth=s_depth-layer
-                    xnew,ynew,actual_dist=new_point('A',x,y,s_depth,s_dip,s_str,d_depth)
+                    xnew,ynew,actual_dist=displace_from_slab_surface('A',x,y,s_depth,s_dip,s_str,d_depth)
                     if actual_dist < 200:
                         etemp = T_max
                         xyz_N_file_handles[i].write("%f  %f  %f\n" % (xnew,ynew,etemp))
@@ -1201,11 +1201,14 @@ for s in slab_keys:
     print('T_use, W_use',T_use, W_use)
     slab_Nan_age=sub_dict['Nan_age']
 
-    if T_use == 'Slab1':
+    print("T_use: %s" % T_use ) 
+    sys.exit()
+
+    if T_use == 'Slab2':
         sn=s
-        depth_grids_dir=Slab1_grids_dir
-        age_grids_dir=Slab1_Age_Dir
-        model="slab1.0"
+        depth_grids_dir=Slab2_grids_dir
+        age_grids_dir=Slab2_Age_Dir
+        model="slab2.0"
     elif T_use == 'RUM': 
         if RUM == 'only':
             sn=s

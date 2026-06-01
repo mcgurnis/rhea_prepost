@@ -458,7 +458,7 @@ def Fill_xy(xy_file_old,min_deg):
                              
                         #flon_c=(flon_1+flon)/2.0
                         #flat_c=(flat_1+flat)/2.0
-                        #cmd="project -C%g/%g -E%g/%g -G%g > %s" % (flon_c,flat_c,flon,flat,min_deg,tmp_file) 
+                        #cmd="gmt project -C%g/%g -E%g/%g -G%g > %s" % (flon_c,flat_c,flon,flat,min_deg,tmp_file) 
                         #os.system(cmd)
                         #TMP=open(tmp_file,"r")
                         #n=0
@@ -489,7 +489,7 @@ def filter(grdfile,bounds,k,width,zmin,zmax):
     clipped_name="mat%d.grd" % k
 
     if width != 'none':
-        cmd="grdfilter %s -D2 -Fg%g -V -G%s -R%s" % (grdfile,width,filtered_name,bounds)
+        cmd="gmt grdfilter %s -D2 -Fg%g -V -G%s -R%s" % (grdfile,width,filtered_name,bounds)
         os.system(cmd)
 
         if zmin != 'none' or zmax != 'none':
@@ -1230,15 +1230,15 @@ def mk_flat_slab_age_depth_file( dict ):
     flat_slab_new = GMT_Utilities.toggle_shift_xy( flat_slab_file, "S3" )
 
     # make mask of flat slab
-    cmd="grdmask %s -Gflat_slab_mask.grd -I0.1 -R%s -NNaN/0.0/1.0 -m -V" % (flat_slab_new,bounds)
+    cmd="gmt grdmask %s -Gflat_slab_mask.grd -I0.1 -R%s -NNaN/0.0/1.0 -m -V" % (flat_slab_new,bounds)
     if verbose: print(dt.now(), cmd)
     os.system(cmd)
 
-    cmd="grdmath %s flat_slab_mask.grd MUL = flat_tmp.grd" % afile_1
+    cmd="gmt grdmath %s flat_slab_mask.grd MUL = flat_tmp.grd" % afile_1
     if verbose: print(dt.now(), cmd)
     os.system(cmd)
 
-    cmd="grdmath %s flat_slab_mask.grd MUL = flat_depth_tmp.grd" % grd_slab_depth
+    cmd="gmt grdmath %s flat_slab_mask.grd MUL = flat_depth_tmp.grd" % grd_slab_depth
     if verbose: print(dt.now(), cmd)
     os.system(cmd)
 
@@ -1249,10 +1249,10 @@ def mk_flat_slab_age_depth_file( dict ):
     #resample_res=0.05*grd_res
 
     #Resample the grd files (both the age and the depth) on a mesh slightly higher res than grd_res
-    cmd="grdsample flat_tmp.grd -Gflat_slab_age.grd -I%g" % resample_res 
+    cmd="gmt grdsample flat_tmp.grd -Gflat_slab_age.grd -I%g" % resample_res 
     if verbose: print(dt.now(), cmd) 
     os.system(cmd)
-    cmd="grdsample flat_depth_tmp.grd -Gflat_slab_depth.grd -I%g" % resample_res 
+    cmd="gmt grdsample flat_depth_tmp.grd -Gflat_slab_depth.grd -I%g" % resample_res 
     if verbose: print(dt.now(), cmd) 
     os.system(cmd)
 
@@ -1261,60 +1261,60 @@ def mk_flat_slab_age_depth_file( dict ):
     # For debugging
     proj_z = 'M2.5'
     bounds_z = flat_slab_region
-    cmd="makecpt -Crainbow -I -D -T50/150/10 > depth.cpt"
+    cmd="gmt makecpt -Crainbow -I -D -T50/150/10 > depth.cpt"
     os.system(cmd)
-    cmd="makecpt -Crainbow -I -D -T0/280/10 > age.cpt"
+    cmd="gmt makecpt -Crainbow -I -D -T0/280/10 > age.cpt"
     os.system(cmd)
     fs_ps = "flat_slab_depth_age%d.ps" % age
 
 
     # First plot an image of the Depth of the flat slab portion
-    cmd="grdimage flat_slab_depth.grd -Cdepth.cpt -R%s -J%s -B10 -X1.0 -Y3.0 -P -K  > %s" % (bounds_z,proj_z,fs_ps)
+    cmd="gmt grdimage flat_slab_depth.grd -Cdepth.cpt -R%s -J%s -B10 -X1.0 -Y3.0 -P -K  > %s" % (bounds_z,proj_z,fs_ps)
     print(cmd)
     os.system(cmd)
-    cmd="psxy %s -B -R%s -W3/0 -J%s -O -K -m -V >> %s" % (flat_slab_new,bounds_z,proj_z,fs_ps)
+    cmd="gmt psxy %s -B -R%s -W3/0 -J%s -O -K -m -V >> %s" % (flat_slab_new,bounds_z,proj_z,fs_ps)
     print(cmd)
     os.system(cmd)
     sub_sR="%s/topology_subduction_boundaries_sR_%0.2fMa.xy" % (sub_dir,age)
-    cmd="psxy %(sub_sR)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07rt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
+    cmd="gmt psxy %(sub_sR)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07rt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
     sub_sL="%s/topology_subduction_boundaries_sL_%0.2fMa.xy" % (sub_dir,age)
-    cmd="psxy %(sub_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K  >> %(fs_ps)s" % vars()
+    cmd="gmt psxy %(sub_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K  >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
     slab_sL="%s/topology_slab_edges_leading_sL_%0.2fMa.xy" % (slab_dir,age)
-    cmd="psxy %(slab_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
+    cmd="gmt psxy %(slab_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
-    cmd="psscale -D1.0/-0.5/2.0/0.25h -B25:'Depth (km)': -Cdepth.cpt -O -K  >> %(fs_ps)s" % vars()
+    cmd="gmt psscale -D1.0/-0.5/2.0/0.25h -B25:'Depth (km)': -Cdepth.cpt -O -K  >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
     # MG doesn't know whythis was added:
-    #cmd="psxy %(sub_base_file)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0/255/0/0 -X0.0 -Y0.0 -M -O -K >> %(fs_ps)s" % vars()
+    #cmd="gmt psxy %(sub_base_file)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0/255/0/0 -X0.0 -Y0.0 -M -O -K >> %(fs_ps)s" % vars()
     #print cmd 
     #os.system(cmd)
 
     # Then plot an image of the age of the flat slab portion
-    cmd="grdimage flat_slab_age.grd -Cage.cpt -R%s -J%s -B10 -X3.5 -Y0.0 -P -O -K  >> %s" % (bounds_z,proj_z,fs_ps)
+    cmd="gmt grdimage flat_slab_age.grd -Cage.cpt -R%s -J%s -B10 -X3.5 -Y0.0 -P -O -K  >> %s" % (bounds_z,proj_z,fs_ps)
     print(cmd)
     os.system(cmd)
-    cmd="psxy %s -B -R%s -W3/0 -J%s -O -K -m -V >> %s" % (flat_slab_new,bounds_z,proj_z,fs_ps)
+    cmd="gmt psxy %s -B -R%s -W3/0 -J%s -O -K -m -V >> %s" % (flat_slab_new,bounds_z,proj_z,fs_ps)
     print(cmd)
     os.system(cmd)
     sub_sR="%s/topology_subduction_boundaries_sR_%0.2fMa.xy" % (sub_dir,age)
-    cmd="psxy %(sub_sR)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07rt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
+    cmd="gmt psxy %(sub_sR)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07rt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
     sub_sL="%s/topology_subduction_boundaries_sL_%0.2fMa.xy" % (sub_dir,age)
-    cmd="psxy %(sub_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K  >> %(fs_ps)s" % vars()
+    cmd="gmt psxy %(sub_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K  >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
     slab_sL="%s/topology_slab_edges_leading_sL_%0.2fMa.xy" % (slab_dir,age)
-    cmd="psxy %(slab_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
+    cmd="gmt psxy %(slab_sL)s -R%(bounds_z)s -J%(proj_z)s -B -W6.0 -Sf0.2/0.07lt -G0 -X0.0 -Y0.0 -m -O -K >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
-    cmd="psscale -D1.0/-0.5/2.0/0.25h -B50:'Age (Ma)': -Cage.cpt -O >> %(fs_ps)s" % vars()
+    cmd="gmt psscale -D1.0/-0.5/2.0/0.25h -B50:'Age (Ma)': -Cage.cpt -O >> %(fs_ps)s" % vars()
     print(cmd)
     os.system(cmd)
 
@@ -1322,11 +1322,11 @@ def mk_flat_slab_age_depth_file( dict ):
     #============================================================
 
     flat_slab_age_file = "flat_slab_age.xyz"
-    cmd="grd2xyz flat_slab_age.grd -S > %s" % flat_slab_age_file
+    cmd="gmt grd2xyz flat_slab_age.grd -S > %s" % flat_slab_age_file
     if verbose: print(dt.now(), cmd)
     os.system(cmd)
     flat_slab_depth_file = "flat_slab_depth.xyz"
-    cmd="grd2xyz flat_slab_depth.grd -S > %s" % flat_slab_depth_file
+    cmd="gmt grd2xyz flat_slab_depth.grd -S > %s" % flat_slab_depth_file
     if verbose: print(dt.now(), cmd)
     os.system(cmd)
     AGE=open(flat_slab_age_file)
@@ -1609,7 +1609,7 @@ def find_value_on_line(xy_tmp,grdfile):
             if c1 == '>':
                 if n > 0:
                    T_IN.close() 
-                   cmd="grdtrack %s -G%s > %s" % (tmp_in_name,grdfile,tmp_out_name)
+                   cmd="gmt grdtrack %s -G%s > %s" % (tmp_in_name,grdfile,tmp_out_name)
                    os.system(cmd)
                    T_OUT=open(tmp_out_name)
                    while 1:
@@ -1642,7 +1642,7 @@ def find_value_on_line(xy_tmp,grdfile):
 
     # still need to read out last track:
     T_IN.close() 
-    cmd="grdtrack %s -G%s > %s" % (tmp_in_name,grdfile,tmp_out_name)
+    cmd="gmt grdtrack %s -G%s > %s" % (tmp_in_name,grdfile,tmp_out_name)
     os.system(cmd)
     T_OUT=open(tmp_out_name)
     while 1:
@@ -1943,7 +1943,7 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                         ML=open(middle_loc,"w")
                         ML.write("%s  %s\n" % (slon0,slat0) )
                         ML.close()
-                        cmd="grdtrack %s -G%s > %s" % (middle_loc,age_grd_file,middle_track)
+                        cmd="gmt grdtrack %s -G%s > %s" % (middle_loc,age_grd_file,middle_track)
                         os.system(cmd)
                         ML=open(middle_track)
                         sd1,sd2,sage=ML.readline().split()
@@ -1961,10 +1961,10 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                         cmd="rm -f %s %s %s" % (profile_file,track_file,profile_file2)
                         os.system(cmd)
 
-                        cmd="project -C%s -E%s -Dg -G1 -Q > %s" % (start,end,profile_file)
+                        cmd="gmt project -C%s -E%s -Dg -G1 -Q > %s" % (start,end,profile_file)
                         print(cmd)
                         os.system(cmd)
-                        cmd="grdtrack %s -G%s > %s" % (profile_file,grd_file,track_file)
+                        cmd="gmt grdtrack %s -G%s > %s" % (profile_file,grd_file,track_file)
                         print(cmd)
                         os.system(cmd)
                         TF=open(track_file)
@@ -2034,45 +2034,45 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                         print('error=',error)
 
                         psfile_buoy = 'check_buoy_age%d_%d.ps' % (age,j)
-                        cmd="gmtset LABEL_FONT_SIZE 12"
+                        cmd="gmt gmtset LABEL_FONT_SIZE 12"
                         map_info="-B5 -X1.0 -Y5.0"
                         proj="M2.5"
                         print(cmd)
                         os.system(cmd)
 
-                        cmd="grdimage %s -Ctemp.cpt -R%s -J%s %s -P -K > %s" % (grd_file,bounds,proj,map_info,psfile_buoy)
+                        cmd="gmt grdimage %s -Ctemp.cpt -R%s -J%s %s -P -K > %s" % (grd_file,bounds,proj,map_info,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
-                        cmd="psxy %s -R%s -J%s -W4/0 -X0.0 -Y0.0 -P -O -K >> %s" % (profile_file,bounds,proj,psfile_buoy)
+                        cmd="gmt psxy %s -R%s -J%s -W4/0 -X0.0 -Y0.0 -P -O -K >> %s" % (profile_file,bounds,proj,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
-                        cmd="psxy %s -R%s -J%s -Sc0.1/0 -G0 -P -O -K >> %s" % (middle_loc,bounds,proj,psfile_buoy)
+                        cmd="gmt psxy %s -R%s -J%s -Sc0.1/0 -G0 -P -O -K >> %s" % (middle_loc,bounds,proj,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
-                        cmd="grdimage %s -Cage.cpt -R -J -B -X4.0 -Y0.0 -P -O -K >> %s" % (age_grd_file,psfile_buoy)
+                        cmd="gmt grdimage %s -Cage.cpt -R -J -B -X4.0 -Y0.0 -P -O -K >> %s" % (age_grd_file,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
 #                        sub_sR="%s/Polygons.subduction_boundaries_sR.%d.xy" % (sub_dir,age)
                         sub_sR="%s/topology_subduction_boundaries_sR_%0.2fMa.xy" % (sub_dir,age)
-                        cmd="psxy %(sub_sR)s -R -J -W3.0/0 -Sf0.2/0.07rt -m -O -K >> %(psfile_buoy)s" % vars()
+                        cmd="gmt psxy %(sub_sR)s -R -J -W3.0/0 -Sf0.2/0.07rt -m -O -K >> %(psfile_buoy)s" % vars()
                         print(cmd)
                         os.system(cmd)
 #                        sub_sL="%s/Polygons.subduction_boundaries_sL.%d.xy" % (sub_dir,age)
                         sub_sL="%s/topology_subduction_boundaries_sL_%0.2fMa.xy" % (sub_dir,age)
-                        cmd="psxy %(sub_sL)s -R -J -W3.0/0 -Sf0.2/0.07lt -m -O -K  >> %(psfile_buoy)s" % vars()
+                        cmd="gmt psxy %(sub_sL)s -R -J -W3.0/0 -Sf0.2/0.07lt -m -O -K  >> %(psfile_buoy)s" % vars()
                         print(cmd)
                         os.system(cmd)
-                        cmd="psxy %s -R%s -J%s -Sc0.1 -G255 -P -O -K >> %s" % (middle_loc,bounds,proj,psfile_buoy)
+                        cmd="gmt psxy %s -R%s -J%s -Sc0.1 -G255 -P -O -K >> %s" % (middle_loc,bounds,proj,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
 
                         ubound = mantle_temp+0.1
                         bounds_profile="0.0/%(dist_max)f/0.0/%(ubound)s" % vars()
                         #bounds_profile="0.0/2000/0.0/1.1"
-                        cmd="psxy %s -R%s -JX3.0/1.5 -B100f50:km:/a0.25f0.125:Temp:WeSn -W4/0 -P -X-3.5 -Y-2.5 -K -O >> %s" % (profile_file2,bounds_profile,psfile_buoy)
+                        cmd="gmt psxy %s -R%s -JX3.0/1.5 -B100f50:km:/a0.25f0.125:Temp:WeSn -W4/0 -P -X-3.5 -Y-2.5 -K -O >> %s" % (profile_file2,bounds_profile,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
-                        cmd="psxy etemp.xy -R%s -J -W4/0/255/0 -P -X0.0 -Y0.0 -K -O >> %s" % (bounds_profile,psfile_buoy)
+                        cmd="gmt psxy etemp.xy -R%s -J -W4/0/255/0 -P -X0.0 -Y0.0 -K -O >> %s" % (bounds_profile,psfile_buoy)
                         print(cmd)
                         os.system(cmd)
 
@@ -2084,7 +2084,7 @@ def ck_buoy(age,grd_file,age_grd_file,sub_dir,mantle_temp,layer_km,scalet,sbf):
                         print("3.25 0.25 14 0 1 1 Slab Buoyancy as percent = %d" % (error), file=LAB)
                         LAB.close()
                         # text label
-                        cmd="pstext label.txt -R0/8.5/0/11 -Jx1 -X0.0 -Y0.0 -O >> %(psfile_buoy)s" % vars()
+                        cmd="gmt pstext label.txt -R0/8.5/0/11 -Jx1 -X0.0 -Y0.0 -O >> %(psfile_buoy)s" % vars()
                         os.system(cmd)
 
                         j+=1

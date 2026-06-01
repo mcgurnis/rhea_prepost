@@ -36,6 +36,7 @@ from datetime import date
 
 import Core_GMT, GMT_Utilities, Mat_Utilities, Earthquake_Utilities
 import os, string, sys, math, time
+from Plotting_Utilities import usage, make_pdf, shift_profile, overlay_plate_boundaries, new_point
 
 #=====================================================================
 #=====================================================================
@@ -46,7 +47,9 @@ earth_radius = 6371.0
 
 Slab2_Age_Dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab_Age_Grids/"
 
-Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/"
+#For Mac
+Orig_Slabs2_grids_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/"
+#Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/"
 
 New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
 
@@ -454,6 +457,8 @@ def overlay_plate_boundaries(psfile,RIDGES):
 #=====================================================================
 def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
 
+    print('reprocess_plot_each_slab_individually')
+    
     for s in slab_keys:
         print(" ")
         print("SLAB: %s" % s)
@@ -470,10 +475,13 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         RUM=sub_dict['RUM']
         date=sub_dict['date']
 
-
+        print("RUM=%s" % RUM)
+        
         if RUM == 'NONE':
             depth_grids_dir=Orig_Slabs2_grids_dir
-            XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
+            #XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
+            #for Mac
+            XY_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/Slab2Clips/"
             grd_depth_slab1="%s%s_slab2_dep_%s.grd" % (depth_grids_dir,s,date)
             grd_dip_slab1="%s%s_slab2_dip_%s.grd" % (depth_grids_dir,s,date)
             grd_str_slab1="%s%s_slab2_str_%s.grd" % (depth_grids_dir,s,date)
@@ -827,6 +835,7 @@ def make_summary_table(slab_dict,slab_keys):
     return
 #=====================================================================
 def shift_profile(profile,shift_dir,xs,zs):
+    print("Shifting profile %s in direction %s" % (profile,shift_dir))
     PR=open(profile)
     if shift_dir == "Z":
         while 1:
@@ -919,6 +928,8 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
     slab_depth_correction_grd="slab_depth_correction.grd"
 
     spacing='NONE'
+    print('xy_file ', trench_for_age)
+    sys.exit()
     xyz_file=GMT_Utilities.xy2xyz(trench_for_age,0.0,spacing,0.0)
     print('xyz_file ',xyz_file)
     #sample age grid just outside of the trench
@@ -1118,7 +1129,6 @@ def new_slab_depth(grd_depth,grd_dip,grd_str,grd_slab_age,dict,slab_transition_d
                 print('ERROR')
                 print(x1,y1,x2,y2,x3,y3,x4,y4)
                 print(' xyz data from grd misalligned')
-                sys.exit(0)
             new_x,new_y,new_depth=new_point(x1,y1,depth,dip,str,slab_width)
             O_DEPTH.write("%g %g %g\n" % (new_x,new_y,new_depth))
         else:
