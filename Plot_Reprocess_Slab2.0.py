@@ -13,9 +13,6 @@
 #
 #=====================================================================
 #
-#  Copyright July 2013, by the California Institute of Technology.
-#  ALL RIGHTS RESERVED. United States Government Sponsorship Acknowledged.
-#
 #=====================================================================
 #
 # Last Update: Mike Gurnis, Jan. 24, 2013
@@ -45,18 +42,22 @@ from Plotting_Utilities import usage, make_pdf, shift_profile, overlay_plate_bou
 d2r=math.pi/180.0
 earth_radius = 6371.0
 
-Slab2_Age_Dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab_Age_Grids/"
+#Slab2_Age_Dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab_Age_Grids/"
+#For Mac
+Slab2_Age_Dir="/Volumes/STORE01/Rhea/Slab2/Slab_Age_Grids/"
 
 #For Mac
-Orig_Slabs2_grids_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/"
+Orig_Slabs2_grids_dir="/Volumes/STORE01/Rhea/Slab2/"
 #Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/"
 
-New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
+#New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
+#For Mac
+New_grids_dir="/Volumes/STORE01/Rhea/Slab2/New_grids/"
 
 
 #Contours_Slab_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
 #New Dir on Mac
-Contours_Slab_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
+Contours_Slab_dir="/Volumes/STORE01/Rhea/Slab2/Slab2_CONTOURS/"
 
 
 RUM_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/New_RUM_grids/"
@@ -65,15 +66,19 @@ Contours_RUM_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reforme
 
 #XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
 #New Dir on Mac
-XY_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/Slab2Clips/"
+XY_dir="/Volumes/STORE01/Rhea/Slab2/Slab2Clips/"
 
 
 RUM_XY_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/XY/"
 
 #age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_042811.grd"
-age_grid="/net/beno/data1/alisic/raid2/Rhea_input/Age_grids/new_age_042811.grd"
+#age_grid="/net/beno/data1/alisic/raid2/Rhea_input/Age_grids/new_age_042811.grd"
+# New age grid for Mac
+age_grid="/Volumes/STORE01/Rhea/alisic/Rhea_input/Age_grids/new_age_042811.grd"
 
-topo_grid="/net/holmes/scratch2/gurnis/ETOPO-02/etopo2.grd"
+#topo_grid="/net/holmes/scratch2/gurnis/ETOPO-02/etopo2.grd"
+#For Mac
+topo_grid="/Users/gurnis/Desktop/Gurnis_Files/Working/Data_Sets/Large_Topo_and_Gravity_Files/etopo2.grd"
 
 bird="bird_boundaries"
 
@@ -479,44 +484,42 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         
         if RUM == 'NONE':
             depth_grids_dir=Orig_Slabs2_grids_dir
-            #XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
-            #for Mac
-            XY_dir="/Volumes/STORE01/Rhea/Slab2Distribute_Mar2018/Slab2Clips/"
-            grd_depth_slab1="%s%s_slab2_dep_%s.grd" % (depth_grids_dir,s,date)
-            grd_dip_slab1="%s%s_slab2_dip_%s.grd" % (depth_grids_dir,s,date)
-            grd_str_slab1="%s%s_slab2_str_%s.grd" % (depth_grids_dir,s,date)
-            grd_age_slab1="%s%s_age.grd" % (Slab2_Age_Dir,s)
+            grd_depth_slab2="%s%s_slab2_dep_%s.grd" % (depth_grids_dir,s,date)
+            grd_dip_slab2="%s%s_slab2_dip_%s.grd" % (depth_grids_dir,s,date)
+            grd_str_slab2="%s%s_slab2_str_%s.grd" % (depth_grids_dir,s,date)
+            grd_age_slab2="%s%s_age.grd" % (Slab2_Age_Dir,s)
             perimeter="%s%s_slab2_clp_%s.csv" % (XY_dir,s,date)
-            grd_depth=grd_depth_slab1
-            grd_dip=grd_dip_slab1
-            grd_str=grd_str_slab1
-            grd_age=grd_age_slab1
-        if RUM != 'NONE':
-            if RUM == 'only':
-                sn=s
-            if RUM != 'only':
-                sn=RUM
-                depth_grids_dir=Orig_Slabs2_grids_dir
-                grd_depth_slab1="%s%s_slab1.0_clip.grd" % (depth_grids_dir,s)
-                grd_dip_slab1="%s%s_slab1.0_dipclip.grd" % (depth_grids_dir,s)
-                grd_str_slab1="%s%s_slab1.0_strclip.grd" % (depth_grids_dir,s)
-                grd_age_slab1="%s%s_age.grd" % (Slab2_Age_Dir,s)
-            depth_grids_dir=RUM_grids_dir
-            XY_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/XY/"
-            grd_depth_rum="%s%s_rum_clip.grd" % (depth_grids_dir,sn)
-            grd_dip_rum="%s%s_rum_dipclip.grd" % (depth_grids_dir,sn)
-            grd_str_rum="%s%s_rum_strclip.grd" % (depth_grids_dir,sn)
-            grd_age_rum="%s%s_age.grd" % (RUM_Age_Dir,s)
-            perimeter="%s%s_rum.clip.xy" % (XY_dir,sn)
-            grd_depth=grd_depth_rum
-            grd_dip=grd_dip_rum
-            grd_str=grd_str_rum
-            grd_age=grd_age_rum
+            grd_depth=grd_depth_slab2
+            grd_dip=grd_dip_slab2
+            grd_str=grd_str_slab2
+            grd_age=grd_age_slab2
+        #if RUM != 'NONE':
+        #    if RUM == 'only':
+        #        sn=s
+        #    if RUM != 'only':
+        #        sn=RUM
+        #        depth_grids_dir=Orig_Slabs2_grids_dir
+        #        grd_depth_slab2="%s%s_slab2.0_clip.grd" % (depth_grids_dir,s)
+        #        grd_dip_slab2="%s%s_slab2.0_dipclip.grd" % (depth_grids_dir,s)
+        #        grd_str_slab2="%s%s_slab2.0_strclip.grd" % (depth_grids_dir,s)
+        #        grd_age_slab2="%s%s_age.grd" % (Slab2_Age_Dir,s)
+        #    depth_grids_dir=RUM_grids_dir
+        #    XY_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/XY/"
+        #    grd_depth_rum="%s%s_rum_clip.grd" % (depth_grids_dir,sn)
+        #    grd_dip_rum="%s%s_rum_dipclip.grd" % (depth_grids_dir,sn)
+        #    grd_str_rum="%s%s_rum_strclip.grd" % (depth_grids_dir,sn)
+        #    grd_age_rum="%s%s_age.grd" % (RUM_Age_Dir,s)
+        #    perimeter="%s%s_rum.clip.xy" % (XY_dir,sn)
+        #    grd_depth=grd_depth_rum
+        #    grd_dip=grd_dip_rum
+        #    grd_str=grd_str_rum
+        #    grd_age=grd_age_rum
 
         ps_name_prefix="%s_slab_depth%d_width%d" % (s,int(slab_transition_depth),int(slab_transition_width))
         psfile ="%s_1.ps" % ps_name_prefix
         dict['grid']=grd_depth
         Core_GMT.grdinfo( dict )
+
 
         grd_slab_age, trench, trench_outside, trench_inside, slab_depth_correction_grd=make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,trench_age_dist,trench_dep_dist,Nan_age)
         print("slab_depth_correction_grd", slab_depth_correction_grd)
@@ -534,10 +537,11 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         print(cmd)
         os.system(cmd)
 
+
         if RUM == 'NONE':
             #new_grd_depth=new_slab_depth(grd_depth_slab1,grd_dip_slab1,grd_str_slab1,grd_slab_age,dict,slab_transition_depth,slab_transition_width)
-            new_grd_depth=simple_slab_depth_correction(grd_depth_slab1,slab_depth_correction_grd)
-            new_grd_depth_name="%s%s_slab1.0_new_depth.grd" % (New_grids_dir,s)
+            new_grd_depth=simple_slab_depth_correction(grd_depth_slab2,slab_depth_correction_grd)
+            new_grd_depth_name="%s%s_slab2.0_new_depth.grd" % (New_grids_dir,s)
             cmd="mv %s %s" % (new_grd_depth,new_grd_depth_name)
             print(cmd)
             os.system(cmd)
@@ -567,12 +571,12 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         region="%g/%g/%g/%g" % (long_min,long_max,lat_min,lat_max)
 
         if RUM == 'NONE':
-            cmd="gmt grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_slab1,proj,region,psfile)
+            cmd="gmt grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_slab2,proj,region,psfile)
         elif RUM != 'NONE':
             cmd="gmt grdimage %s -Cslab_depth.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y7.5 -P -K > %s" % (grd_depth_rum,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W1,1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
@@ -585,7 +589,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         cmd="gmt grdimage %s -Cdepth_correction.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (slab_depth_correction_grd,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-
+      
 
         # Make sections
         i=1
@@ -598,12 +602,14 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             os.system(cmd) 
             i += 1
 
+    
         project_earthquakes2xsection(eq_simple,sub_dict,s)
+        sys.exit() 
 
         i=1
         while i<=2:
             profile="Profiles/%s_profile_%d.xyp" % (s,i)
-            cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
+            cmd="gmt psxy %s %s -W3,1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
             print(cmd)
             os.system(cmd) 
             events_on_profile="Events/%s_%d.rs" % (s,i)
@@ -612,10 +618,9 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             os.system(cmd) 
             i += 1
 
-        cmd="gmt psxy %s %s -W3/1 -R%s -B10/10WeSn -O -K >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3,1 -R%s -B10/10WeSn -O -K >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-
 
         x_move=[]
         y_move=[]
@@ -638,7 +643,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             #Depth Profile: Slab 2
             if RUM == 'NONE' or RUM != 'only':
                 profile_scaling=1.0
-                tmp_profile=get_profile(profile,grd_depth_slab1,profile_scaling)
+                tmp_profile=get_profile(profile,grd_depth_slab2,profile_scaling)
                 depth_profile="Profiles/%s_slab2_depth_profile_%d.xypd" % (s,i)
                 TP=open(tmp_profile)
                 sxs,szs=TP.readline().split()
@@ -647,7 +652,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 TP.close()
                 cmd="mv %s %s" % (tmp_profile,depth_profile)
                 os.system(cmd)
-                cmd="gmt psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
+                cmd="gmt psxy %s -JX -R -B -W1,black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
                 print(cmd)
                 os.system(cmd)
 
@@ -663,7 +668,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 TP.close()
                 cmd="mv %s %s" % (tmp_profile,depth_profile)
                 os.system(cmd)
-                cmd="gmt psxy %s -JX -R -B -W5/black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
+                cmd="gmt psxy %s -JX -R -B -W1,black -X0 -Y0 -O -K >> %s" % (depth_profile,psfile)
                 print(cmd)
                 os.system(cmd)
             if RUM != 'NONE' and RUM != 'only' :
@@ -673,7 +678,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
                 cmd="mv %s %s" % (tmp_profile,rum_depth_profile)
                 os.system(cmd)
                 
-                cmd="gmt psxy %s -JX3/2 -R -B -W3/red -X0.0 -Y0 -O -K >> %s" % (rum_depth_profile,psfile)
+                cmd="gmt psxy %s -JX3/2 -R -B -W1,red -X0.0 -Y0 -O -K >> %s" % (rum_depth_profile,psfile)
                 print(cmd)
                 os.system(cmd)
 
@@ -683,7 +688,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             tmp_profile=get_profile(profile,new_grd_depth_name,profile_scaling)
             cmd="mv %s %s" % (tmp_profile,new_depth_profile)
             os.system(cmd)
-            cmd="gmt psxy %s -JX -R -B -W3/orange -X0.0 -Y0.0 -O -K >> %s" % (new_depth_profile,psfile)
+            cmd="gmt psxy %s -JX -R -B -W1,orange -X0.0 -Y0.0 -O -K >> %s" % (new_depth_profile,psfile)
             print(cmd)
             os.system(cmd)
 
@@ -694,7 +699,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
             tmp_profile_1=shift_profile(tmp_profile,"Z",xs,zs)
             cmd="mv %s %s" % (tmp_profile_1,topo_profile)
             os.system(cmd)
-            cmd="gmt psxy %s -JX3/2 -R -B -W3/green -X0.0 -Y0 -O -K >> %s" % (topo_profile,psfile)
+            cmd="gmt psxy %s -JX3/2 -R -B -W1,green -X0.0 -Y0 -O -K >> %s" % (topo_profile,psfile)
             print(cmd)
             os.system(cmd)
 
@@ -739,16 +744,16 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         cmd="gmt grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y8.0 -P -K > %s" % (age_grid,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3/blue -R%s -B -K -O -M >> %s" % (trench,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3,blue -R%s -B -K -O -M >> %s" % (trench,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3/blue -R%s -B -K -O >> %s" % (trench_outside,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3,blue -R%s -B -K -O >> %s" % (trench_outside,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3/blue -R%s -B -K -O >> %s" % (trench_inside,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3,blue -R%s -B -K -O >> %s" % (trench_inside,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3,1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
         cmd='gmt psscale -Cage.cpt -D3.0/-0.5/4.0/0.25h -B100::/:"Slab age (Ma)": -X0.0 -Y0 -O -K >> %s' % (psfile)
@@ -762,19 +767,19 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         cmd="gmt grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-3.0 -P -O -K >> %s" % (grd_age,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W1,1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
-        #cmd="gmt psscale -C%s -D3.0/-0.5/4.0/0.25h -B20::/:strike: -O -K >> %s" % (dict['C'],psfile)
-        #print cmd
-        #os.system(cmd)
+        cmd="gmt psscale -C%s -D3.0/-0.5/4.0/0.25h -B20::/:strike: -O -K >> %s" % (dict['C'],psfile)
+        print(cmd)
+        os.system(cmd)
 
         cmd="gmt grdimage %s -Cslab_dip.cpt %s -R%s -B10f2/10f2WeSn -X0.0 -Y-4.0 -P -O -K >> %s" % (grd_dip,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
-        cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
+        cmd="gmt psxy %s %s -W1,1 -R%s -B -K -O >> %s" % (perimeter,proj,region,psfile)
         print(cmd)
         os.system(cmd)
 
@@ -784,6 +789,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
 
         #====================================================================
         make_pdf(psfile)
+        
 
         # Plot the epicentral locations on a map
         psfile ="%s_3.ps" % ps_name_prefix
@@ -812,6 +818,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
 
         #====================================================================
         make_pdf(psfile)
+        
 
 
     # Clean up
@@ -929,7 +936,6 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
 
     spacing='NONE'
     print('xy_file ', trench_for_age)
-    sys.exit()
     xyz_file=GMT_Utilities.xy2xyz(trench_for_age,0.0,spacing,0.0)
     print('xyz_file ',xyz_file)
     #sample age grid just outside of the trench
@@ -962,6 +968,7 @@ def make_slab_age_depth_correction_grd(s,dict,XY_dir,age_grid,grd_depth,grd_str,
     SA=open(ofile,"w")
     SDC=open(slab_depth_correction,"w")
     d_prior_in_list=-10.0
+    
     while 1:
         line1=AT.readline()
         line2=SS.readline()

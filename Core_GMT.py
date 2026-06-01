@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 #=====================================================================
 #                      Python Scripts for CitComS 
 #         Preprocessing, Data Assimilation, and Postprocessing
@@ -58,17 +58,17 @@ Return value:
     clip = 'tmp_clip_from_' + isnan
 
     # Use grdmath to generate a grid with only 1 or 0 values
-    cmd = 'grdmath -V %(mask)s ISNAN = %(isnan)s' % vars()
+    cmd = 'gmt grdmath -V %(mask)s ISNAN = %(isnan)s' % vars()
     print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # Use grdclip to change the 0's to NAN's
-    cmd = 'grdclip -V %(isnan)s -Sb1/NAN -G%(clip)s' % vars()
+    cmd = 'gmt grdclip -V %(isnan)s -Sb1/NAN -G%(clip)s' % vars()
     print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
     # Use grdmath to 'mask' the input grid by the NAN grid
-    cmd = 'grdmath -V %(grid)s %(clip)s OR = %(out)s' % vars()
+    cmd = 'gmt grdmath -V %(grid)s %(clip)s OR = %(out)s' % vars()
     print(dt.now(), 'mask_grid_by_nan_grid: cmd =\n', cmd)
     os.system(cmd)
 
@@ -115,7 +115,7 @@ Return value:
     # 2. generate the grid with the masking
     # NOTE: -R from source grid 
     # NOTE: -N out/edge/in
-    cmd = 'grdmask %(xy)s -G%(tmp_grid_from_mask)s -R%(grid)s -V -m -NNaN/1/1 ' % vars()
+    cmd = 'gmt grdmask %(xy)s -G%(tmp_grid_from_mask)s -R%(grid)s -V -m -NNaN/1/1 ' % vars()
     # will lat,lon vs. lon,lat ever go away?
     if ':' in args :
       toggle = args[':'] 
@@ -124,7 +124,7 @@ Return value:
     os.system(cmd)
 
     # Apply the xy mask file to src grid using grdmath. 
-    cmd = 'grdmath -V %(grid)s %(tmp_grid_from_mask)s MUL = %(out)s' % vars()
+    cmd = 'gmt grdmath -V %(grid)s %(tmp_grid_from_mask)s MUL = %(out)s' % vars()
     print(dt.now(), 'mask_grid_by_xy_file: cmd =\n', cmd)
     os.system(cmd)
 
@@ -168,15 +168,15 @@ Return value:
     # check for eps
     cmd = ''
     if args.get('eps'):
-        cmd = 'gmtset PAPER_MEDIA letter+\n'
+        cmd = 'gmt gmtset PAPER_MEDIA letter+\n'
     else:
-        cmd = 'gmtset PAPER_MEDIA letter\n'
+        cmd = 'gmt gmtset PAPER_MEDIA letter\n'
 
-    cmd += 'gmtset MEASURE_UNIT inch\n'
+    cmd += 'gmt gmtset MEASURE_UNIT inch\n'
 
     for key in list(args.keys()):
         if key.startswith('gmtset '):
-            cmd += '%s %s\n' % ( key, args[key] )
+            cmd += 'gmt %s %s\n' % ( key, args[key] )
 
     cmd += '\n'
 
@@ -273,7 +273,7 @@ Return value:
     R = args['R']
     ps = args['ps']
 
-    cmd = 'psbasemap -B%(B)s -J%(J)s -R%(R)s ' % vars()
+    cmd = 'gmt psbasemap -B%(B)s -J%(J)s -R%(R)s ' % vars()
 
     if verbose: cmd += '-V '
     if args.get('X'): cmd += '-X%s ' % args.get('X') 
@@ -313,7 +313,7 @@ Return value:
     R = args['R']
     ps = args['ps']
 
-    cmd = 'pstext -N -Jx1.0 -R%(R)s ' % vars()
+    cmd = 'gmt pstext -N -Jx1.0 -R%(R)s ' % vars()
 
     if verbose: cmd += '-V '
     if args.get('G'): cmd += '-G%s ' % args.get('G') 
@@ -349,7 +349,7 @@ Return value:
 
     track_file = "%(G)s.track" % vars()
 
-    cmd = 'grdtrack %(xy)s -G%(G)s > %(track_file)s' % vars()
+    cmd = 'gmt grdtrack %(xy)s -G%(G)s > %(track_file)s' % vars()
 
     if verbose: cmd += ' -V'
 
@@ -379,7 +379,7 @@ Return value:
     xyz = args['xyz_file']
 
     # query rotated xyz for -R values
-    cmd = 'minmax -I0.01/0.01 %(xyz)s' % vars()
+    cmd = 'gmt info -I0.01/0.01 %(xyz)s' % vars()
     if verbose: print(dt.now(), 'get_region: cmd =\n', cmd)
     pipe = os.popen(cmd)
     line = pipe.readline()
@@ -438,7 +438,7 @@ Return value:
     grid_tension = args['grid_tension']
 
     # smooth the data into a mean file 
-    cmd = 'blockmedian %(xyz_file)s ' % vars()
+    cmd = 'gmt blockmedian %(xyz_file)s ' % vars()
     if verbose: cmd += '-V ' 
     if args.get('file_headers'): 
         H = args.get('file_headers')
@@ -454,7 +454,7 @@ Return value:
         raise ValueError(msg)
 
     # create the grid
-    cmd = 'surface %(mean_file)s ' % vars()
+    cmd = 'gmt surface %(mean_file)s ' % vars()
     if verbose: cmd += '-V '
     if args.get('file_headers'): 
         H = args.get('file_headers')
@@ -637,7 +637,7 @@ Return value:
         use_T = False
 
     # cmd and required arguments
-    cmd = 'makecpt -M '
+    cmd = 'gmt makecpt -M '
     if use_T: 
         cmd += '-T%(z0)s/%(z1)s/%(dz)s ' % vars()
     cmd += '-C%(C)s ' % vars()
@@ -695,7 +695,7 @@ Return value:
     # cmd and required args
     C = args.get('C')
 
-    cmd = 'psscale '
+    cmd = 'gmt psscale '
     cmd += '-D%(D)s -B%(B)s -C%(C)s ' % vars()
 
     # optional args
@@ -743,7 +743,7 @@ Return value:
     ps = args['ps']
    
     # command with required arguments
-    cmd = 'grdimage %(grid)s ' % vars()
+    cmd = 'gmt grdimage %(grid)s ' % vars()
 
     cmd += '-J%s ' % args['J']
     cmd += '-C%s ' % args['C']
@@ -793,7 +793,7 @@ Return value:
     ps = args['ps']
    
     # command with required arguments
-    cmd = 'grdcontour %(grid)s ' % vars()
+    cmd = 'gmt grdcontour %(grid)s ' % vars()
 
     cmd += '-J%s ' % args['J']
     cmd += '-C%s ' % args['C']
@@ -839,7 +839,7 @@ Return value:
     ps = args['ps']
    
     # command with required arguments
-    cmd = 'psxy %(xy)s ' % vars()
+    cmd = 'gmt psxy %(xy)s ' % vars()
     cmd += '-J%s ' % args['J']
     cmd += '-R%s ' % args['R']
 
@@ -894,7 +894,7 @@ Return value:
     #outline  = out_grid + '_projected_outline_in.xy'
 
     # command with required arguments
-    cmd = 'grdrotater %(in_grid)s ' % vars()
+    cmd = 'gmt grdrotater %(in_grid)s ' % vars()
 
     cmd += '-T%(lon)s/%(lat)s/%(angle)s ' % vars()
     cmd += '-G%(out_grid)s ' % vars()
@@ -944,7 +944,7 @@ Return value:
         msg = "must set args['pslegend_file'] and args['pslegend_D'] or args['D'] before calling pslegend" % vars()
         raise ValueError(msg)
 
-    cmd = 'pslegend ' % vars()
+    cmd = 'gmt pslegend ' % vars()
 
     if verbose: cmd += '-V '
 
@@ -1222,7 +1222,7 @@ Output arguments:
 '''
     xyz = dict['xyz_file']
     # query rotated xyz for -R values
-    cmd = 'minmax --D_FORMAT='+'"%"'+'.12lg %(xyz)s' % vars() 
+    cmd = 'gmt info --D_FORMAT='+'"%"'+'.12lg %(xyz)s' % vars()
     pipe = os.popen(cmd)
     line = pipe.readline()
     Line=line.split('\t')
@@ -1406,7 +1406,7 @@ Returns
     grid_max = dict['grid_max']
     grid_tension = dict['grid_tension']
     # smooth the data into a mean file 
-    cmd = 'blockmedian %(xyz_file)s ' % vars()
+    cmd = 'gmt blockmedian %(xyz_file)s ' % vars()
     if dict.get('file_headers'): 
         H = dict.get('file_headers')
         cmd += '-H%(H)s ' % vars()
@@ -1418,7 +1418,7 @@ Returns
         msg = 'blockmean may have failed: file not found: %(mean_file)s' % vars()
         raise ValueError(msg)
     # create the grid
-    cmd = 'surface %(mean_file)s ' % vars()
+    cmd = 'gmt surface %(mean_file)s ' % vars()
     if dict.get('file_headers'): 
         H = dict.get('file_headers')
         cmd += '-H%(H)s ' % vars()
@@ -1432,7 +1432,7 @@ Returns
         msg = 'surface may have failed: file not found: %(mean_file)s' % vars()
         raise ValueError(msg)
     # filter the grid file
-    cmd = 'grdfilter %(grid_file2)s -D2 -Fg%(width)g -V -G%(grid_file)s' % vars()
+    cmd = 'gmt grdfilter %(grid_file2)s -D2 -Fg%(width)g -V -G%(grid_file)s' % vars()
     os.system(cmd)   
     # clean up
     cmd = "rm -rf %(mean_file)s" % vars()
