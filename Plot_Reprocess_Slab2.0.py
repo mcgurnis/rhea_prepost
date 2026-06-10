@@ -889,7 +889,6 @@ def project_earthquakes2xsection(all_quakes,sub_dict,s):
         events_in_section="Events/%s_%d.xydm" % (s,i)
         events_on_section="Events/%s_%d.rs" % (s,i)
         depth_section="Events/%s_%d.pd" % (s,i)
-        #cmd="gmt gmtselect %s -fg -C50/%s > %s" % (all_quakes,profile,events_in_section)
         cmd="gmt gmtselect %s -fg -L%s+d50000 > %s" % (all_quakes,profile,events_in_section)
         print(cmd)
         os.system(cmd)
