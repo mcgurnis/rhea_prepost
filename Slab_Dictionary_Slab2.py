@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#All Slab2 except hal, hin, and pam
+#All Slab2 except hin and pam
 #small edits to x-section pts, needs to be put into whole set
 slab_dict={
 'alu':{'date':'02.23.18', 'RUM':'NONE', 'off_dep':0.2, 'off_age':0.75, 'Nan_age':50, 'C1':'210/55', 'E1':'200/64', 'C2':'190/50', 'E2':'188/55', 'Sub_type':'Ocean', 'T_use':'Slab2', 'W_use':'Slab2'},
@@ -8,6 +8,7 @@ slab_dict={
 'car':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.01, 'off_age':0.1, 'Nan_age':250, 'C1':'292/20', 'E1':'292/17', 'C2':'304.0/12', 'E2':'297/12.5', 'Sub_type':'Ocean', 'T_use':'Slab2', 'W_use':'Slab2'},
 'cas':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.10, 'off_age':0.25, 'Nan_age':25, 'C1':'232/48', 'E1':'238/51', 'C2':'234/42', 'E2':'240/41.5', 'Sub_type':'Cont', 'T_use':'Slab1', 'W_use':'Slab1'},
 'cot':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.01, 'off_age':0.25, 'Nan_age':40, 'C1':'123/6.5', 'E1':'124.9/6.9', 'C2':'123.8/5.5', 'E2':'125.3/6.9', 'Sub_type':'Cont', 'T_use':'Slab2', 'W_use':'Slab2'},
+'hal':{'date':'02.23.18', 'RUM':'NONE', 'off_dep':0.01, 'off_age':0.25, 'Nan_age':100, 'C1':'130/3.0','E1':'120/4.5', 'C2':'129/0.0', 'E2':'119/1.5', 'Sub_type':'Ocean', 'T_use':'Slab2', 'W_use':'Slab2'},
 'hel':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.01, 'off_age':-0.40, 'Nan_age':100, 'C1':'26/32', 'E1':'26/39.5', 'C2':'30.5/33', 'E2':'30.5/40.2', 'Sub_type':'Cont', 'T_use':'Slab2', 'W_use':'Slab2'},
 'him':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.01, 'off_age':0.1, 'Nan_age':100, 'C1':'76.6/30', 'E1':'79/33', 'C2':'83.5/27', 'E2':'85/30', 'Sub_type':'Cont', 'T_use':'Slab2', 'W_use':'Slab2'},
 'izu':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.25, 'off_age':0.25, 'Nan_age':150, 'C1':'145/30', 'E1':'136/27', 'C2':'150/15', 'E2':'142/17', 'Sub_type':'Ocean', 'T_use':'Slab2', 'W_use':'Slab2'},
