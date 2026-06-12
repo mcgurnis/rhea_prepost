@@ -126,7 +126,7 @@ def summary_cross_section(slab_dict,slab_keys):
 
     psfile="summary_cross_section.ps"
 
-    cmd="gmt gmtset ANNOT_FONT_PRIMARY Times-Roman LABEL_FONT Times-Roman"
+    cmd="gmt gmtset FONT_ANNOT_PRIMARY Times-Roman FONT_LABEL Times-Roman"
     print(cmd)
     os.system(cmd)
  
@@ -156,26 +156,26 @@ def summary_cross_section(slab_dict,slab_keys):
                 shifted_profile_0=shift_profile(depth_profile,"P",0.0,0.0)
                 shifted_profile=shift_profile(shifted_profile_0,"Z",0.0,0.0)
                 #cmd="gmt psxy %s -JX -R -B -W5/black -O -K >> %s" % (shifted_profile,psfile)
-                cmd="gmt psxy %s -JX -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
+                cmd="gmt psxy %s -JX -R -B -W2,%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
                 print(cmd)
                 os.system(cmd)
                 i += 1
 
     #cmd="gmt psxy %s -J -R -B -W5/black -O >> %s" % (shifted_profile,psfile)
-    cmd="gmt psxy %s -J -R -B -W8/%s -O -K >> %s" % (shifted_profile,sub_color,psfile)
+    cmd="gmt psxy %s -J -R -B -W2%s -O >> %s" % (shifted_profile,sub_color,psfile)
     print(cmd)
     os.system(cmd)
 
     #Overlay some models for comparison
-    weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/johann_model_1.dat"
-    cmd="gmt psxy %s -J -R -B -W4/red -O -K >> %s" % (weak_zone_model,psfile)
-    print(cmd)
+    #weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/johann_model_1.dat"
+    #cmd="gmt psxy %s -J -R -B -W4/red -O -K >> %s" % (weak_zone_model,psfile)
+    #print(cmd)
     #os.system(cmd)
 
-    weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/vish_model_1.dat"
-    cmd="gmt psxy %s -J -R -B -W4/black -O >> %s" % (weak_zone_model,psfile)
-    print(cmd)
-    os.system(cmd)
+    #weak_zone_model="/net/holmes/home4/gurnis/Rhea_runs/Model_Tests/vish_model_1.dat"
+    #cmd="gmt psxy %s -J -R -B -W4/black -O >> %s" % (weak_zone_model,psfile)
+    #print(cmd)
+    #os.system(cmd)
 
     make_pdf(psfile)
 
