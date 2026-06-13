@@ -230,6 +230,8 @@ def make_slab_depth_contous(slab_dict,slab_keys):
         print(cmd)
         os.system(cmd)
 
+    make_pdf(psfile)
+    
     return
 #=====================================================================
 def make_regional_plots(slab_dict,slab_keys):

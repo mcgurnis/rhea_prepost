@@ -27,7 +27,7 @@ import Core_GMT, GMT_Utilities, Mat_Utilities, Earthquake_Utilities
 #import Rhea_Utilities
 import Thermal_Utilities
 import os, string, sys, math, time, datetime, random
-import scipy as sp
+import numpy as np
 
 #=====================================================================
 #=====================================================================
@@ -95,8 +95,15 @@ layer_depths=None
 #=====================================================================
 # Directories for data sets
 
+#For Mac 
+Slab2_depth_grids_dir="/Volumes/STORE01/Rhea/Slab2/New_grids/"
+Slab2_Age_Dir="/Volumes/STORE01/Rhea/Slab2/Slab_Age_Grids/"
+rhea_depths="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Rhea2/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+Slab2_XY_dir="/Volumes/STORE01/Rhea/Slab2/Slab2Clips/"
+profile_dir="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Profiles/"
+
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_Input/Temp_2_rhea/shell_temperature_k2_ll456_z_June2015.txt"
-rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+#rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/tmp_truncated-l5678.dat"
 
 Orig_Slabs1_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Orig_grids/"
@@ -125,7 +132,10 @@ coastlines="/net/holmes/home4/gurnis/Global_Plate_Polygons/cs.lines.0.xy"
 
 gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepolygons.0.xy"
 
-dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+#dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+#New directory for Mac  
+dir_old_margins="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Plate_Margins/NewDataSet"
+
 
 trenches="%s/Trench-1-12-10.xy" % dir_old_margins
 
@@ -137,7 +147,7 @@ interface="%s/Interface-1-12-10.xy" % dir_old_margins
 
 rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contours_567.xyz"
 
-profile_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Profiles/"
+#profile_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Profiles/"
 
 global_convergence_grd_file="/net/holmes/home4/gurnis/Rhea_runs/Convergence_Velocity/convergence_extrapolated.grd"
 
@@ -168,7 +178,7 @@ def update_array_for_variable_descent(sn,xy_file_name,proj,region):
 
     make_pdf(psfile,sn)
 
-    Two_D_Array=sp.zeros([nx,ny])
+    Two_D_Array=np.zeros([nx,ny])
 
     convergence_xyz="convergence.xyz"
     cmd="gmt grdtrack %s -G%s > %s" % (xy_file_name,global_convergence_grd_file,convergence_xyz)
@@ -320,7 +330,7 @@ def Full_Sph_Diffuse():
 #=====================================================================
 def T_grd2array(nx,ny,grdfile,xyfile_name):
 
-    Two_D_Array=sp.zeros([nx,ny])
+    Two_D_Array=np.zeros([nx,ny])
 
     tmp_file_name="tmp"+(str(datetime.datetime.now())[18:26])+".xyz"
     cmd="gmt grdtrack %s -G%s > %s" % (xyfile_name,grdfile,tmp_file_name)
@@ -390,16 +400,16 @@ def generate_arrays(depth_trans_diff,width_trans_diff,convergence_vel):
     nz=len(layer_depths)
 
     # Start Tf,Th & T, Theta off as zero matrices:
-    T = sp.zeros([nx,ny,nz])
-    Tf = sp.zeros([nx,ny,nz])
-    Th = sp.zeros([nx,ny,nz])
-    Theta=sp.zeros([nx,ny,nz])
-    CosTheta=sp.zeros([nx,ny,nz])
-    SinTheta=sp.zeros([nx,ny,nz])
-    R=sp.zeros([nx,ny,nz])
-    Alpha=sp.zeros([nx,ny,nz])
-    DeltaT=sp.zeros([nx,ny,nz])
-    Duration=sp.zeros([nx,ny,nz])
+    T = np.zeros([nx,ny,nz])
+    Tf = np.zeros([nx,ny,nz])
+    Th = np.zeros([nx,ny,nz])
+    Theta=np.zeros([nx,ny,nz])
+    CosTheta=np.zeros([nx,ny,nz])
+    SinTheta=np.zeros([nx,ny,nz])
+    R=np.zeros([nx,ny,nz])
+    Alpha=np.zeros([nx,ny,nz])
+    DeltaT=np.zeros([nx,ny,nz])
+    Duration=np.zeros([nx,ny,nz])
 
     # Now, set the initial conditions (T) and coordinte arrays.
     for i in range(nx):
@@ -535,8 +545,8 @@ def generate_edge_interior_points(long_min,long_max,lat_min,lat_max):
     # edge points 
     for i in range(nlong):
         long=(long_min+i*dphi*r2d)
-        EP.write("%f  %f   %f\n" % (int,lat_min+dtheta*r2d,T_max))
-        EP.write("%f  %f   %f\n" % (int,lat_max-dtheta*r2d,T_max))
+        EP.write("%f  %f   %f\n" % (long,lat_min+dtheta*r2d,T_max))
+        EP.write("%f  %f   %f\n" % (long,lat_max-dtheta*r2d,T_max))
     for j in range(nlat):
         lat=(lat_min+j*dtheta*r2d)
         EP.write("%f  %f   %f\n" % (long_min+dphi*r2d,lat,T_max))
@@ -661,10 +671,13 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
     grd_str="%s%s_%s_strclip.grd" % (depth_grids_dir,sn,model)
     grd_age="%s%s_age.grd" % (age_grids_dir,sn)
     print('grd_age',grd_age)
+
     if T_use == 'RUM':
         perimeter="%s%s_rum.clip.xy" % (RUM_XY_dir,sn)
     if T_use == 'Slab1':
         perimeter="%s%s_slab1.0.clip.xy" % (Slab1_XY_dir,sn)
+    if T_use == 'Slab2':
+        perimeter="%s%s_slab2_clip.xy" % (Slab2_XY_dir,sn)
     #slab_edge="%s%s_rum.edges.xy" % (RUM_Slab_Edge_dir,sn)
 
     long_min = float(gmt_dict['west'])
@@ -686,6 +699,8 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
     res=grd_res_global
 
     edge_points=generate_edge_interior_points(long_min,long_max,lat_min,lat_max)
+
+ 
     slab_mask_grd=generate_perimeter_points(perimeter,proj,region,res)
 
     xyz_N_file_names=[]
@@ -809,7 +824,7 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
             ii=1  
             while ii<=2:
                 profile="%s%s_profile_%d.xyp" % (profile_dir,sn,ii)
-                cmd="gmt psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
+                cmd="gmt psxy %s %s -W2,black -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
                 print(cmd)
                 os.system(cmd)
                 ii += 1
@@ -823,7 +838,7 @@ def generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,mode
 #=====================================================================
 def make_pdf(psfile,slab):
     print("\n    Converting file to pdf ...")
-    cmd = "gmt ps2raster %s -A -Tf -E200" % (psfile)
+    cmd = "gmt psconvert %s -A -Tf -E200" % (psfile)
     os.system(cmd)
 
     cmd='rm -f *.ps'
@@ -1172,7 +1187,7 @@ slab_keys = list(slab_dict.keys());
 slab_keys.sort()
 
 
-cmd="gmt gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
+cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
 os.system(cmd)
 
 cmd="mkdir GRD_IC"
@@ -1202,11 +1217,10 @@ for s in slab_keys:
     slab_Nan_age=sub_dict['Nan_age']
 
     print("T_use: %s" % T_use ) 
-    sys.exit()
 
     if T_use == 'Slab2':
         sn=s
-        depth_grids_dir=Slab2_grids_dir
+        depth_grids_dir=Slab2_depth_grids_dir
         age_grids_dir=Slab2_Age_Dir
         model="slab2.0"
     elif T_use == 'RUM': 
@@ -1241,6 +1255,7 @@ for s in slab_keys:
     # Uniform layers using diffusion model
     generate_arrays(depth_trans_diff,width_trans_diff,convergence_vel)
 
+       
 
     ic_grd_file_names, proj, region = generate_thermal_ic(sn,slab_Nan_age,T_use,depth_grids_dir,age_grids_dir,model)
  
