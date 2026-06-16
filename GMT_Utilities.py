@@ -333,7 +333,7 @@ def mk_grd_sec(id, prefix, section_depth, depths, grd_input_files, xyp_file, gri
     os.system(cmd) 
 
     if grid_min != 'none' or grid_max != 'none' :
-        cmd = "grdclip %(sec_grd_tmp)s -G%(sec_grd)s -Sa%(grid_max)g/%(grid_max)g -Sb%(grid_min)g/%(grid_min)g" % vars()
+        cmd = "gmt grdclip %(sec_grd_tmp)s -G%(sec_grd)s -Sa%(grid_max)g/%(grid_max)g -Sb%(grid_min)g/%(grid_min)g" % vars()
         if verbose: print(dt.now(), "mk_grd_sec: cmd =", cmd)
         os.system(cmd) 
     else:
