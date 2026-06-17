@@ -6,14 +6,14 @@
 #
 #                              Authors:
 #                             Mike Gurnis
-#          (c) California Institute of Technology 2015-2016
+#          (c) California Institute of Technology 2015-2026
 #
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #
 #=====================================================================
 #
-#  Copyright Feb 2016, by the California Institute of Technology.
+#  Copyright June 2026, by the California Institute of Technology.
 #
 #=====================================================================
 """
@@ -68,7 +68,7 @@ dz2=dz**2
 dtxy = dx2*dy2/( 2*kappa*(dx2+dy2) )
 dtz = dz**2/( 2*kappa )
 dt=min(dtxy,dtz)/2.0
-print 'dt=',dt,' this should be in seconds'
+print('dt=',dt,' this should be in seconds')
 dt=0.5*dt # This is a factor to avoid instability
 
 timesteps=1  # Number of time-steps to evolve system.
@@ -135,9 +135,9 @@ profile_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Profiles/"
 #=====================================================================
 def usage():
 
-    print ''' Create_Global_from_Regional_Slabs.py
+    print(''' Create_Global_from_Regional_Slabs.py
 
-'''
+''')
 
     sys.exit(0)
 #=====================================================================
@@ -174,8 +174,8 @@ def get_layer_depths_rhea2():
     return layer_depths
 #=====================================================================
 def make_pdf(psfile,slab):
-    print "\n    Converting file to pdf ..."
-    cmd = "ps2raster %s -A -Tf -E200" % (psfile)
+    print("\n    Converting file to pdf ...")
+    cmd = "gmt psconvert %s -A -Tf -E200" % (psfile)
     os.system(cmd)
 
     cmd='rm -f *.ps'
@@ -190,31 +190,31 @@ def make_pdf(psfile,slab):
 def overlay_plate_boundaries(psfile,RIDGES,CLOSEGMT):
 
     #Position of the trench
-    teeth="0.2/0.07lt"
-    teeth="0.1/0.035lt"
+    teeth="0.2i/0.07i+l+t"
+    teeth="0.1i/0.035i+l+t"
     if (CLOSEGMT):
-        cmd="psxy %s -J -R -B -W2/black -Sf%s -Gblack -M -P -O >> %s" % (trenches,teeth,psfile)
+        cmd="gmt psxy %s -J -R -B -W2p,black -Sf%s -Gblack -M -P -O >> %s" % (trenches,teeth,psfile)
     else:
-        cmd="psxy %s -J -R -B -W2/black -Sf%s -Gblack -M -P -O -K >> %s" % (trenches,teeth,psfile)
-    print cmd 
+        cmd="gmt psxy %s -J -R -B -W2p,black -Sf%s -Gblack -M -P -O -K >> %s" % (trenches,teeth,psfile)
+    print(cmd)
     os.system(cmd)
 
     #Ridges
     if (RIDGES):
-        cmd="psxy %s -J -R -B -W4/255/0/0 -V -M -P -O -K >> %s" % (ridges,psfile)
-        #print cmd 
+        cmd="gmt psxy %s -J -R -B -W4p,255/0/0 -V -M -P -O -K >> %s" % (ridges,psfile)
+        #print(cmd)
         #os.system(cmd)
-        cmd="psxy %s -J -R -B -W2/255/255/255 -V -M -P -O -K >> %s" % (ridges,psfile)
-        #print cmd
+        cmd="gmt psxy %s -J -R -B -W2p,255/255/255 -V -M -P -O -K >> %s" % (ridges,psfile)
+        #print(cmd)
         #os.system(cmd)
 
     #Fractures
-    cmd="psxy %s -J -R -B -W6/128/128/128 -V -M -P -O -K >> %s" % (fractures,psfile)
-    #print cmd
+    cmd="gmt psxy %s -J -R -B -W6p,128/128/128 -V -M -P -O -K >> %s" % (fractures,psfile)
+    #print(cmd)
     #os.system(cmd)
     #Interface between Trenches and Fractures (mostly)
-    cmd="psxy %s -J -R -B -W6/0/255/0 -Sf0.2/0.07lt -G0/255/0 -V -M -P -O -K >> %s" % (interface,psfile)
-    #print cmd
+    cmd="gmt psxy %s -J -R -B -W6p,0/255/0 -Sf0.2i/0.07i+l+t -G0/255/0 -V -M -P -O -K >> %s" % (interface,psfile)
+    #print(cmd)
     #os.system(cmd)
 
 
@@ -222,15 +222,15 @@ def overlay_plate_boundaries(psfile,RIDGES,CLOSEGMT):
 #=====================================================================
 def clean_up_and_finish():
 
-    print "Clean up"
-    print ""
+    print("Clean up")
+    print("")
     cmd="rm -f *.eps *.grd *.xyz *.xy *.tmp *.txt"
-    print cmd
+    print(cmd)
     os.system(cmd)
-    print ""
-    print ""
-    print "Done!"
-    print ""
+    print("")
+    print("")
+    print("Done!")
+    print("")
 #=====================================================================
 #=====================================================================
 #    TOP OF MAIN
@@ -258,16 +258,15 @@ mapwidth = 6.0
 proj = 'H180/%f' % mapwidth
 
 cmd="mkdir GRD_GLOBAL"
-print cmd
+print(cmd)
 os.system(cmd)
 
 
 # Get the top level keys and sort them
-slab_keys = slab_dict.keys();
-slab_keys.sort()
+slab_keys = sorted(slab_dict.keys())
 
 
-cmd="gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
+cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
 os.system(cmd)
 
 
@@ -277,7 +276,7 @@ layer_depths=get_layer_depths_rhea2()
 
 
 for layer in layer_depths:
-    print 'layer: ',layer
+    print('layer: ',layer)
 
     files_to_blend_0="blend_0.dat"
     files_to_blend="blend.dat"
@@ -287,18 +286,17 @@ for layer in layer_depths:
     #BF0.write("GRD_IC/sol/layer_%03d.grd - 1.0" % (int(layer)))
     BF0.close()
     global_grd_file_0="GRD_GLOBAL/N0_layer_%03d.grd" % (int(layer))
-    print 'global_grd_file: ',global_grd_file_0
-    cmd="grdblend %s -G%s -I%f -R%s -N%f" % (files_to_blend_0,global_grd_file_0,grd_res,bounds,T_mantle)
-    print cmd
+    print('global_grd_file: ',global_grd_file_0)
+    cmd="gmt grdblend %s -G%s -I%f -R%s -N%f" % (files_to_blend_0,global_grd_file_0,grd_res,bounds,T_mantle)
+    print(cmd)
     os.system(cmd)
 
     for s in slab_keys:
-        print "SLAB: %s" % s
+        print("SLAB: %s" % s)
         # Get a local copy of the sub dictionary
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
-        sub_keys = sub_dict.keys()
-        sub_keys.sort()
+        sub_keys = sorted(sub_dict.keys())
 
         grd_file="GRD_FINAL/%s/layer_%03d.grd" % (s,int(layer))
         #grd_file="GRD_IC/%s/layer_%03d.grd" % (s,int(layer))
@@ -308,27 +306,27 @@ for layer in layer_depths:
         BF.close()
 
         global_grd_file="GRD_GLOBAL/tmp_layer_%03d.grd" % (int(layer))
-        print global_grd_file
+        print(global_grd_file)
         # Blend the regional to global essential to create a global grd
-        cmd="grdblend %s -G%s -I%f -R%s -N%f" % (files_to_blend,global_grd_file,grd_res,bounds,T_mantle)
-        print cmd
+        cmd="gmt grdblend %s -G%s -I%f -R%s -N%f" % (files_to_blend,global_grd_file,grd_res,bounds,T_mantle)
+        print(cmd)
         os.system(cmd)
 
         #Merge the cummulative global grd with the current one
-        cmd="grdmath %s %s MIN = tmp.grd" % (global_grd_file_0,global_grd_file)
-        print cmd
+        cmd="gmt grdmath %s %s MIN = tmp.grd" % (global_grd_file_0,global_grd_file)
+        print(cmd)
         os.system(cmd)
         cmd="mv tmp.grd %s" % (global_grd_file_0)
-        print cmd
+        print(cmd)
         os.system(cmd)
 
     cmd="mv %s %s" % (global_grd_file_0,global_grd_file)
-    print cmd
+    print(cmd)
     os.system(cmd)
     # Make a map to check the blended global grd file
     psfile="slab_temp_%03d.ps" % (int(layer))
-    cmd = 'grdimage -JH0/7 %s -Ctemp.cpt -R-0/360/-90/90 -P -X1.0 -Y7 > %s' % (global_grd_file,psfile)
-    print cmd 
+    cmd = 'gmt grdimage -JH0/7 %s -Ctemp.cpt -R0/360/-90/90 -P -X1.0 -Y7 > %s' % (global_grd_file,psfile)
+    print(cmd)
     os.system(cmd)
     make_pdf(psfile,"Global")
 
@@ -337,4 +335,3 @@ for layer in layer_depths:
 clean_up_and_finish()
 
 # EOF
-
