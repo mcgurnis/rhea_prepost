@@ -90,8 +90,12 @@ layer_depths=None
 #=====================================================================
 # Directories for data sets
 
+#For Mac
+rhea_depths="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Rhea2/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+
+
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_Input/Temp_2_rhea/shell_temperature_k2_ll456_z_June2015.txt"
-rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+#rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/tmp_truncated-l5678.dat"
 
 
@@ -236,7 +240,7 @@ def clean_up_and_finish():
 #    TOP OF MAIN
 #=====================================================================
 #=====================================================================
-from Slab_Dictionary_Slab1_RUM import slab_dict
+from Slab_Dictionary_Slab2 import slab_dict
 gmt_dict = {}
 
 #if len(sys.argv) != 2:
@@ -274,6 +278,8 @@ os.system(cmd)
 #In rhea2 these values are now floats, before they were ints
 layer_depths=get_layer_depths_rhea2()
 
+print('layer_depths: ',layer_depths)
+
 
 for layer in layer_depths:
     print('layer: ',layer)
@@ -281,9 +287,9 @@ for layer in layer_depths:
     files_to_blend_0="blend_0.dat"
     files_to_blend="blend.dat"
     BF0=open(files_to_blend_0,"w")
-    #BF0.write("GRD_FINAL/sco/layer_%03d.grd - 1.0" % (int(layer)))
-    BF0.write("GRD_FINAL/sol/layer_%03d.grd - 1.0" % (int(layer)))
-    #BF0.write("GRD_IC/sol/layer_%03d.grd - 1.0" % (int(layer)))
+    BF0.write("GRD_FINAL/sco/layer_%03d.grd - 1.0" % (int(layer)))
+    #BF0.write("GRD_FINAL/sol/layer_%03d.grd - 1.0" % (int(layer)))
+#    #BF0.write("GRD_IC/sol/layer_%03d.grd - 1.0" % (int(layer)))
     BF0.close()
     global_grd_file_0="GRD_GLOBAL/N0_layer_%03d.grd" % (int(layer))
     print('global_grd_file: ',global_grd_file_0)
@@ -297,6 +303,7 @@ for layer in layer_depths:
         sub_dict = slab_dict[s]
         # Get the sub level keys and sort them
         sub_keys = sorted(sub_dict.keys())
+
 
         grd_file="GRD_FINAL/%s/layer_%03d.grd" % (s,int(layer))
         #grd_file="GRD_IC/%s/layer_%03d.grd" % (s,int(layer))
@@ -312,6 +319,8 @@ for layer in layer_depths:
         print(cmd)
         os.system(cmd)
 
+ 
+    
         #Merge the cummulative global grd with the current one
         cmd="gmt grdmath %s %s MIN = tmp.grd" % (global_grd_file_0,global_grd_file)
         print(cmd)
@@ -319,6 +328,7 @@ for layer in layer_depths:
         cmd="mv tmp.grd %s" % (global_grd_file_0)
         print(cmd)
         os.system(cmd)
+
 
     cmd="mv %s %s" % (global_grd_file_0,global_grd_file)
     print(cmd)

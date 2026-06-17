@@ -257,6 +257,14 @@ def diffuse_with_filter(sn,layer_depths,ic_grd_file_names,convergence_vel):
         print(cmd)
         os.system(cmd)
 
+        ii=1  
+        while ii<=2:
+            profile="%s%s_profile_%d.xyp" % (profile_dir,sn,ii)
+            cmd="gmt psxy %s %s -W1,black -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
+            print(cmd)
+            os.system(cmd)
+            ii += 1
+
         overlay_plate_boundaries(psfile,0,1)
 
         make_pdf(psfile,sn)
