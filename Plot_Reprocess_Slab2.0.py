@@ -842,45 +842,6 @@ def make_summary_table(slab_dict,slab_keys):
     OF.close()
     return
 #=====================================================================
-def shift_profile(profile,shift_dir,xs,zs):
-    print("Shifting profile %s in direction %s" % (profile,shift_dir))
-    PR=open(profile)
-    if shift_dir == "Z":
-        while 1:
-            line=PR.readline()
-            if(line):
-                sx1,sz1=line.split()
-                fx1=float(sx1)
-                if(fx1 >= xs):
-                    zoff=float(sz1)
-                    break
-            else:
-                break
-    elif shift_dir == "P":
-        print("P")  
-        line=PR.readline()
-        sx1,sz1=line.split()
-        poff=float(sx1)
-    PR.close()
-    shifted_profile='tmp_%s.pz' % shift_dir
-    PR=open(profile)
-    PS=open(shifted_profile,"w")
-    while 1:
-        line=PR.readline()
-        if(line):
-            sx1,sz1=line.split()
-            fx1=float(sx1)
-            fz1=float(sz1)
-            if shift_dir == "Z":
-                PS.write("%s  %g\n" % (sx1,fz1-zoff+zs))
-            elif shift_dir == "P":
-                PS.write("%g  %s\n" % (fx1-poff,sz1))
-        else:
-            break
-    PR.close()
-    PS.close()
-    return shifted_profile
-#=====================================================================
 def project_earthquakes2xsection(all_quakes,sub_dict,s):
 
     i=1
