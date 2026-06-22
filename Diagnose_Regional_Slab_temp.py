@@ -70,7 +70,7 @@ dz2=dz**2
 dtxy = dx2*dy2/( 2*kappa*(dx2+dy2) )
 dtz = dz**2/( 2*kappa )
 dt=min(dtxy,dtz)/2.0
-print 'dt=',dt,' this should be in seconds'
+print('dt=',dt,' this should be in seconds')
 dt=0.5*dt # This is a factor to avoid instability
 
 timesteps=1  # Number of time-steps to evolve system.
@@ -109,7 +109,9 @@ coastlines="/net/holmes/home4/gurnis/Global_Plate_Polygons/cs.lines.0.xy"
 
 gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepolygons.0.xy"
 
-dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+#dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+#New directory for Mac  
+dir_old_margins="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Plate_Margins/NewDataSet"
 
 trenches="%s/Trench-1-12-10.xy" % dir_old_margins
 
@@ -121,15 +123,15 @@ interface="%s/Interface-1-12-10.xy" % dir_old_margins
 
 rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contours_567.xyz"
 
-profile_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Profiles/"
+profile_dir="Profiles/"
 
 #=====================================================================
 #=====================================================================
 def usage():
 
-    print ''' Diagnose_Regional_Slab_temp.py
+    print(''' Diagnose_Regional_Slab_temp.py
 
-'''
+''')
 
     sys.exit(0)
 #=====================================================================
@@ -149,30 +151,30 @@ def plot_map_temperature(sn,psfile,gmt_dict,grd_file,x_move,y_move):
     proj="-JH%g/%g" % (long_mean,width)
     region="%g/%g/%g/%g" % (long_min,long_max,lat_min,lat_max)
 
-    cmd="makecpt -Cpolar -T%f/%f/0.1 -D > temp.cpt" % (T_min,T_max)
-    print cmd
+    cmd="gmt makecpt -Cpolar -T%f/%f/0.1 -D > temp.cpt" % (T_min,T_max)
+    print(cmd)
     os.system(cmd)
-    cmd="grdimage %s %s -Ctemp.cpt -R%s -Ba20f5/a20f5::WeSn -X%g -Y%g -P -O -K >> %s" % (grd_file,proj,region,x_move,y_move,psfile)
-    print cmd
+    cmd="gmt grdimage %s %s -Ctemp.cpt -R%s -Ba20f5/a20f5WeSn -X%g -Y%g -P -O -K >> %s" % (grd_file,proj,region,x_move,y_move,psfile)
+    print(cmd)
     os.system(cmd)
 
     Profiles=[]
     for ii in range(1,3):
-        print 'ii=',ii
+        print('ii=',ii)
         profile="%s%s_profile_%d.xyp" % (profile_dir,sn,ii)
         Profiles.append(profile)
-        cmd="psxy %s %s -W3/1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
-        print cmd
+        cmd="gmt psxy %s %s -W1,1 -R%s -B -K -O >> %s" % (profile,proj,region,psfile)
+        print(cmd)
         os.system(cmd)
 
     overlay_plate_boundaries(psfile,0,0)
 
-        
+
     return Profiles
 #=====================================================================
 def make_pdf(psfile,slab):
-    print "\n    Converting file to pdf ..."
-    cmd = "ps2raster %s -A -Tf -E200" % (psfile)
+    print("\n    Converting file to pdf ...")
+    cmd = "gmt psconvert %s -A -Tf -E200" % (psfile)
     os.system(cmd)
 
     cmd='rm -f *.ps'
@@ -187,31 +189,31 @@ def make_pdf(psfile,slab):
 def overlay_plate_boundaries(psfile,RIDGES,CLOSEGMT):
 
     #Position of the trench
-    teeth="0.2/0.07lt"
-    teeth="0.1/0.035lt"
+    teeth="0.2/0.07+l+t"
+    teeth="0.1/0.035+l+t"
     if (CLOSEGMT):
-        cmd="psxy %s -J -R -B -W2/black -Sf%s -Gblack -M -P -O >> %s" % (trenches,teeth,psfile)
+        cmd="gmt psxy %s -J -R -B -W1,black -Sf%s -Gblack -P -O >> %s" % (trenches,teeth,psfile)
     else:
-        cmd="psxy %s -J -R -B -W2/black -Sf%s -Gblack -M -P -O -K >> %s" % (trenches,teeth,psfile)
-    print cmd 
+        cmd="gmt psxy %s -J -R -B -W1,black -Sf%s -Gblack -P -O -K >> %s" % (trenches,teeth,psfile)
+    print(cmd)
     os.system(cmd)
 
     #Ridges
     if (RIDGES):
-        cmd="psxy %s -J -R -B -W4/255/0/0 -V -M -P -O -K >> %s" % (ridges,psfile)
-        #print cmd 
+        cmd="gmt psxy %s -J -R -B -W4,255/0/0 -V -P -O -K >> %s" % (ridges,psfile)
+        #print(cmd)
         #os.system(cmd)
-        cmd="psxy %s -J -R -B -W2/255/255/255 -V -M -P -O -K >> %s" % (ridges,psfile)
-        #print cmd
+        cmd="gmt psxy %s -J -R -B -W2,255/255/255 -V -P -O -K >> %s" % (ridges,psfile)
+        #print(cmd)
         #os.system(cmd)
 
     #Fractures
-    cmd="psxy %s -J -R -B -W6/128/128/128 -V -M -P -O -K >> %s" % (fractures,psfile)
-    #print cmd
+    cmd="gmt psxy %s -J -R -B -W6,128/128/128 -V -P -O -K >> %s" % (fractures,psfile)
+    #print(cmd)
     #os.system(cmd)
     #Interface between Trenches and Fractures (mostly)
-    cmd="psxy %s -J -R -B -W6/0/255/0 -Sf0.2/0.07lt -G0/255/0 -V -M -P -O -K >> %s" % (interface,psfile)
-    #print cmd
+    cmd="gmt psxy %s -J -R -B -W1,0/255/0 -Sf0.2/0.07+l+t -G0/255/0 -V -P -O -K >> %s" % (interface,psfile)
+    #print(cmd)
     #os.system(cmd)
 
 
@@ -224,13 +226,13 @@ def get_integrate_profiles(Profiles,Grds):
     for i in range(len(Profiles)):
         for j in range(len(Grds)):
             temp_profile="temp_profile_Pro%d_Grd%d.dT" % (i,j)
-            Temp_profiles.append(temp_profile) 
-            cmd="grdtrack %s -G%s > tmp.xydT" % (Profiles[i],Grds[j]) 
-            print cmd
+            Temp_profiles.append(temp_profile)
+            cmd="gmt grdtrack %s -G%s > tmp.xydT" % (Profiles[i],Grds[j])
+            print(cmd)
             os.system(cmd)
             IF=open("tmp.xydT")
             OF=open(temp_profile,"w")
-            Dist=[] 
+            Dist=[]
             Temp=[]
             while 1:
                 line=IF.readline()
@@ -248,51 +250,80 @@ def get_integrate_profiles(Profiles,Grds):
             for id in range(len(Dist)-1):
                 dist_temp=dist_temp + 0.5*(Dist[id+1]-Dist[id])*(2.0-Temp[id]-Temp[id+1])
             Dist_temp.append(dist_temp)
-    
+
     return Temp_profiles,Dist_temp
 #=====================================================================
-def plot_temp_profile(psfile,np,Temp_profiles,Dist_temp,d1,d2,x_move,y_move,GMTCLOSE):
+def integrated_profile_difference(file1, file2):
+    """Integrate (T_file2 - T_file1) over distance using the trapezoid rule.
+    Both files have two columns: distance (km), temperature (normalised 0-1).
+    Returns the scalar integral and the (Dist, Diff) lists for optional plotting.
+    
+    The final integral is in units of Temp * km 
+    """
+    IF1 = open(file1)
+    IF2 = open(file2)
+    Dist = []
+    Diff = []
+    while True:
+        line1 = IF1.readline()
+        line2 = IF2.readline()
+        if line1 and line2:
+            d1_str, T1 = line1.split()
+            _, T2 = line2.split()
+            Dist.append(float(d1_str))
+            Diff.append(float(T2) - float(T1))
+        else:
+            break
+    IF1.close()
+    IF2.close()
+    integral = 0.0
+    for i in range(len(Dist) - 1):
+        integral += 0.5 * (Dist[i+1] - Dist[i]) * (Diff[i] + Diff[i+1])
+    return integral, Dist, Diff
+#=====================================================================
+def plot_temp_profile(psfile,np,Temp_profiles,d1,d2,x_move,y_move,GMTCLOSE):
 
-    cmd="gmtset ANNOT_FONT_SIZE_PRIMARY	10p  LABEL_FONT_SIZE 12p"
+    cmd="gmt gmtset FONT_ANNOT_PRIMARY 10p FONT_LABEL 12p"
     os.system(cmd)
     j=np
-    
-    cmd='psxy %s -JX4.0/0.9 -R%g/%g/0/1.1 -Ba100f25::/a0.5f0.1:Temp:Wesn -W1 -X%g -Y%g -K -O >> %s' % (Temp_profiles[j],d1,d2,x_move,y_move,psfile)
-    print cmd
+
+    cmd='gmt psxy %s -JX4.0/0.9 -R%g/%g/0/1.1 -Bxa100f25 -Bya0.5f0.1+l"Temp" -BWesn -W1 -X%g -Y%g -K -O >> %s' % (Temp_profiles[j],d1,d2,x_move,y_move,psfile)
+    print(cmd)
     os.system(cmd)
 
     j=np+1
-    cmd='psxy %s -JX -R%g/%g/0/1.1 -Ba100f25:"Distance (km)":/a0.5f0.1:Temp:WeSn -W1/red -X0. -Y0. -K -O >> %s' % (Temp_profiles[j],d1,d2,psfile)
-    print cmd
+    cmd='gmt psxy %s -JX -R%g/%g/0/1.1 -Bxa100f25+l"Distance (km)" -Bya0.5f0.1+l"Temp" -BWeSn -W1,red -X0. -Y0. -K -O >> %s' % (Temp_profiles[j],d1,d2,psfile)
+    print(cmd)
     os.system(cmd)
 
-    percent_difference=2.0*100.0*(Dist_temp[np+1]-Dist_temp[np])/(Dist_temp[np]+Dist_temp[np+1])
-    print 'Percent Difference ',percent_difference, '%'
+    
+    int_diff, _, _ = integrated_profile_difference(Temp_profiles[np], Temp_profiles[np+1])
+    print('Integrated profile difference =', int_diff, '(T * km)')
     LAB = open('label.txt','w')
-    xlabel=d1+10
-    print >> LAB, "%d 0.1 8 0 1 1 Integrated difference = %g \\045" % (xlabel,percent_difference)
+    xlabel = d1 + 10
+    print("%d 0.1 8 0 1 1 Integrated difference = %g T*km" % (xlabel, int_diff), file=LAB)
     LAB.close()
 
     GMTEND="-K -O"
     if GMTCLOSE == 1:
         GMTEND="-O"
-    cmd="pstext label.txt -JX -R -X0 -Y0 %s -P >> %s" % (GMTEND,psfile)
-    print cmd
+    cmd="gmt pstext label.txt -JX -R -X0 -Y0 %s -P >> %s" % (GMTEND,psfile)
+    print(cmd)
     os.system(cmd)
 
     return
 #=====================================================================
 def clean_up_and_finish():
 
-    print "Clean up"
-    print ""
+    print("Clean up")
+    print("")
     cmd="rm -f *.eps *.grd *.xyz *.xy *.tmp *.txt"
-    print cmd
+    print(cmd)
     os.system(cmd)
-    print ""
-    print ""
-    print "Done!"
-    print ""
+    print("")
+    print("")
+    print("Done!")
+    print("")
 #=====================================================================
 #=====================================================================
 #    TOP OF MAIN
@@ -308,64 +339,64 @@ gmt_dict = {}
 
 
 # Get the top level keys and sort them
-slab_keys = slab_dict.keys();
+slab_keys = list(slab_dict.keys())
 slab_keys.sort()
 
 #=====================================================================
 #sn='sam'
 #sn='izu'
-sn='sol'
+sn='van'
 #depth=125
-#depth=154
+depth=154
 #depth=204
 #depth=304
 #depth=403
-depth=500
+#depth=500
 #depth=608
 
 psfile="temperature_diagnostic_%s_depth_%03d.ps" % (sn,depth)
-cmd="gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
+cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
 os.system(cmd)
 temp_grd_ic = "GRD_IC/%s/layer_%03d.grd" % (sn,depth)
 temp_grd_diffuse = "GRD_FINAL/%s/layer_%03d.grd" % (sn,depth)
 gmt_dict['grid']=temp_grd_ic
 Core_GMT.grdinfo( gmt_dict )
-print gmt_dict
+print(gmt_dict)
 #=====================================================================
 
 LAB = open('label.txt','w')
-print >> LAB, "2.0 0.0 12 0 1 1 %s depth = %d km" % (sn,depth)
+print("2.0 0.0 12 0 1 1 %s depth = %d km" % (sn,depth), file=LAB)
 LAB.close()
 
-cmd="pstext label.txt -JX8 -R0/8/0/11.5 -X1 -Y10 -K -P > %s" % (psfile)
-print cmd
+cmd="gmt pstext label.txt -JX8 -R0/8/0/11.5 -X1 -Y10 -K -P > %s" % (psfile)
+print(cmd)
 os.system(cmd)
+
 #=====================================================================
 x_move=0.5
 y_move=-4.5
 Profiles=plot_map_temperature(sn,psfile,gmt_dict,temp_grd_ic,x_move,y_move)
- 
+
 x_move=3.5
 y_move=0.0
 Profiles=plot_map_temperature(sn,psfile,gmt_dict,temp_grd_diffuse,x_move,y_move)
- 
+
 Grds=[]
 Grds.append(temp_grd_ic)
 Grds.append(temp_grd_diffuse)
 Temp_profiles, Dist_temp = get_integrate_profiles(Profiles,Grds)
-print 'Temp_profiles',Temp_profiles
-print 'Dist_temp ',Dist_temp
+print('Temp_profiles',Temp_profiles)
+print('Dist_temp ',Dist_temp)
 
 x_move=-2.5
 y_move=-2
-plot_temp_profile(psfile,0,Temp_profiles,Dist_temp,200,600,x_move,y_move,0)
+plot_temp_profile(psfile,0,Temp_profiles,200,600,x_move,y_move,0)
 x_move=0.0
 y_move=-1.75
-plot_temp_profile(psfile,2,Temp_profiles,Dist_temp,0,400,x_move,y_move,1)
+plot_temp_profile(psfile,2,Temp_profiles,0,400,x_move,y_move,1)
 
 
 make_pdf(psfile,sn)
 #clean_up_and_finish()
 
 # EOF
-
