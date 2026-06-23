@@ -6,7 +6,7 @@
 #
 #                              Authors:
 #                             Mike Gurnis
-#          (c) California Institute of Technology 2009 - 2016
+#          (c) California Institute of Technology 2009 - 2026
 #
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
@@ -15,10 +15,10 @@
 #
 #=====================================================================
 #
-# Last Update: Mike Gurnis, Aug. 2, 2016
+# Last Update: Mike Gurnis, June 23, 2026
 
 
-import sys, string, os, commands, math
+import sys, string, os, math
 import Mat_Utilities, GMT_Utilities, Rhea_Utilities
 
 r2d = 180.0/math.pi
@@ -73,24 +73,24 @@ def get_layer_depths_rhea2():
 #=====================================================================
 def interpolate_2_Rhea_mesh(grd_name,code_grd_name,nodes,id,radius):
 
-    print "Inside interpolate_2_Rhea_mesh"
-    print "id",id
-    print 'grd_name',grd_name
-    print 'code_grd_name',code_grd_name
-    print 'nodes', nodes
+    print("Inside interpolate_2_Rhea_mesh")
+    print("id",id)
+    print('grd_name',grd_name)
+    print('code_grd_name',code_grd_name)
+    print('nodes', nodes)
     interpolated_file="interpolated.xyzt"
     interpolated_code_file="interpolated_code.xyzt"
     new_rhea_file_name="rhea_temp.nrxytc"
     #sample grd at points in node file
-    cmd="grdtrack %s -G%s > %s" % (nodes,grd_name,interpolated_file)
+    cmd="gmt grdtrack %s -G%s > %s" % (nodes,grd_name,interpolated_file)
     os.system(cmd)
-    cmd="grdtrack %s -G%s > %s" % (nodes,code_grd_name,interpolated_code_file)
+    cmd="gmt grdtrack %s -G%s > %s" % (nodes,code_grd_name,interpolated_code_file)
     os.system(cmd)
 
 
     mesh_interp=open(interpolated_file)
     mesh_code_interp=open(interpolated_code_file)
-    rhea=open(new_rhea_file_name,"w") 
+    rhea=open(new_rhea_file_name,"w")
     while 1:
         line=mesh_interp.readline()
         line_code=mesh_code_interp.readline()
@@ -104,15 +104,15 @@ def interpolate_2_Rhea_mesh(grd_name,code_grd_name,nodes,id,radius):
             slab=float(vc4)
 
             code=0
-            if id < 100 and slab < 0.8: 
+            if id < 100 and slab < 0.8:
                 code=1
-            elif id >= 100 and slab < 0.8: 
+            elif id >= 100 and slab < 0.8:
                 code=2
-            
+
             phi = d2r*(long-180.0)
-            theta = -1.0*d2r*(lat-90.0) 
+            theta = -1.0*d2r*(lat-90.0)
             rhea.write("%d %f %f %f %f %d\n" %(n, radius, phi,theta,temp,code))
- 
+
         else:
             break
     mesh_interp.close()
@@ -146,21 +146,20 @@ def mk_tomography_weights(radii_depths_list):
 #=====================================================================
 def get_lith_temp_grd(z,age_grd,scalet):
     lfile_name="lith.grd"
-    print 'z=',z
-    print 'scalet',scalet
-    
+    print('z=',z)
+    print('scalet',scalet)
 
-    cmd="grdmath %s %e DIV = scaled_age.grd" % (age_grd,scalet)
-    print cmd
+    cmd="gmt grdmath %s %e DIV = scaled_age.grd" % (age_grd,scalet)
+    print(cmd)
     os.system(cmd)
-    cmd="grdmath scaled_age.grd SQRT = arg1.grd"
-    print cmd
+    cmd="gmt grdmath scaled_age.grd SQRT = arg1.grd"
+    print(cmd)
     os.system(cmd)
-    cmd="grdmath 0.5 %e MUL arg1.grd DIV = arg2.grd" % z
-    print cmd
+    cmd="gmt grdmath 0.5 %e MUL arg1.grd DIV = arg2.grd" % z
+    print(cmd)
     os.system(cmd)
-    cmd="grdmath arg2.grd ERF = %s" % lfile_name
-    print cmd
+    cmd="gmt grdmath arg2.grd ERF = %s" % lfile_name
+    print(cmd)
     os.system(cmd)
 
     return lfile_name
@@ -185,15 +184,15 @@ def mk_const_grd(grd_res,const,tension, grid_min, grid_max):
 
     new_grdfile = "const_%f.grd" % const
     cmd="mv %s %s" % (grdfile,new_grdfile)
-    print cmd
+    print(cmd)
     os.system(cmd)
 
     return new_grdfile
 
 #=====================================================================
 def make_pdf(psfile):
-    print "\n    Converting file to pdf ..."
-    cmd = "ps2raster %s -A -Tf -E200" % (psfile)
+    print("\n    Converting file to pdf ...")
+    cmd = "gmt psconvert %s -A -Tf -E200" % (psfile)
     os.system(cmd)
 
     cmd='rm -f *.ps'
@@ -263,12 +262,12 @@ age_max=300.0
 
 scalet = layer_km*1e3*layer_km*1e3/(therm_diff*1.e6*365.25*24.*3600.)
 #===============================================================
-#cmd="grdsample %s -Gtmp1.grd -I%f -R%s" % (age_grid,grd_res,bounds)
-cmd="grdsample %s -Gtmp1.grd -I%f" % (age_grid,grd_res)
+#cmd="gmt grdsample %s -Gtmp1.grd -I%f -R%s" % (age_grid,grd_res,bounds)
+cmd="gmt grdsample %s -Gtmp1.grd -I%f" % (age_grid,grd_res)
 os.system(cmd)
-cmd="grdclip tmp1.grd -Gtmp2.grd -Sb%f/%f" % (age_min,age_min)
+cmd="gmt grdclip tmp1.grd -Gtmp2.grd -Sb%f/%f" % (age_min,age_min)
 os.system(cmd)
-cmd="grdmath tmp2.grd %f AND = age.grd " % (age_max)
+cmd="gmt grdmath tmp2.grd %f AND = age.grd " % (age_max)
 os.system(cmd)
 #===============================================================
 depth_max = 2900 # Whole mantle
@@ -298,12 +297,12 @@ os.system(cmd)
 #===============================================================
 rheamesh_used.reverse()
 for rm in rheamesh_used:
-    print 'rm',rm
+    print('rm',rm)
     ir=int(rm.split()[0])
     id=int(rm.split()[2])
-    print ' id=',id
+    print(' id=',id)
     radius=float(rm.split()[3])
-    
+
     # Establish File names
     temp_file_name = "temperature_%04d.dat" % id
     temp_grd_name = "temperature_%04d.grd" % id
@@ -316,11 +315,11 @@ for rm in rheamesh_used:
         # Use existing precomputed slabs
         original_slab_file_name="%s/tmp_layer_%03d.grd" % (slab_temp_dir,id)
         slab_file_name="slab_tmp.grd"
-        cmd="grdsample %s -G%s -I%g" % (original_slab_file_name,slab_file_name,grd_res)
-        print cmd
+        cmd="gmt grdsample %s -G%s -I%g" % (original_slab_file_name,slab_file_name,grd_res)
+        print(cmd)
         os.system(cmd)
         cmd="cp %s %s" % (slab_file_name,temp_grd_name)
-        print cmd
+        print(cmd)
         os.system(cmd)
 
     # Assemble Tomography to grd's and mix with slabs
@@ -329,56 +328,56 @@ for rm in rheamesh_used:
         xyz_file=GMT_Utilities.toggle_shift_xyz(tomo_xyz,'S3')
         grdtmpfile  = GMT_Utilities.mk_grd(xyz_file,bounds,grd_res,tension,grd_min,grd_max)
         tomo_grd = "tomo_temp_%04d.grd" % id
-        ##cmd="grdmath %s -1.5 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
-        #cmd="grdmath %s -1.0 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
-        cmd="grdmath %s -0.5 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
-        #cmd="grdmath %s -0.25 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
-        #cmd="grdmath %s -0.1 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
+        ##cmd="gmt grdmath %s -1.5 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
+        #cmd="gmt grdmath %s -1.0 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
+        cmd="gmt grdmath %s -0.5 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
+        #cmd="gmt grdmath %s -0.25 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
+        #cmd="gmt grdmath %s -0.1 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
         # Zero out tomo, i.e. make 1 everywhere
-        #cmd="grdmath %s 0.0 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd) 
-        print cmd
+        #cmd="gmt grdmath %s 0.0 MUL 1.0 ADD = %s" % (grdtmpfile,tomo_grd)
+        print(cmd)
         os.system(cmd)
-        print 'tomo_grd',tomo_grd
+        print('tomo_grd',tomo_grd)
         #cmd="mv %s tmp.grd" % (temp_grd_name)
         #os.system(cmd)
         weight_slab = weights[id][0]
         weight_tomo = weights[id][1]
-        cmd="grdmath %s %f MUL = tmp1.grd" % (slab_file_name,weight_slab)
+        cmd="gmt grdmath %s %f MUL = tmp1.grd" % (slab_file_name,weight_slab)
         os.system(cmd)
-        cmd="grdmath %s %f MUL = tmp2.grd" % (tomo_grd,weight_tomo)
+        cmd="gmt grdmath %s %f MUL = tmp2.grd" % (tomo_grd,weight_tomo)
         os.system(cmd)
-        cmd="grdmath tmp1.grd tmp2.grd ADD = tmp3.grd"
+        cmd="gmt grdmath tmp1.grd tmp2.grd ADD = tmp3.grd"
         os.system(cmd)
-        cmd="grdclip tmp3.grd -G%s -Sa1.0/1.0 -Sb0.0/0.0" % (temp_grd_name)
+        cmd="gmt grdclip tmp3.grd -G%s -Sa1.0/1.0 -Sb0.0/0.0" % (temp_grd_name)
         os.system(cmd)
-        
+
 
     if id <= depth_lithosphere and id > 0:
         nondim_depth=1.0-radius
-        print 'nondim_depth, radius ', nondim_depth, radius
+        print('nondim_depth, radius ', nondim_depth, radius)
         lith_grd=get_lith_temp_grd(nondim_depth,"age.grd",scalet)
         cmd="mv %s tmp.grd" % (temp_grd_name)
-        print cmd
+        print(cmd)
         os.system(cmd)
-        #cmd="grdmath tmp.grd %s MUL = %s" % (lith_grd,temp_grd_name)
-        #print cmd
+        #cmd="gmt grdmath tmp.grd %s MUL = %s" % (lith_grd,temp_grd_name)
+        #print(cmd)
         #os.system(cmd)
 
-        cmd="grdmath tmp.grd %s MIN = %s" % (lith_grd,temp_grd_name)
-        print cmd
+        cmd="gmt grdmath tmp.grd %s MIN = %s" % (lith_grd,temp_grd_name)
+        print(cmd)
         os.system(cmd)
 
     elif id == 0:
         cmd="cp %s %s" % (surface_temp_grd,temp_grd_name)
         os.system(cmd)
 
-    cmd="gmtset PAPER_MEDIA letter MEASURE_UNIT inch"
+    cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
     os.system(cmd)
 
     psfile="temperature_%04d.ps" % id
 
-    cmd = 'grdimage -JH0/7 %s -Ctemp.cpt -R-0/360/-90/90 -P -X1.0 -Y7 > %s' % (temp_grd_name,psfile)
-    print cmd
+    cmd = 'gmt grdimage -JH0/7 %s -Ctemp.cpt -R0/360/-90/90 -P -X1.0 -Y7 > %s' % (temp_grd_name,psfile)
+    print(cmd)
     os.system(cmd)
 
     cmd='mkdir GRD'
@@ -390,6 +389,5 @@ for rm in rheamesh_used:
 
 #Make clean
 cmd="rm -f *.grd *.xyz"
-print 'clean up'
+print('clean up')
 os.system(cmd)
-
