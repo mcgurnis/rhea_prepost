@@ -45,6 +45,7 @@ scalet = layer_km*1e3*layer_km*1e3/(therm_diff*1.e6*365.25*24.*3600.)
 km_per_degree=2.0*earth_radius*math.pi/360.0
 kappa=therm_diff/(layer_km*1e3*layer_km*1e3) # in units of rad**2/s
 s_yr = 60.0*60.0*24.0*365.0
+s_Myr = s_yr*1.0e6
 
 
 # Declare some variables:
@@ -212,7 +213,10 @@ def update_array_for_variable_descent(sn,xy_file_name,proj,region):
 
     print('dt',dt)
     print('depth_max',depth_max)
-    print('Duration.max=',Duration.max)
+    print('Duration.max=',Duration.max,' seconds')
+    duration_max=Duration.max()
+    print('duration_max= %.2e Myr' % (duration_max/s_Myr))
+
 
     timesteps=int(Duration.max()/dt)
     print('timesteps=',timesteps)

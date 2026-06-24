@@ -32,8 +32,9 @@ depth_lithosphere = 400 # This is just a lower limit
 
 #=====================================================================
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_Input/Temp_2_rhea/shell_temperature_k2_ll456_z_June2015.txt"
-rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+#rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/tmp_truncated-l5678.dat"
+rhea_depths="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Rhea2/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
 
 #=====================================================================
 #=====================================================================
@@ -209,14 +210,16 @@ def make_pdf(psfile):
 #tomo_dir="/net/holmes/home4/gurnis/Rhea_runs/Tomography/S20RTS_k2_l5678/"
 #tomo_name="s20rts"
 #tomo_name="Li"
-tomo_dir="/net/beno/data1/gurnis/Tomography/LLNL_k2_l5678/"
+#tomo_dir="/net/beno/data1/gurnis/Tomography/LLNL_k2_l5678/"
+tomo_dir="/Volumes/STORE01/Rhea/Tomography/LLNL_k2_l5678/"
 tomo_name="LLNL"
 
 #slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/XSectional_Rhea_Data/k2l5678_VariableDescent/Slabs/GRD_GLOBAL"
 #slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/XSectional_Rhea_Data/k2l5678_Test_FD_2.5cmyr/Slabs/GRD_GLOBAL"
 #slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/XSectional_Rhea_Data/k2l5678_Test_Filter_0.05/Slabs/GRD_GLOBAL"
 #slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/Global_Rhea2_Data_VariableDescent/Slabs/GRD_GLOBAL"
-slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/Global_Rhea_April_2022/Slabs/GRD_GLOBAL"
+#slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/Global_Rhea_April_2022/Slabs/GRD_GLOBAL"
+slab_temp_dir="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/GRD_GLOBAL"
 
 
 #rheamesh_dir="/net/beno/raid1/gurnis/Rhea_meshes/Mesh_R2_low_res/"
@@ -224,7 +227,9 @@ slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/Global_Rhea_April_2022/Slabs/GR
 #tomo_dir="/net/beno/raid2/alisic/Rhea_input/Tomography/S20RTS_Mesh_Level5678/"
 #age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_075_125_300_Tonga_1-28.grd"
 #age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_042811.grd"
-age_grid="/net/holmes/home4/gurnis/Rhea_runs/Cratons_Tectonic_Regionalization/Sonja/new_age_050_125_300_5-5-16.grd"
+#age_grid="/net/holmes/home4/gurnis/Rhea_runs/Cratons_Tectonic_Regionalization/Sonja/new_age_050_125_300_5-5-16.grd"
+#For Mac
+age_grid="/Volumes/STORE01/Rhea/Cratons_Tectonic_Regionalization/Sonja/new_age_050_125_300_5-5-16.grd"
 
 #===============================================================
 #      Parameters controlling the construction of the grd pts

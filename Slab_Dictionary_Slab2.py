@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+#slab_dict={
+#'kur':{'date':'02.24.18', 'RUM':'NONE', 'off_dep':0.25, 'off_age':0.25, 'Nan_age':125, 'C1':'157/47', 'E1':'147/54', 'C2':'146/37', 'E2':'128/42', 'Sub_type':'Cont', 'T_use':'Slab2', 'W_use':'Slab2'}
+#}
 #All Slab2 except hin and pam
 #small edits to x-section pts, needs to be put into whole set
 slab_dict={

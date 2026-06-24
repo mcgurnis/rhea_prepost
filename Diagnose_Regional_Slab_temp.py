@@ -254,32 +254,33 @@ def get_integrate_profiles(Profiles,Grds):
     return Temp_profiles,Dist_temp
 #=====================================================================
 def integrated_profile_difference(file1, file2):
-    """Integrate (T_file2 - T_file1) over distance using the trapezoid rule.
-    Both files have two columns: distance (km), temperature (normalised 0-1).
-    Returns the scalar integral and the (Dist, Diff) lists for optional plotting.
-    
-    The final integral is in units of Temp * km 
-    """
-    IF1 = open(file1)
-    IF2 = open(file2)
-    Dist = []
-    Diff = []
-    while True:
-        line1 = IF1.readline()
-        line2 = IF2.readline()
-        if line1 and line2:
-            d1_str, T1 = line1.split()
-            _, T2 = line2.split()
-            Dist.append(float(d1_str))
-            Diff.append(float(T2) - float(T1))
-        else:
-            break
-    IF1.close()
-    IF2.close()
-    integral = 0.0
-    for i in range(len(Dist) - 1):
-        integral += 0.5 * (Dist[i+1] - Dist[i]) * (Diff[i] + Diff[i+1])
-    return integral, Dist, Diff
+    """Integrate each profile independently using the trapezoid rule, then return
+    their difference (integral2 - integral1).  Both files have two columns:
+    distance (km), temperature (normalised 0-1).  Result is in units of T * km."""
+
+    def integrate_profile(fname):
+        Dist = []
+        Temp = []
+        with open(fname) as fh:
+            while True:
+                line = fh.readline()
+                if line:
+                    d_str, T_str = line.split()
+                    Dist.append(float(d_str))
+                    Temp.append(float(T_str))
+                else:
+                    break
+        integral = 0.0
+        for i in range(len(Dist) - 1):
+            integral += 0.5 * (Dist[i+1] - Dist[i]) * (Temp[i] + Temp[i+1])
+        return integral, Dist, Temp
+
+    integral1, Dist1, Temp1 = integrate_profile(file1)
+    integral2, _, _ = integrate_profile(file2)
+    print('integral1 = %g T*km' % integral1)
+    print('integral2 = %g T*km' % integral2)
+    diff = integral2 - integral1
+    return diff, Dist1, Temp1
 #=====================================================================
 def plot_temp_profile(psfile,np,Temp_profiles,d1,d2,x_move,y_move,GMTCLOSE):
 
@@ -345,14 +346,19 @@ slab_keys.sort()
 #=====================================================================
 #sn='sam'
 #sn='izu'
-sn='van'
+#sn='van'
+#sn='ker'
+sn='kur'
 #depth=125
-depth=154
+#depth=154
 #depth=204
 #depth=304
+#depth=319
 #depth=403
-#depth=500
+depth=500
+#depth=595
 #depth=608
+#depth=622
 
 psfile="temperature_diagnostic_%s_depth_%03d.ps" % (sn,depth)
 cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
@@ -390,10 +396,10 @@ print('Dist_temp ',Dist_temp)
 
 x_move=-2.5
 y_move=-2
-plot_temp_profile(psfile,0,Temp_profiles,200,600,x_move,y_move,0)
+plot_temp_profile(psfile,0,Temp_profiles,400,800,x_move,y_move,0)
 x_move=0.0
 y_move=-1.75
-plot_temp_profile(psfile,2,Temp_profiles,0,400,x_move,y_move,1)
+plot_temp_profile(psfile,2,Temp_profiles,1050,1450,x_move,y_move,1)
 
 
 make_pdf(psfile,sn)

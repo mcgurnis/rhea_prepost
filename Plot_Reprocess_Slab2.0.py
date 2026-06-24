@@ -370,7 +370,7 @@ def start_plot_with_blank_map(psfile,region,proj,x_start):
 #=====================================================================
 def start_plot_with_contours(psfile,region,proj,x_start):
     #Original RUM Slab contours
-    cmd="gmt psxy %s %s -R%s -B90/90/wesn -W1/200/200/200 -M -X%g -Y2.5 -K > %s" % (rum_slab_contours,proj,region,x_start,psfile)
+    cmd="gmt psxy %s %s -R%s -B90/90/wesn -W1/200/200/200 -X%g -Y2.5 -K > %s" % (rum_slab_contours,proj,region,x_start,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -397,7 +397,7 @@ def make_pdf(psfile):
 #=====================================================================
 def overlay_RUM_slabs(psfile):
 
-    cmd="gmt psxy %s -J -R -B -W1/128/128/128 -M -P -O -K >> %s" % (rum_slab_contours,psfile)
+    cmd="gmt psxy %s -J -R -B -W1/128/128/128 -P -O -K >> %s" % (rum_slab_contours,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -435,16 +435,16 @@ def overlay_coastlines(psfile):
 def overlay_plate_boundaries(psfile,RIDGES):
 
     #Position of the trench
-    teeth="0.2/0.07lt"
-    teeth="0.1/0.035lt"
+    teeth="0.2/0.07+l+t"
+    teeth="0.1/0.035+l+t"
     cmd="gmt psxy %s -J -R -B -W1,100/100/255 -Sf%s -G100/100/255 -P -O -K >> %s" % (trenches,teeth,psfile)
-    print(cmd)  
+    print(cmd)
     os.system(cmd)
 
     #Ridges
     if (RIDGES):
         cmd="gmt psxy %s -J -R -B -W1,255/0/0 -V -P -O -K >> %s" % (ridges,psfile)
-        print(cmd) 
+        print(cmd)
         os.system(cmd)
         cmd="gmt psxy %s -J -R -B -W0.5,255/255/255 -V -P -O -K >> %s" % (ridges,psfile)
         print(cmd)
@@ -455,7 +455,7 @@ def overlay_plate_boundaries(psfile,RIDGES):
     print(cmd)
     os.system(cmd)
     #Interface between Trenches and Fractures (mostly)
-    cmd="gmt psxy %s -J -R -B -W1,0/255/0 -Sf0.1/0.035lt -G0/255/0 -V -P -O -K >> %s" % (interface,psfile)
+    cmd="gmt psxy %s -J -R -B -W1,0/255/0 -Sf0.1/0.035+l+t -G0/255/0 -V -P -O -K >> %s" % (interface,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -745,7 +745,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         cmd="gmt grdimage %s -Cage.cpt %s -R%s -B10f2/10f2WeSn -X0.75 -Y8.0 -P -K > %s" % (age_grid,proj,region,psfile)
         print(cmd)
         os.system(cmd)
-        cmd="gmt psxy %s %s -W3,blue -R%s -B -K -O -M >> %s" % (trench,proj,region,psfile)
+        cmd="gmt psxy %s %s -W3,blue -R%s -B -K -O >> %s" % (trench,proj,region,psfile)
         print(cmd)
         os.system(cmd)
         cmd="gmt psxy %s %s -W3,blue -R%s -B -K -O >> %s" % (trench_outside,proj,region,psfile)

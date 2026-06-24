@@ -6,28 +6,18 @@
 #
 #                              Authors:
 #                            Michael Gurnis
-#          (c) California Institute of Technology 2009
+#          (c) California Institute of Technology 2009-2026
 #
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #
-#=====================================================================
-#
-#  Copyright January 2009, by the California Institute of Technology.
-#  ALL RIGHTS RESERVED. United States Government Sponsorship Acknowledged.
-#
-#=====================================================================
-
-"""
-usage:RUM_2_slabs.py 
-
-"""
 
 
-import sys, string, os, commands
+
+import sys, string, os
+import numpy as np
 import Mat_Utilities, GMT_Utilities
-from  math import *
-from numpy import *
+from math import *
 
 #Some gmt parameters needed in various functions
 #region="-180/180/-90/90"
@@ -100,17 +90,17 @@ def rheamesh2GMT(mesh_file_name):
         line=mesh.readline()
         if(line):
             if(RHEAMESH==0):
-                n, s_radius, phi, theta, visc =line.split() # 'theta' is colatitude 
+                n, s_radius, phi, theta, visc =line.split() # 'theta' is colatitude
             if(RHEAMESH==1):
-                n, s_radius, theta, phi, visc =line.split() # 'theta' is colatitude 
+                n, s_radius, theta, phi, visc =line.split() # 'theta' is colatitude
             if(RHEAMESH==2):
-                #n, s_radius, theta, phi =line.split() # 'theta' is colatitude 
-                n, s_radius, phi, theta =line.split() # 'theta' is colatitude 
+                #n, s_radius, theta, phi =line.split() # 'theta' is colatitude
+                n, s_radius, phi, theta =line.split() # 'theta' is colatitude
             #print line
             #print 'n',n
             #depth=1.0-float(s_radius)
             nint=int(float(n))
-            #print 'nint',nint 
+            #print 'nint',nint
             lon=180.0+float(phi)*r2d
             lat=90.0-float(theta)*r2d
             nodes.write("%f %f %d\n" % (lon,lat,nint) )
@@ -123,7 +113,7 @@ def rheamesh2GMT(mesh_file_name):
 # Depths at which rhea mesh occurs
 #=====================================================================
 def get_new_depths_for_rhea(level,depth_max):
-    print 'just before call to Rhea radii'
+    print('just before call to Rhea radii')
     radii = Rhea_radii(0.55,1.0,level)
 
     # GMT Contour file
@@ -195,9 +185,9 @@ def gmt_vector(VL):
     vn=VL[0]
     ve=VL[1]
     azimuth=r2d*atan(ve/vn)
-    if vn < 0.0 and ve >= 0.0: 
+    if vn < 0.0 and ve >= 0.0:
         azimuth=180.0+azimuth
-    if vn < 0.0 and ve < 0.0: 
+    if vn < 0.0 and ve < 0.0:
         azimuth=azimuth-180.0
     length = hypot(ve,vn)
     return azimuth, length
@@ -206,18 +196,18 @@ def gmt_vector(VL):
 def get_vectors_from_grd(ve_grd,vn_grd,scaling,sphere_pts,name,file_mode):
 
     if file_mode == 'print':
-        velocity_vectors='%s_vel.xyV' % name 
+        velocity_vectors='%s_vel.xyV' % name
     if file_mode == 'process':
-        velocity_vectors='%s_vel.V' % name 
+        velocity_vectors='%s_vel.V' % name
 
     VEL=open(velocity_vectors,"w")
 
-    VL=zeros(3,dtype="float")
-    cmd = "grdtrack %s -G%s > vn.xyv" % (sphere_pts,vn_grd)
-    print cmd
+    VL=np.zeros(3,dtype="float")
+    cmd = "gmt grdtrack %s -G%s > vn.xyv" % (sphere_pts,vn_grd)
+    print(cmd)
     os.system(cmd)
-    cmd = "grdtrack %s -G%s > ve.xyv" % (sphere_pts,ve_grd)
-    print cmd
+    cmd = "gmt grdtrack %s -G%s > ve.xyv" % (sphere_pts,ve_grd)
+    print(cmd)
     os.system(cmd)
     NF=open("vn.xyv")
     EF=open("ve.xyv")
@@ -262,7 +252,7 @@ def load_plate_model_into_dic(plate_model_file):
     d9=1
     while 1:
         line=PM.readline()
-        print line
+        print(line)
         if(line):
             s1,s2,s3,s4,s5,s6,s7,s8=line.split()
             entry_for_s1="%s#%s#%s#%s#%s#%s#%s#%d" % (s2,s3,s4,s5,s6,s7,s8,d9)
@@ -283,18 +273,18 @@ def load_plate_model_into_dic(plate_model_file):
 #
 def get_pole_from_nuvel(nuvel_id,PlateModel):
     s2,s3,s4,s5,s6,s7,s8,s9=PlateModel[nuvel_id].split("#")
-    lat_pole_id=float(s2) 
-    lon_pole_id=float(s3) 
+    lat_pole_id=float(s2)
+    lon_pole_id=float(s3)
     omega_id   =float(s4)
     num_code = float(s9)
-    
+
     return lat_pole_id, lon_pole_id, omega_id, num_code
 
 #====================================================================
 #
 def velocity_from_pole(omega,euler_lat,euler_lon,lat_d,lon_d):
     #VL should be north, east, down
-    VL=zeros(3,dtype='float')
+    VL=np.zeros(3,dtype='float')
 
     lat_e = d2r*euler_lat
     lon_e = d2r*euler_lon
@@ -323,9 +313,9 @@ def get_velocity_vectors_for_plate_model(process_mode,plate_model,scale_factor,s
     # process_mode
     # if 'D' sphere_pts is list of lon, lat, distance
     # if 'S' sphere_pts is list of lon, lat
-    VL=zeros(3,dtype="float")
+    VL=np.zeros(3,dtype="float")
 
-    cmd = "grdtrack %s -G%s > pts.xyid" % (sphere_pts,plates_grd)
+    cmd = "gmt grdtrack %s -G%s > pts.xyid" % (sphere_pts,plates_grd)
     os.system(cmd)
 
     SPPF=open("pts.xyid")
@@ -348,7 +338,7 @@ def get_velocity_vectors_for_plate_model(process_mode,plate_model,scale_factor,s
             lat_pt=float(n2)
             if n3 != 'NaN':
                 num_code=int(float(n3))
-                print 'n3 num_code',n3,num_code
+                print('n3 num_code',n3,num_code)
             else:
                 num_code = 0
 
@@ -362,9 +352,9 @@ def get_velocity_vectors_for_plate_model(process_mode,plate_model,scale_factor,s
                 VL[0]=0.0
                 VL[1]=0.0
             elif isplate :
-                print 'num_code:', num_code, ', PlateModel_Index:', PlateModel_Index[num_code]
+                print('num_code:', num_code, ', PlateModel_Index:', PlateModel_Index[num_code])
                 nuvel_id=PlateModel_Index[num_code]
-                print 'nuvel_id=',nuvel_id
+                print('nuvel_id=',nuvel_id)
                 lat_pole_id, lon_pole_id, omega_id, ndummy = get_pole_from_nuvel(nuvel_id,PlateModel)
                 vn,ve=local_velocity_from_pole(lat_pt,lon_pt,lat_pole_id,lon_pole_id,omega_id)
                 VL[0]=vn
@@ -394,13 +384,13 @@ def get_velocity_vectors_for_pole(run_prefix,pole_file,scale_factor,sphere_pts,f
     line=FN.readline()
     line=FN.readline()
     s1,s2,s3=line.split()
-    lon_pole=float(s1); lat_pole=float(s2); omega=float(s3) 
+    lon_pole=float(s1); lat_pole=float(s2); omega=float(s3)
     FN.close()
 
-    VL=zeros(3,dtype="float")
+    VL=np.zeros(3,dtype="float")
 
     SPF=open(sphere_pts)
- 
+
     if file_mode == 'print':
         mean_velocity_vectors="%s_mean.xyV" % run_prefix
     elif file_mode == 'process':
@@ -442,15 +432,15 @@ def get_polygon_grd(plate_id,mask_value,res):
 
     if plate_id == 'eu' or plate_id == 'nb' or plate_id == 'na' or plate_id == 'an':
         region_1="-180/180/-90/90"
-        cmd="grdmask %s -G%s -I%g -R%s -Nnan/%f/%f -H -m" % (polygon_xy,plate_grd,res,region_1,mask_value,mask_value)
-        print cmd
+        cmd="gmt grdmask %s -G%s -I%g -R%s -Nnan/%f/%f" % (polygon_xy,plate_grd,res,region_1,mask_value,mask_value)
+        print(cmd)
         os.system(cmd)
-        cmd="grdedit %s -S -Rg" % plate_grd
-        print cmd
+        cmd="gmt grdedit %s -S -Rg" % plate_grd
+        print(cmd)
         os.system(cmd)
     else:
-        cmd="grdmask %s -G%s -I%g -R%s -Nnan/%f/%f -H -m" % (polygon_xy,plate_grd,res,region,mask_value,mask_value)
-        print cmd
+        cmd="gmt grdmask %s -G%s -I%g -R%s -Nnan/%f/%f" % (polygon_xy,plate_grd,res,region,mask_value,mask_value)
+        print(cmd)
         os.system(cmd)
 
 
@@ -465,15 +455,15 @@ def get_polygon_grd_with_background(plate_id,mask_value,mask_back,res):
 
     if plate_id == 'eu' or plate_id == 'nb' or plate_id == 'na' or plate_id == 'an':
         region_1="-180/180/-90/90"
-        cmd="grdmask %s -G%s -I%g -R%s -N%f/%f/%f -H -m" % (polygon_xy,plate_grd,res,region_1,mask_back,mask_value,mask_value)
-        print cmd
+        cmd="gmt grdmask %s -G%s -I%g -R%s -N%f/%f/%f" % (polygon_xy,plate_grd,res,region_1,mask_back,mask_value,mask_value)
+        print(cmd)
         os.system(cmd)
-        cmd="grdedit %s -S -Rg" % plate_grd
-        print cmd
+        cmd="gmt grdedit %s -S -Rg" % plate_grd
+        print(cmd)
         os.system(cmd)
     else:
-        cmd="grdmask %s -G%s -I%g -R%s -N%f/%f/%f -H -m" % (polygon_xy,plate_grd,res,region,mask_back,mask_value,mask_value)
-        print cmd
+        cmd="gmt grdmask %s -G%s -I%g -R%s -N%f/%f/%f" % (polygon_xy,plate_grd,res,region,mask_back,mask_value,mask_value)
+        print(cmd)
         os.system(cmd)
 
 
@@ -496,12 +486,12 @@ def process_data_from_plate_model(plate_id,plate_model,stencil_grd_res):
 
     plates_stencil_grd = "plates_stencil_%s_%s.grd" % (plate_model,stencil_grd_res)
 
-    print 'plates_stencil_grd',plates_stencil_grd
+    print('plates_stencil_grd',plates_stencil_grd)
     if not ( os.path.exists(plates_stencil_grd) ):
 
         i=0
         for id in Code:
-            print 'id',id
+            print('id',id)
             nuvel_id=Code[id]
             lat_pole_id, lon_pole_id, omega_id, num_code = get_pole_from_nuvel(nuvel_id,PlateModel)
             polygon_xy, plate_grd =get_polygon_grd(id,num_code,stencil_grd_res)
@@ -509,7 +499,7 @@ def process_data_from_plate_model(plate_id,plate_model,stencil_grd_res):
                 cmd="cp %s %s" % (plate_grd,plates_stencil_grd)
                 os.system(cmd)
             else:
-                cmd="grdmath %s %s AND = tmp.grd" % (plates_stencil_grd,plate_grd)
+                cmd="gmt grdmath %s %s AND = tmp.grd" % (plates_stencil_grd,plate_grd)
                 os.system(cmd)
                 cmd="mv tmp.grd %s" % (plates_stencil_grd)
                 os.system(cmd)
