@@ -36,21 +36,6 @@ fractures = "%s/Fractures-1-12-10.xy" % dir_old_margins
 interface = "%s/Interface-1-12-10.xy" % dir_old_margins
 
 #=====================================================================
-def usage():
-
-    print(''' Plot_Reprocess_Slab2.0.py mode
-
-        where mode = S  : Summary Table of Slabs
-                  C  : Contour files of slab depths
-                  G  : Global plot
-                  R  : A set of regional plots
-                  P  : Process the data to create the regional Slab2
-                      RUM files and associated individual plots
-                  X  : Make summary cross section
-    ''')
-
-    sys.exit(0)
-#=====================================================================
 def make_pdf(psfile, slab=None):
     """Convert a PostScript file to PDF and move it to the PDF directory.
 

@@ -19,7 +19,7 @@
 #  MG Mar. 7, 2014
 #  MG Mar 31, 2016
 #  JH Sep 18, 2018
-#  MG May 21, 2026  
+#  MG June 25, 2026  
 
 #=====================================================================
 """
@@ -32,9 +32,20 @@ Plot_Reprocess_Slab2.0.py
 from datetime import date
 
 import Core_GMT, GMT_Utilities, Mat_Utilities, Earthquake_Utilities
-import os, string, sys, math, time
-from Plotting_Utilities import usage, make_pdf, shift_profile, overlay_plate_boundaries, new_point
+import os, string, sys, math, time, datetime, configparser
+from Plotting_Utilities import make_pdf, shift_profile, overlay_plate_boundaries, new_point
 
+#=====================================================================
+#=====================================================================
+
+CONFIG = configparser.ConfigParser()
+CONFIG.read('directories_files_for_rhea_structure.ini')
+
+current_date = datetime.date.today().strftime("%Y-%m-%d")
+ParamSave=open("Params_Plot_Reprocess_Slab2_" + current_date + ".txt", "w")
+ParamSave.write("==== Plot_Reprocess_Slab2.0.py ====\n\n")
+ParamSave.write("Current Date: %s\n\n" % current_date)
+    
 #=====================================================================
 #=====================================================================
 # Global Parameters
@@ -42,22 +53,42 @@ from Plotting_Utilities import usage, make_pdf, shift_profile, overlay_plate_bou
 d2r=math.pi/180.0
 earth_radius = 6371.0
 
+#Parameters governing the transition from the plate interface
+# to the center of the thermal slab 
+slab_transition_depth=80.0
+slab_transition_width=40.0
+
+ParamSave.write("slab_transition_depth=%g\n" % slab_transition_depth)
+ParamSave.write("slab_transition_width=%g\n" % slab_transition_width)
+
+#==================================================================
+# Directories
+ParamSave.write("\n   = Directories =\n\n")
+
 #Slab2_Age_Dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab_Age_Grids/"
 #For Mac
-Slab2_Age_Dir="/Volumes/STORE01/Rhea/Slab2/Slab_Age_Grids/"
+#Slab2_Age_Dir="/Volumes/STORE01/Rhea/Slab2/Slab_Age_Grids/"
+Slab2_Age_Dir=CONFIG.get('Directories', 'Slab2_Age_Dir')
+ParamSave.write("Slab2_Age_Dir=%s\n" % Slab2_Age_Dir)
 
 #For Mac
-Orig_Slabs2_grids_dir="/Volumes/STORE01/Rhea/Slab2/"
+#Orig_Slabs2_grids_dir="/Volumes/STORE01/Rhea/Slab2/"
 #Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/"
+Orig_Slabs2_grids_dir=CONFIG.get('Directories', 'Orig_Slabs2_grids_dir')
+ParamSave.write("Orig_Slabs2_grids_dir=%s\n" % Orig_Slabs2_grids_dir)
 
 #New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
 #For Mac
-New_grids_dir="/Volumes/STORE01/Rhea/Slab2/New_grids/"
+#New_grids_dir="/Volumes/STORE01/Rhea/Slab2/New_grids/"
+New_grids_dir=CONFIG.get('Directories', 'New_grids_dir')
+ParamSave.write("New_grids_dir=%s\n" % New_grids_dir)
 
 
 #Contours_Slab_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
 #New Dir on Mac
-Contours_Slab_dir="/Volumes/STORE01/Rhea/Slab2/Slab2_CONTOURS/"
+#Contours_Slab_dir="/Volumes/STORE01/Rhea/Slab2/Slab2_CONTOURS/"
+Contours_Slab_dir=CONFIG.get('Directories', 'Contours_Slab_dir')
+ParamSave.write("Contours_Slab_dir=%s\n" % Contours_Slab_dir)
 
 
 RUM_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/New_RUM_grids/"
@@ -97,8 +128,6 @@ ridges="%s/Ridges-5-26-10.xy" % dir_old_margins
 fractures="%s/Fractures-1-12-10.xy" % dir_old_margins
 
 interface="%s/Interface-1-12-10.xy" % dir_old_margins
-
-#working="working.xy"
 
 rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contours_567.xyz"
 
@@ -1137,18 +1166,6 @@ cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
 os.system(cmd)
 
 #=============================================================
-#Key parameters governing the transition from the plate interface
-# to the center of the thermal slab 
-slab_transition_depth=80.0
-slab_transition_width=40.0
-
-#==================================================================
-#Resample all of the of sub-regions onto global grd files
-#grd_global_depth="%s_global_depth.grd" % (subduction_prefix)
-#cmd="grdblend blend.job -G%s -I0.02/0.02 -R120/150/10/40" %(grd_global_depth)
-#print cmd
-#os.system(cmd)
-
 
 if mode == 'S':
     make_summary_table(slab_dict,slab_keys)
@@ -1167,6 +1184,8 @@ elif mode == 'X':
 
 #====================================================================
     
+ParamSave.close()
+
 print("\n \n Done! \n \n")
 
 # EOF
