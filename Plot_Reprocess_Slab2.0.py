@@ -43,7 +43,7 @@ CONFIG = configparser.ConfigParser()
 CONFIG.read('directories_files_for_rhea_structure.ini')
 
 current_date = datetime.date.today().strftime("%Y-%m-%d")
-ParamSave=open("Params_Plot_Reprocess_Slab2_" + current_date + ".txt", "w")
+ParamSave=open("Params_Plot_Reprocess_Slab2_" + current_date + ".dat", "w")
 ParamSave.write("==== Plot_Reprocess_Slab2.0.py ====\n\n")
 ParamSave.write("Current Date: %s\n\n" % current_date)
     

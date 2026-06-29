@@ -34,7 +34,7 @@ CONFIG = configparser.ConfigParser()
 CONFIG.read('directories_files_for_rhea_structure.ini')
 
 current_date = datetime.date.today().strftime("%Y-%m-%d")
-ParamSave=open("Params_Generate_Regional_Thermal_Slab_" + current_date + ".txt", "w")
+ParamSave=open("Params_Generate_Regional_Thermal_Slab_" + current_date + ".dat", "w")
 ParamSave.write("==== Generate_Regional_Thermal_Slab.py ====\n\n")
 ParamSave.write("Current Date: %s\n\n" % current_date)
     
@@ -63,10 +63,13 @@ s_Myr = s_yr*1.0e6
 # phi is the longitude in radians
 
 grd_res_global=0.05
+ParamSave.write("grd_res_global=%f\n" % grd_res_global)
 
 resolution_in_km=10.0 #At the equator
 #resolution_in_km=25.0 #At the equator
 #resolution_in_km=100.0 #At the equator
+ParamSave.write("resolution_in_km=%f\n\n" % resolution_in_km)
+
 dr=resolution_in_km/earth_radius
 dtheta=resolution_in_km/km_per_degree*d2r
 dphi=resolution_in_km/km_per_degree*d2r
@@ -82,7 +85,7 @@ dz2=dz**2
 dtxy = dx2*dy2/( 2*kappa*(dx2+dy2) )
 dtz = dz**2/( 2*kappa )
 dt=min(dtxy,dtz)/2.0
-print('dt=',dt,' this should be in seconds')
+print('dt=',dt,' seconds')
 dt=0.5*dt # This is a factor to avoid instability
 
 timesteps=1  # Number of time-steps to evolve system.
@@ -104,21 +107,31 @@ R=None
 layer_depths=None
 #=====================================================================
 # Directories for data sets
+ParamSave.write("\n   = Directories =\n\n")
 
 #For Mac 
-Slab2_grids_dir="/Volumes/STORE01/Rhea/Slab2/"
-Slab2_Age_Dir="/Volumes/STORE01/Rhea/Slab2/Slab_Age_Grids/"
+Orig_Slabs2_grids_dir=CONFIG.get('Directories', 'Orig_Slabs2_grids_dir')
+Slab2_grids_dir=Orig_Slabs2_grids_dir
+ParamSave.write("Slab2_grids_dir=%s\n" % Slab2_grids_dir)
 
-rhea_depths="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Rhea2/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
-Slab2_XY_dir="/Volumes/STORE01/Rhea/Slab2/Slab2Clips/"
-profile_dir="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Profiles/"
+Slab2_Age_Dir=CONFIG.get('Directories', 'Slab2_Age_Dir')
+ParamSave.write("Slab2_Age_Dir=%s\n" % Slab2_Age_Dir)
 
-global_convergence_grd_file="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Convergence_Velocity/convergence_extrapolated.grd"
+rhea_depths=CONFIG.get('Directories', 'rhea_depths')
+ParamSave.write("rhea_depths=%s\n" % rhea_depths)
 
-#rhea_depths="/net/beno/raid1/gurnis/Rhea_Input/Temp_2_rhea/shell_temperature_k2_ll456_z_June2015.txt"
-#rhea_depths="/net/beno/data1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
-#rhea_depths="/net/beno/raid1/gurnis/Rhea_meshes/shell_k2_ll5678_2016-03/tmp_truncated-l5678.dat"
+XY_dir=CONFIG.get('Directories', 'XY_dir')
+Slab2_XY_dir=XY_dir
+ParamSave.write("Slab2_XY_dir=%s\n" % Slab2_XY_dir) 
 
+profile_dir=CONFIG.get('Directories', 'profile_dir')
+ParamSave.write("profile_dir=%s\n" % profile_dir)
+
+global_convergence_grd_file=CONFIG.get('Directories', 'global_convergence_grd_file')
+ParamSave.write("global_convergence_grd_file=%s\n" % global_convergence_grd_file)
+
+
+#Presumably out of
 Orig_Slabs1_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Orig_grids/"
 
 Contours_Slab_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Contours/"
@@ -147,22 +160,17 @@ gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepol
 
 #dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
 #New directory for Mac  
-dir_old_margins="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Plate_Margins/NewDataSet"
-
+#dir_old_margins="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Plate_Margins/NewDataSet"
+dir_old_margins=CONFIG.get('Directories', 'dir_old_margins')
+ParamSave.write("dir_old_margins=%s\n" % dir_old_margins)
 
 trenches="%s/Trench-1-12-10.xy" % dir_old_margins
-
 ridges="%s/Ridges-5-26-10.xy" % dir_old_margins
-
 fractures="%s/Fractures-1-12-10.xy" % dir_old_margins
-
 interface="%s/Interface-1-12-10.xy" % dir_old_margins
 
 rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contours_567.xyz"
 
-#profile_dir="/net/holmes/home4/gurnis/Rhea_runs/Slab1.0/Profiles/"
-
-#global_convergence_grd_file="/net/holmes/home4/gurnis/Rhea_runs/Convergence_Velocity/convergence_extrapolated.grd"
 
 #=====================================================================
 #=====================================================================
@@ -460,15 +468,18 @@ def generate_arrays(depth_trans_diff,width_trans_diff,convergence_vel):
 
     return
 #=====================================================================
-def diffuse():
+def diffuse(full_or_horizontal):
     global nx,ny,nz,T,Tf,Th,Theta,CosTheta,SinTheta,R,Alpha,DeltaT,Duration, layer_depths
 
     for n in range(1, timesteps+1):
         print("Computing Tf & Th for n =", n)
-        Horizontal_Sph_Diffuse()
-        #Full_Sph_Diffuse()
-        #T=(1.0-Alpha)*Th+Alpha*Tf
-        T=Th
+        if full_or_horizontal == 'horizontal':
+            Horizontal_Sph_Diffuse()
+            T=Th
+        elif full_or_horizontal == 'full':
+            Horizontal_Sph_Diffuse()
+            Full_Sph_Diffuse()
+            T=(1.0-Alpha)*Th+Alpha*Tf
 
     return
 #=====================================================================
@@ -1231,6 +1242,25 @@ os.system(cmd)
 cmd="mkdir PDF"
 os.system(cmd)
 
+ParamSave.write("\n\n Additional Parameters:\n")
+
+depth_trans_diff=100.00
+width_trans_diff=50.0
+#convergence_vel=1.0 # cm/yr
+#convergence_vel=2.5 # cm/yr
+convergence_vel=5.0 # cm/yr
+ParamSave.write("convergence_vel=%f\n" % convergence_vel)
+
+#How to advance in time:  SolveDiffusion or SolveFilter: 
+# diffuse by solving the diffusion equation
+# or by using a filter to smooth the temperature field
+Advance_in_time=CONFIG.get('Parameters', 'Advance_in_time')
+ParamSave.write("Advance_in_time=%s\n" % Advance_in_time)
+if Advance_in_time == 'SolveDiffusion':
+    full_or_horizontal=CONFIG.get('Parameters', 'full_or_horizontal')
+    ParamSave.write("   full_or_horizontal=%s\n" % full_or_horizontal)
+
+
 for s in slab_keys:
     print(" ")
     print("SLAB: %s" % s)
@@ -1275,11 +1305,6 @@ for s in slab_keys:
     Core_GMT.grdinfo( gmt_dict )
 
 #=====================================================================
-    depth_trans_diff=100.00
-    width_trans_diff=50.0
-    #convergence_vel=1.0 # cm/yr
-    #convergence_vel=2.5 # cm/yr
-    convergence_vel=5.0 # cm/yr
 
     # read layers for Rhea run
     #layer_depths=get_layer_depths()
@@ -1306,18 +1331,18 @@ for s in slab_keys:
     #Temporary fix  for setting bound. values on Tf & Th by setting to 1
     Tf[:,:,:]=1.0
     Th[:,:,:]=1.0
-    #Ta=T
-
-    #diffuse()
-    #final_grd_file_names = generate_thermal_final_grd_files(sn,region)
-   
-    final_grd_file_names=diffuse_with_filter(sn,layer_depths,ic_grd_file_names,convergence_vel)
-
-    #Tb=T
-
-    #Plot_two_times(Ta,Tb,nx,ny,nz,proj,region,sn)
 
 
+    if Advance_in_time == 'SolveDiffusion':
+        Ta=T
+        diffuse(full_or_horizontal)
+        final_grd_file_names = generate_thermal_final_grd_files(sn,region)
+        Tb=T
+        Plot_two_times(Ta,Tb,nx,ny,nz,proj,region,sn)
+    elif Advance_in_time == 'SolveFilter':
+        final_grd_file_names=diffuse_with_filter(sn,layer_depths,ic_grd_file_names,convergence_vel)
+
+    
     label="Full.FINAL_var_convergence"
     #label="Full.FINAL_%2.2fcm_per_yr" % (convergence_vel)
     #label="Full.FINAL"
