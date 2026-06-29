@@ -6,14 +6,14 @@
 #
 #                              Authors:
 #                             Mike Gurnis
-#          (c) California Institute of Technology 2013-2015
+#          (c) California Institute of Technology 2013-2026
 #
 #               Free for non-commercial academic use ONLY.
 #      This program is distributed WITHOUT ANY WARRANTY whatsoever.
 #
 #=====================================================================
 #
-#  Copyright July 2015, by the California Institute of Technology.
+#  Copyright June 2026, by the California Institute of Technology.
 #
 #=====================================================================
 """
@@ -24,11 +24,20 @@ Generate_Regional_Thermal_Slab.py
 #=====================================================================
 
 import Core_GMT, GMT_Utilities, Mat_Utilities, Earthquake_Utilities
-#import Rhea_Utilities
 import Thermal_Utilities
-import os, string, sys, math, time, datetime, random
+import os, string, sys, math, time, datetime, random, configparser
 import numpy as np
+#=====================================================================
+#=====================================================================
 
+CONFIG = configparser.ConfigParser()
+CONFIG.read('directories_files_for_rhea_structure.ini')
+
+current_date = datetime.date.today().strftime("%Y-%m-%d")
+ParamSave=open("Params_Generate_Regional_Thermal_Slab_" + current_date + ".txt", "w")
+ParamSave.write("==== Generate_Regional_Thermal_Slab.py ====\n\n")
+ParamSave.write("Current Date: %s\n\n" % current_date)
+    
 #=====================================================================
 #=====================================================================
 # Global Parameters
@@ -1315,7 +1324,10 @@ for s in slab_keys:
     make_section(0,final_grd_file_names,sn,layer_depths,label,T_use,W_use)
     make_section(1,final_grd_file_names,sn,layer_depths,label,T_use,W_use)
 
+ParamSave.close()
+
 clean_up_and_finish()
+
 
 # EOF
 

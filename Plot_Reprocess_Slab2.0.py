@@ -15,7 +15,8 @@
 #
 #=====================================================================
 #
-# Last Update: Mike Gurnis, Jan. 24, 2013
+# Last Updates
+# Mike Gurnis, Jan. 24, 2013
 #  MG Mar. 7, 2014
 #  MG Mar 31, 2016
 #  JH Sep 18, 2018
@@ -65,72 +66,57 @@ ParamSave.write("slab_transition_width=%g\n" % slab_transition_width)
 # Directories
 ParamSave.write("\n   = Directories =\n\n")
 
-#Slab2_Age_Dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab_Age_Grids/"
 #For Mac
-#Slab2_Age_Dir="/Volumes/STORE01/Rhea/Slab2/Slab_Age_Grids/"
+
 Slab2_Age_Dir=CONFIG.get('Directories', 'Slab2_Age_Dir')
 ParamSave.write("Slab2_Age_Dir=%s\n" % Slab2_Age_Dir)
 
-#For Mac
-#Orig_Slabs2_grids_dir="/Volumes/STORE01/Rhea/Slab2/"
-#Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/"
 Orig_Slabs2_grids_dir=CONFIG.get('Directories', 'Orig_Slabs2_grids_dir')
 ParamSave.write("Orig_Slabs2_grids_dir=%s\n" % Orig_Slabs2_grids_dir)
 
-#New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
-#For Mac
-#New_grids_dir="/Volumes/STORE01/Rhea/Slab2/New_grids/"
 New_grids_dir=CONFIG.get('Directories', 'New_grids_dir')
 ParamSave.write("New_grids_dir=%s\n" % New_grids_dir)
 
-
-#Contours_Slab_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
-#New Dir on Mac
-#Contours_Slab_dir="/Volumes/STORE01/Rhea/Slab2/Slab2_CONTOURS/"
 Contours_Slab_dir=CONFIG.get('Directories', 'Contours_Slab_dir')
 ParamSave.write("Contours_Slab_dir=%s\n" % Contours_Slab_dir)
 
+XY_dir=CONFIG.get('Directories', 'XY_dir')
+ParamSave.write("XY_dir=%s\n" % XY_dir)
 
-RUM_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/New_RUM_grids/"
+age_grid=CONFIG.get('Directories', 'age_grid')
+ParamSave.write("age_grid=%s\n" % age_grid)
 
-Contours_RUM_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/Contours/"
+topo_grid=CONFIG.get('Directories', 'topo_grid')
+ParamSave.write("topo_grid=%s\n" % topo_grid)
 
-#XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
-#New Dir on Mac
-XY_dir="/Volumes/STORE01/Rhea/Slab2/Slab2Clips/"
-
-
-RUM_XY_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/XY/"
-
-#age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_042811.grd"
-#age_grid="/net/beno/data1/alisic/raid2/Rhea_input/Age_grids/new_age_042811.grd"
-# New age grid for Mac
-age_grid="/Volumes/STORE01/Rhea/alisic/Rhea_input/Age_grids/new_age_042811.grd"
-
-#topo_grid="/net/holmes/scratch2/gurnis/ETOPO-02/etopo2.grd"
-#For Mac
-topo_grid="/Users/gurnis/Desktop/Gurnis_Files/Working/Data_Sets/Large_Topo_and_Gravity_Files/etopo2.grd"
-
-bird="bird_boundaries"
-
-coastlines="/net/holmes/home4/gurnis/Global_Plate_Polygons/cs.lines.0.xy"
-
-gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepolygons.0.xy"
-
-#dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
-#New directory for Mac  
-dir_old_margins="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/Plate_Margins/NewDataSet"
+dir_old_margins=CONFIG.get('Directories', 'dir_old_margins')
+ParamSave.write("dir_old_margins=%s\n" % dir_old_margins)
 
 trenches="%s/Trench-1-12-10.xy" % dir_old_margins
-
 ridges="%s/Ridges-5-26-10.xy" % dir_old_margins
-
 fractures="%s/Fractures-1-12-10.xy" % dir_old_margins
-
 interface="%s/Interface-1-12-10.xy" % dir_old_margins
 
-rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contours_567.xyz"
+coastlines="/net/holmes/home4/gurnis/Global_Plate_Polygons/cs.lines.0.xy"
+gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepolygons.0.xy"
 
+
+# Defunct
+
+#Slab2_Age_Dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab_Age_Grids/"
+#Orig_Slabs2_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/"
+#New_grids_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/New_grids/"
+#Contours_Slab_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2_CONTOURS/"
+#XY_dir="/home/jiashun/Documents/scripts/gurnis/Slab2.0/Slab2Distribute_Mar2018/Slab2Clips/"
+#age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_042811.grd"
+#age_grid="/net/beno/data1/alisic/raid2/Rhea_input/Age_grids/new_age_042811.grd"
+#topo_grid="/net/holmes/scratch2/gurnis/ETOPO-02/etopo2.grd"
+#dir_old_margins="/net/holmes/home4/gurnis/Rhea_runs/Plate_Margins/NewDataSet"
+
+#RUM_grids_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/New_RUM_grids/"
+#Contours_RUM_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/Contours/"
+#RUM_XY_dir="/net/holmes/home4/gurnis/Rhea_runs/RUM_Slabs/RUM_Slabs_Reformed/XY/"
+#rum_slab_contours="/net/holmes/home4/gurnis/Rhea_runs/Slabs/Level567/all_contours_567.xyz"
 
 #=====================================================================
 #=====================================================================
