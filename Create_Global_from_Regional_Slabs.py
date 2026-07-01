@@ -22,15 +22,20 @@ Create_Global_fom_Regional_Slabs.py
 
 """
 #=====================================================================
+import os, sys, math, datetime, configparser
 
-import Core_GMT, GMT_Utilities, Mat_Utilities, Earthquake_Utilities
-#import Rhea_Utilities
-import Thermal_Utilities
-import os, string, sys, math, time, datetime, random
-import scipy as sp
 
 #=====================================================================
 #=====================================================================
+CONFIG = configparser.ConfigParser()
+CONFIG.read('directories_files_for_rhea_structure.ini')
+
+current_date = datetime.date.today().strftime("%Y-%m-%d")
+ParamSave=open("Params_Create_Global_fom_Regional_Slabs_" + current_date + ".dat", "w")
+ParamSave.write("==== Create_Global_from_Regional_Slabs.py ====\n\n")
+ParamSave.write("Current Date: %s\n\n" % current_date)
+    
+#=====================================================================   
 # Global Parameters
 
 d2r=math.pi/180.0
@@ -89,9 +94,12 @@ R=None
 layer_depths=None
 #=====================================================================
 # Directories for data sets
+ParamSave.write("\n   = Directories =\n\n")
 
 #For Mac
-rhea_depths="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Rhea2/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+#rhea_depths="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Rhea2/Rhea_meshes/shell_k2_ll5678_2016-03/depth_listing-l5678.dat"
+rhea_depths=CONFIG.get('Directories', 'rhea_depths')
+ParamSave.write("rhea_depths=%s\n" % rhea_depths)
 
 
 #rhea_depths="/net/beno/raid1/gurnis/Rhea_Input/Temp_2_rhea/shell_temperature_k2_ll456_z_June2015.txt"
@@ -341,6 +349,8 @@ for layer in layer_depths:
     make_pdf(psfile,"Global")
 
 
+
+ParamSave.close()
 
 clean_up_and_finish()
 
