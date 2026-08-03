@@ -417,6 +417,6 @@ for rm in rheamesh_used:
 ParamSave.close()
 
 #Make clean
-cmd="rm -f *.grd *.xyz"
+cmd="rm -f *.grd *.xyz *.xyt"
 print('clean up')
 os.system(cmd)
