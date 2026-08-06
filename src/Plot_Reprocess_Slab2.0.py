@@ -97,6 +97,9 @@ ridges="%s/Ridges-5-26-10.xy" % dir_old_margins
 fractures="%s/Fractures-1-12-10.xy" % dir_old_margins
 interface="%s/Interface-1-12-10.xy" % dir_old_margins
 
+EHB_Catalog=CONFIG.get('Directories', 'EHB_Catalog')
+ParamSave.write("EHB_Catalog=%s\n" % EHB_Catalog)
+
 coastlines="/net/holmes/home4/gurnis/Global_Plate_Polygons/cs.lines.0.xy"
 gplates_polygons="/net/holmes/home4/gurnis/Global_Plate_Polygons/g0.8.8.platepolygons.0.xy"
 
@@ -125,12 +128,12 @@ def usage():
     print(''' Plot_Reprocess_Slab2.0.py mode)
 
         where mode = S  : Summary Table of Slabs
-                  C  : Contour files of slab depths
-                  G  : Global plot
-                  R  : A set of regional plots
-                  P  : Process the data to create the regional Slab2
-                      RUM files and associated individual plots
-                  X  : Make summary cross section
+                     C  : Contour files of slab depths
+                     G  : Global plot
+                     R  : A set of regional plots
+                     P  : Process the data to create the regional Slab2
+                          files and associated individual plots
+                     X  : Make summary cross section
     ''')
 
     sys.exit(0)
@@ -1130,6 +1133,23 @@ def new_slab_depth(grd_depth,grd_dip,grd_str,grd_slab_age,dict,slab_transition_d
     new_grd_depth='tmp.grd'
 
     return new_grd_depth
+
+#=====================================================================
+def some_preliminary_stuff():
+    if not os.path.isdir("PDF"):
+        os.makedirs("PDF")
+
+    if not os.path.isdir("Profiles"):
+        os.makedirs("Profiles")
+
+    if not os.path.isdir("Events"):
+        os.makedirs("Events")
+
+    cmd="gmt makecpt -Crainbow -T-700/0/50 -Z > slab_depth.cpt"
+    print(cmd)
+    os.system(cmd)
+
+    return
 #=====================================================================
 #=====================================================================
 #    TOP OF MAIN
@@ -1152,6 +1172,7 @@ cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
 os.system(cmd)
 
 #=============================================================
+some_preliminary_stuff()
 
 if mode == 'S':
     make_summary_table(slab_dict,slab_keys)
