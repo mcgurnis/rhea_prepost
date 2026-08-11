@@ -1302,7 +1302,6 @@ for s in slab_keys:
     #grd_depth="%s%s_%s_new_depth.grd" % (depth_grids_dir,sn,model)
     grd_depth="%s%s_slab2_dep_%s.grd" % (Slab2_grids_dir,sn,date)
     gmt_dict['grid']=grd_depth
-    print('gmt_dict',gmt_dict)
     Core_GMT.grdinfo( gmt_dict )
 
 #=====================================================================

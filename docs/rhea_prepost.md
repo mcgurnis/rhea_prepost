@@ -112,5 +112,20 @@ full_or_horizontal=horizontal
 ```
 If the parameter is set to *full* then a spherical coordinate system is used within a cut-out of a sphere, while if it is set to *horizontal* then heat diffusses outward on the surface of a sphere at that depth.
 
-The results of generating the thermal structure will be placed in several directories, in `GRD_IC` and `GRD_FINAL` with the meaning that *IC* refers to the initial condition before diffusion and *FINAL* to after the diffusion. Inside each directory, one can find a subdirectory for each subduction zone, like `GRD_IC/alu`. In those subdirectories, are stored the thermal structure as *GMT grd* files (i.e. net-cdf files), for example *layer_029.grd* which is the file for 29 km depth. These depths are specific to a `Rhea` mesh in which the depths are found in the file `directories_files_for_rhea_structure.ini` through the file indicated as `rhea_depths`. In addition, plots in map view and cross section are also created. These can be  found under `PDF` in subdirectories for each subduction zone, such as `PDF/alu`. There, are files, for example, *temp_029.pdf* and *temp_final_029.pdf* for maps of the initial and final thermal structure. In the same subdirectory, there are cross sections, such as *alu_section_1.IC.pdf* and *alu_section_1.Full.FINAL_var_convergence.pdf* for cross sections through the initial and final thermal model.
+The resulting thermal structure are placed in several directories, `GRD_IC` and `GRD_FINAL` with the meaning that *IC* refers to the initial condition before diffusion and *FINAL* to after the diffusion. Inside each directory, there is a subdirectory for each subduction zone, like `GRD_IC/alu`. In those subdirectories, the thermal structure are stored as *GMT grd* files (i.e. net-cdf files), for example *layer_029.grd* which is the file for 29 km depth. These depths are specific to a `Rhea` mesh in which the depths are found in the file `directories_files_for_rhea_structure.ini` by the file named `rhea_depths`. In addition, plots in map view and cross section are created. 
+
+The results can be validated in several ways. First, under `PDF` in subdirectories for each subduction zone, such as `PDF/alu` there are visualizations. There, are files, for example, *temp_029.pdf* and *temp_final_029.pdf* for maps of the initial and final thermal structure. In the same subdirectory, there are cross sections, such as *alu_section_1.IC.pdf* and *alu_section_1.Full.FINAL_var_convergence.pdf* for cross sections through the initial and final thermal model. Second, the degree to which the filtering or FD solution conserves heat can be determined with **Diagnose_Regional_Slab_temp.py**.
+
+``` sh
+Diagnose_Regional_Slab_temp.py sn depth
+```
+
+where `sn` is the *slab name* (e.g. kur, sam, izu, van, ker) and `depth` is *depth in km* (this depth must be in the `rhea_depths`). This script integrates the temperature difference (in units of C x km) and should be a small value. It is found to be generally small, but not infinitesimal. The results are found in PDF directory for that slab in a file such as *temperature_diagnostic_alu_depth_125.pdf*.
+
+If needed, the final step for the generation of the slab thermal models is to combine all of the regional thermal structures at each depth into a single global grid file at that same depth.
+
+``` sh
+Create_Global_from_Regional_Slabs.py
+```
+
 

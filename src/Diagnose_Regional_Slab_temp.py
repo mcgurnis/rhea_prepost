@@ -18,7 +18,7 @@
 #=====================================================================
 """
 Usage:
-Diagnose_Regional_Slab_temp.py
+Diagnose_Regional_Slab_temp.py sn depth
 
 """
 #=====================================================================
@@ -70,7 +70,7 @@ dz2=dz**2
 dtxy = dx2*dy2/( 2*kappa*(dx2+dy2) )
 dtz = dz**2/( 2*kappa )
 dt=min(dtxy,dtz)/2.0
-print('dt=',dt,' this should be in seconds')
+#print('dt=',dt,' this should be in seconds')
 dt=0.5*dt # This is a factor to avoid instability
 
 timesteps=1  # Number of time-steps to evolve system.
@@ -129,7 +129,10 @@ profile_dir="Profiles/"
 #=====================================================================
 def usage():
 
-    print(''' Diagnose_Regional_Slab_temp.py
+    print(''' Diagnose_Regional_Slab_temp.py sn depth
+
+    sn    - slab name (e.g. kur, sam, izu, van, ker)
+    depth - depth in km (e.g. 125, 154, 204, 304, 319, 403, 500, 595, 608, 622)
 
 ''')
 
@@ -253,6 +256,29 @@ def get_integrate_profiles(Profiles,Grds):
 
     return Temp_profiles,Dist_temp
 #=====================================================================
+def find_min_temp_along_profile(Temp_profiles):
+
+    Dist_min_temp=[]
+    for temp_profile in Temp_profiles:
+        IF=open(temp_profile)
+        Dist=[]
+        Temp=[]
+        while 1:
+            line=IF.readline()
+            if(line):
+                d,T=line.split()
+                Dist.append(float(d))
+                Temp.append(float(T))
+            else:
+                break
+        IF.close()
+        min_temp=min(Temp)
+        min_dist=Dist[Temp.index(min_temp)]
+        print('%s: min_temp=%g at dist=%g' % (temp_profile,min_temp,min_dist))
+        Dist_min_temp.append(min_dist)
+
+    return Dist_min_temp
+#=====================================================================
 def integrated_profile_difference(file1, file2):
     """Integrate each profile independently using the trapezoid rule, then return
     their difference (integral2 - integral1).  Both files have two columns:
@@ -333,10 +359,12 @@ def clean_up_and_finish():
 from Slab_Dictionary_Slab1_RUM import slab_dict
 gmt_dict = {}
 
-#if len(sys.argv) != 2:
-#    usage()
-#
-#mode=sys.argv[1]
+if len(sys.argv) != 3:
+    print("\n Error: expected 2 command-line arguments, got %d\n" % (len(sys.argv)-1))
+    usage()
+
+sn=sys.argv[1]
+depth=int(sys.argv[2])
 
 
 # Get the top level keys and sort them
@@ -344,21 +372,6 @@ slab_keys = list(slab_dict.keys())
 slab_keys.sort()
 
 #=====================================================================
-#sn='sam'
-#sn='izu'
-#sn='van'
-#sn='ker'
-sn='kur'
-#depth=125
-#depth=154
-#depth=204
-#depth=304
-#depth=319
-#depth=403
-depth=500
-#depth=595
-#depth=608
-#depth=622
 
 psfile="temperature_diagnostic_%s_depth_%03d.ps" % (sn,depth)
 cmd="gmt gmtset PS_MEDIA letter PROJ_LENGTH_UNIT inch"
@@ -394,15 +407,22 @@ Temp_profiles, Dist_temp = get_integrate_profiles(Profiles,Grds)
 print('Temp_profiles',Temp_profiles)
 print('Dist_temp ',Dist_temp)
 
+Dist_min_temp=find_min_temp_along_profile(Temp_profiles)
+print('Dist_min_temp ',Dist_min_temp)
+
 x_move=-2.5
 y_move=-2
-plot_temp_profile(psfile,0,Temp_profiles,400,800,x_move,y_move,0)
+x_min=Dist_min_temp[0]-200.0
+x_max=Dist_min_temp[0]+200.0
+plot_temp_profile(psfile,0,Temp_profiles,x_min,x_max,x_move,y_move,0)
 x_move=0.0
 y_move=-1.75
-plot_temp_profile(psfile,2,Temp_profiles,1050,1450,x_move,y_move,1)
+x_min=Dist_min_temp[2]-200.0
+x_max=Dist_min_temp[2]+200.0
+plot_temp_profile(psfile,2,Temp_profiles,x_min,x_max,x_move,y_move,1)
 
 
 make_pdf(psfile,sn)
-#clean_up_and_finish()
+clean_up_and_finish()
 
 # EOF
