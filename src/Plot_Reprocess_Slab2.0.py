@@ -133,7 +133,7 @@ def usage():
                      R  : A set of regional plots
                      P  : Process the data to create the regional Slab2
                           files and associated individual plots
-                     X  : Make summary cross section
+                     X  : Make summary cross section (only after P)
     ''')
 
     sys.exit(0)
@@ -180,7 +180,7 @@ def summary_cross_section(slab_dict,slab_keys):
                 i += 1
 
     #cmd="gmt psxy %s -J -R -B -W5/black -O >> %s" % (shifted_profile,psfile)
-    cmd="gmt psxy %s -J -R -B -W2%s -O >> %s" % (shifted_profile,sub_color,psfile)
+    cmd="gmt psxy %s -J -R -B -W2,%s -O >> %s" % (shifted_profile,sub_color,psfile)
     print(cmd)
     os.system(cmd)
 
@@ -397,18 +397,6 @@ def start_plot_with_contours(psfile,region,proj,x_start):
 def finalize_plot_with_scale(psfile,shift_scale):
     cmd="gmt psscale -Cslab_depth.cpt -D%g/-0.5/4.0/0.25h -B100::/:depth: -O >> %s" % (shift_scale,psfile)
     print(cmd)
-    os.system(cmd)
-
-    return
-#=====================================================================
-def make_pdf(psfile):
-    print ("\n    Converting file to pdf ...")
-    cmd = "gmt psconvert %s -A -Tf -E200" % (psfile)
-    os.system(cmd)
-
-    cmd='rm -f *.ps'
-    os.system(cmd)
-    cmd='mv *.pdf PDF'
     os.system(cmd)
 
     return
@@ -746,7 +734,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         os.system(cmd)
 
 
-        make_pdf(psfile)
+        make_pdf(psfile,s)
 
         psfile ="%s_2.ps" % ps_name_prefix
 
@@ -807,7 +795,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         os.system(cmd)
 
         #====================================================================
-        make_pdf(psfile)
+        make_pdf(psfile,s)
         
 
         # Plot the epicentral locations on a map
@@ -836,7 +824,7 @@ def reprocess_plot_each_slab_individually(slab_dict,slab_keys):
         os.system(cmd)
 
         #====================================================================
-        make_pdf(psfile)
+        make_pdf(psfile,s)
         
 
 
@@ -1192,6 +1180,10 @@ elif mode == 'X':
 #====================================================================
     
 ParamSave.close()
+
+# clean up 
+cmd = "rm -rf tmp.xyzpqrs *.pz *.xydm *.xyd"
+os.system(cmd)
 
 print("\n \n Done! \n \n")
 

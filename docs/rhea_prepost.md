@@ -94,6 +94,8 @@ Running with `mode` set to `P` is essential to process the data to create the re
 
 If the goal is to create thermal structures for each of the subduction zones individually, then from the main directory `cd PDF`, and inspect three PDF files for each subduction zone (as a three letter prefix, like *alu* for the Aleutians). These three files, for example *alu_slab_depth80_width40_1.pdf*, *_2.pdf*, and *_3.pdf*. Pay close attention to the age  
 
+A summary cross section which shows all of the reprocessed *Slab2.0* depth profiles can be created by running the main script with the mode *X*. This creates a pdf file `summary_cross_section.pdf` with profiles defined from the slabs in the dictionary plotted as grey lines.
+
 ### IV. Slab Thermal Models
 
 By running the script **Generate_Regional_Thermal_Slab.py** a three-dimensional thermal model for slabs in the upper mantle is generated in spherical coordinates. The assumption is that the script **Plot_Reprocess_Slab2.0.py** has already been run with the `mode` set to `P`.
