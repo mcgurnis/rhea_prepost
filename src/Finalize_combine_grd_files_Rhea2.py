@@ -128,10 +128,12 @@ def interpolate_2_Rhea_mesh(grd_name,code_grd_name,nodes,id,radius):
 #=====================================================================
 def mk_tomography_weights(radii_depths_list):
 
-    depth_1 = 550.0
+    #depth_1 = 550.0
     #depth_1 = 650.0
-    width_1 = 150.0
+    depth_1 = um_lm_blend_depth
+    #width_1 = 150.0
     #width_1 = 75.0
+    width_1 = um_lm_blend_width
 
     weights = {}
 
@@ -214,37 +216,14 @@ ParamSave.write("\n   = Directories =\n\n")
 rhea_depths=CONFIG.get('Directories', 'rhea_depths')
 ParamSave.write("rhea_depths=%s\n" % rhea_depths)
 
-#tomo_dir="/net/holmes/home4/gurnis/Rhea_runs/Tomography/S20RTS_Mesh_Level5678/"
-#tomo_dir="/net/beno/raid1/gurnis/Tomography/S20RTS_Mesh_Level58/"
-#tomo_dir="/net/holmes/home4/gurnis/Rhea_runs/Tomography/S20RTS_Rhea2_Test/"
-#tomo_dir="/net/holmes/home4/gurnis/Rhea_runs/Tomography/S20RTS_k2_l5678/"
-#tomo_name="s20rts"
-#tomo_name="Li"
-#tomo_dir="/net/beno/data1/gurnis/Tomography/LLNL_k2_l5678/"
-#tomo_dir="/Volumes/STORE01/Rhea/Tomography/LLNL_k2_l5678/"
 tomo_dir=CONFIG.get('Directories', 'tomo_dir')
 ParamSave.write("tomo_dir=%s\n" % tomo_dir)
 tomo_name=CONFIG.get('Directories', 'tomo_name')
 ParamSave.write("tomo_name=%s\n" % tomo_name)
 
-#slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/XSectional_Rhea_Data/k2l5678_VariableDescent/Slabs/GRD_GLOBAL"
-#slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/XSectional_Rhea_Data/k2l5678_Test_FD_2.5cmyr/Slabs/GRD_GLOBAL"
-#slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/XSectional_Rhea_Data/k2l5678_Test_Filter_0.05/Slabs/GRD_GLOBAL"
-#slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/Global_Rhea2_Data_VariableDescent/Slabs/GRD_GLOBAL"
-#slab_temp_dir="/net/beno/data1/gurnis/Rhea_Input/Global_Rhea_April_2022/Slabs/GRD_GLOBAL"
-#slab_temp_dir="/Users/gurnis/Desktop/Gurnis_Files/Working/Current_Work/Rhea_global_runs/Slab2.0/GRD_GLOBAL"
 slab_temp_dir=CONFIG.get('Directories', 'slab_temp_dir')
 ParamSave.write("slab_temp_dir=%s\n" % slab_temp_dir)
 
-
-#rheamesh_dir="/net/beno/raid1/gurnis/Rhea_meshes/Mesh_R2_low_res/"
-#slab_age_dir="/net/beno/raid2/alisic/Rhea_input/Slabs/Level5678_2/"
-#tomo_dir="/net/beno/raid2/alisic/Rhea_input/Tomography/S20RTS_Mesh_Level5678/"
-#age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_075_125_300_Tonga_1-28.grd"
-#age_grid="/net/beno/raid2/alisic/Rhea_input/Age_grids/new_age_042811.grd"
-#age_grid="/net/holmes/home4/gurnis/Rhea_runs/Cratons_Tectonic_Regionalization/Sonja/new_age_050_125_300_5-5-16.grd"
-#For Mac
-#age_grid="/Volumes/STORE01/Rhea/Cratons_Tectonic_Regionalization/Sonja/new_age_050_125_300_5-5-16.grd"
 final_age_grid=CONFIG.get('Directories', 'final_age_grid')
 ParamSave.write("final_age_grid=%s\n" % final_age_grid)
 age_grid=final_age_grid
@@ -260,8 +239,15 @@ grd_min = temperature_min
 grd_max = temperature_mantle
 tension=0.2
 tension=0.1
-grd_res_global=0.05
+#grd_res_global=0.05
+grd_res_global=CONFIG.getfloat('Parameters', 'grd_res_global')
 ParamSave.write("grd_res_global=%f\n" % grd_res_global)
+
+um_lm_blend_depth=CONFIG.getfloat('Parameters', 'um_lm_blend_depth')
+ParamSave.write("um_lm_blend_depth=%f\n" % um_lm_blend_depth)
+um_lm_blend_width=CONFIG.getfloat('Parameters', 'um_lm_blend_width')
+ParamSave.write("um_lm_blend_width=%f\n" % um_lm_blend_width)
+
 
 #grd_res=0.025  # In degrees
 #grd_res=0.05  # In degrees

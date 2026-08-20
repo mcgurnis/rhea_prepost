@@ -1,6 +1,6 @@
 # Pre and Post Processing of data for Rhea computations
 
-### M. Gurnis Aug. 10, 2026
+### M. Gurnis Aug. 20, 2026
 
 ---
 
@@ -129,5 +129,15 @@ If needed, the final step for the generation of the slab thermal models is to co
 ``` sh
 Create_Global_from_Regional_Slabs.py
 ```
+This script produces a set of global grdfiles, for example *tmp_layer_125.grd* that are placed in the subdirectory *GRD_GLOBAL*. The success of this operation can be verified by viewing pdf files of the global slab temperature field, found in `PDF/Global` as *slab_temp_125.pdf*.
 
+### V. Merging the slabs with the rest of the mantle
+
+The global model for the slabs now needs to be merged with the thermal structure of the lithosphere and the lower mantle. 
+
+```sh
+Finalize_combine_grd_files_Rhea2.py
+```
+
+The grd files are placed in `GRD` (as *temperature_0125.grd*) and pfd files are found in `PDF` as *temperature_0125.pdf*.
 
